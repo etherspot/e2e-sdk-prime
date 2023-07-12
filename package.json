@@ -1,0 +1,29 @@
+{
+  "name": "e2e_sdk_prime_automaiton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha --timeout 600000",
+    "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/*/*.js",
+    "test-mainnet-transfertoken-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Arbitrum.spec.js",
+    "test-mainnet-transfertoken-matic": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Matic.spec.js",
+    "test-mainnet-transfertoken-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Optimism.spec.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@etherspot/contracts": "^2.0.1",
+    "@etherspot/prime-sdk": "file:../etherspot-prime-sdk/dist/index.js",
+    "@reactivex/rxjs": "^6.6.7",
+    "axios": "^1.4.0",
+    "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "erc-20-abi": "^1.0.0",
+    "ethers": "5.7.0",
+    "mocha": "^10.2.0",
+    "rxjs": "^7.8.1",
+    "ws": "^8.13.0"
+  }
+}
