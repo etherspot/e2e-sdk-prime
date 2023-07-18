@@ -941,7 +941,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the incorrect To Address while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the incorrect To Address while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -993,7 +993,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the invalid To Address i.e. missing character while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1045,7 +1045,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the same To Address i.e. sender address while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1096,7 +1096,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the invalid Value while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the invalid Value while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1129,7 +1129,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the very small Value while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the very small Value while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1162,7 +1162,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the exceeded Value while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the exceeded Value while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1213,7 +1213,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1253,7 +1253,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1314,7 +1314,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1375,7 +1375,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1436,7 +1436,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer native token with the past TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the optimism network", async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -2681,7 +2681,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC20 token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
     // get the respective provider details
     let provider;
     try {
@@ -2755,7 +2755,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC20 token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
     // get the respective provider details
     let provider;
     try {
@@ -2850,7 +2850,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
     // get the respective provider details
     let provider;
     try {
@@ -2945,7 +2945,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
     // get the respective provider details
     let provider;
     try {
@@ -3040,7 +3040,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the optimism network", async () => {
     // get the respective provider details
     let provider;
     try {
@@ -3135,7 +3135,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token with incorrect Sender Address while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3149,23 +3149,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when added the incorrect sender address while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when added the incorrect sender address while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason.includes("bad address checksum")) {
         console.log(
-          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for sender address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when added the incorrect sender address while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when added the incorrect sender address while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3179,23 +3179,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason.includes("invalid address")) {
         console.log(
-          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for sender address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token without Sender Address while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3208,23 +3208,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when not added the Sender Address while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when not added the Sender Address while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason === "types/values length mismatch") {
         console.log(
-          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for sender address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when not added the Sender Address while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when not added the Sender Address while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token with incorrect Recipient Address while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3238,23 +3238,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when added the incorrect recipient address while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when added the incorrect recipient address while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason.includes("bad address checksum")) {
         console.log(
-          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for recipient address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when added the incorrect recipient address while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when added the incorrect recipient address while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3268,23 +3268,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason.includes("invalid address")) {
         console.log(
-          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for recipient address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token without Recipient Address while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3297,23 +3297,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when not added the Recipient Address while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when not added the Recipient Address while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason === "types/values length mismatch") {
         console.log(
-          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for recipient address is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when not added the Recipient Address while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when not added the Recipient Address while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token with incorrect tokenId while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3327,23 +3327,23 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when added the incorrect tokenId while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when added the incorrect tokenId while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason === "invalid BigNumber string") {
         console.log(
-          "The validation for tokenId is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for tokenId is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when added the incorrect tokenId while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when added the incorrect tokenId while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT token without tokenId while getting the erc721 Contract Interface on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3356,23 +3356,143 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       ]);
 
       assert.fail(
-        "The expected validation is not displayed when not added the tokenid while getting the erc721 Contract Interface."
+        "The expected validation is not displayed when not added the tokenid while creating the NFT Data."
       );
     } catch (e) {
       if (e.reason === "types/values length mismatch") {
         console.log(
-          "The validation for tokenid is displayed as expected while getting the erc721 Contract Interface."
+          "The validation for tokenid is displayed as expected while creating the NFT Data."
         );
       } else {
         console.error(e);
         assert.fail(
-          "The expected validation is not displayed when not added the tokenid while getting the erc721 Contract Interface."
+          "The expected validation is not displayed when not added the tokenid while creating the NFT Data."
         );
       }
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT Token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT token with same sender address while creating the NFT Data on the optimism network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        sender,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await optimismMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await optimismMainNetSdk.sign();
+
+      assert.fail(
+        "The expected validation is not displayed when entered the same sender address while sign the added transactions to the batch."
+      );
+    } catch (e) {
+      let error = e.reason;
+      if (error.includes("invalid address")) {
+        console.log(
+          "The validation for sender address is displayed as expected while sign the added transactions to the batch."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when entered the same sender address while sign the added transactions to the batch."
+        );
+      }
+    }
+  });
+
+  it("REGRESSION: Perform the transfer ERC721 NFT token with same recipient address while creating the NFT Data on the optimism network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        recipient,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await optimismMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await optimismMainNetSdk.sign();
+
+      assert.fail(
+        "The expected validation is not displayed when entered the same recipient address while sign the added transactions to the batch."
+      );
+    } catch (e) {
+      let error = e.reason;
+      if (error.includes("invalid address")) {
+        console.log(
+          "The validation for recipient address is displayed as expected while sign the added transactions to the batch."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when entered the same recipient address while sign the added transactions to the batch."
+        );
+      }
+    }
+  });
+
+  it("REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while sign the added transactions to the batch on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3428,7 +3548,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. odd number while getting the transaction hash on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3496,7 +3616,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3564,7 +3684,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3632,7 +3752,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     }
   });
 
-  it("Regression: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the optimism network", async () => {
+  it("REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the optimism network", async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
