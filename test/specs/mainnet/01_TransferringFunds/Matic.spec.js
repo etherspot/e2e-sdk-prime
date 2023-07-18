@@ -2,25 +2,25 @@ import { PrimeSdk } from "@etherspot/prime-sdk";
 import { ethers } from "ethers";
 import { assert } from "chai";
 import { ERC20_ABI } from "@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js";
+import abi from "../../../data/NFTabi.json" assert { type: "json" };
 import * as dotenv from "dotenv";
 dotenv.config(); // init dotenv
 
 let maticMainNetSdk;
 let maticEtherspotWalletAddress;
 let sender = "0x97EC9803387fcBc4A238BCeA2C6C1b75438D39C3";
+let incorrectSender = "0x97ECC803387fcBc44238BCeA2CCC1b75433D39C0";
+let invalidSender = "0x97EC9803387fcBc4A238BCeA2C6C1b75438D39C";
 let recipient = "0x71Bec2309cC6BDD5F1D73474688A6154c28Db4B5";
 let incorrectRecipient = "0x71Bec2309AC6BCD5F1D7347468AA6154c2DDb4BB";
 let invalidRecipient = "0x71Bec2309cC6BDD5F1D73474688A6154c28Db4B";
-let tokenAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-let incorrectTokenAddress = "0x2791Bca1ffde4661ED8AA30C99A7a9449Aa84174";
-let invalidTokenAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa8417";
+let nft_tokenAddress = "0xe55C5793a52AF819fBf3e87a23B36708E6FDd2Cc";
+let tokenId = "2357194";
+let incorrectTokenId = "abc";
 let value = "0.00001";
 let invalidValue = "abcd";
 let smallValue = "0.0000000000000000001";
 let exceededValue = "1000000000";
-let providerNetwork = "https://polygon-bundler.etherspot.io";
-let invalidProviderNetwork = "http://polygon-bundler.etherspot.io";
-let otherProviderNetwork = "https://arbitrum-bundler.etherspot.io";
 let oddInvalidTxHash =
   "0x1a44fe659f15021f49315792be9c69bd76953baf422bfa306f9a3485a52d444";
 let evenInvalidTxHash =
@@ -29,6 +29,12 @@ let incorrectTxHash =
   "0x1a44fe659f1502ff49315722be9c69bd76653baf422bfa30669a3485a52d4446";
 let pastTxHash =
   "0x1a44fe659f15021f49315792be9c69bd76953baf422bfa306f9a3485a52d4445";
+let tokenAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+let incorrectTokenAddress = "0x2791Bca1ffde4661ED8AA30C99A7a9449Aa84174";
+let invalidTokenAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa8417";
+let providerNetwork = "https://polygon-bundler.etherspot.io";
+let invalidProviderNetwork = "http://polygon-bundler.etherspot.io";
+let otherProviderNetwork = "https://arbitrum-bundler.etherspot.io";
 
 describe("The SDK, when transfer a token with matic network on the MainNet", () => {
   beforeEach(async () => {
@@ -334,6 +340,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("SMOKE: Perform the transfer ERC20 token with valid details on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -422,7 +429,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
       try {
         assert.isNotEmpty(
           userOpsBatch.to,
-          "The To Address value is empty in the transaction batch response."
+          "The To Address value is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -431,7 +438,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
       try {
         assert.isNotEmpty(
           userOpsBatch.data,
-          "The data value is empty in the transaction batch response."
+          "The data value is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -439,8 +446,8 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
 
       try {
         assert.isNotEmpty(
-          userOpsBatch.value._hex,
-          "The hex value of the userOpsBatch is empty in the sign transactions added to the batch response."
+          userOpsBatch.value[0]._hex,
+          "The hex value of the userOpsBatch is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -448,8 +455,8 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
 
       try {
         assert.isTrue(
-          userOpsBatch.value._isBigNumber,
-          "The isBigNumber value of the userOpsBatch is false in the sign transactions added to the batch response."
+          userOpsBatch.value[0]._isBigNumber,
+          "The isBigNumber value of the userOpsBatch is false in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -660,6 +667,280 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     }
   });
 
+  it("SMOKE: Perform the transfer ERC721 NFT token with valid details on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+
+      try {
+        assert.isNotEmpty(
+          erc721Data,
+          "The erc721 Contract Interface value is empty in the erc721 Contract Interface response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await maticMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+
+      try {
+        assert.isNotEmpty(
+          userOpsBatch.to[0],
+          "The To Address value is empty in the add transactions to batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsBatch.data[0],
+          "The data value is empty in the add transactions to batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsBatch.value[0]._hex,
+          "The hex value of the userOpsBatch is empty in the add transactions to batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsBatch.value[0]._isBigNumber,
+          "The isBigNumber value of the userOpsBatch is false in the add transactions to batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+
+      try {
+        assert.strictEqual(
+          op.sender,
+          sender,
+          "The send value is not correct in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.nonce._hex,
+          "The hex value of the nonce is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.nonce._isBigNumber,
+          "The isBigNumber value of the nonce is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.initCode,
+          "The initCode value is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.callData,
+          "The callData value is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.callGasLimit._hex,
+          "The hex value of the callGasLimit is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.callGasLimit._isBigNumber,
+          "The isBigNumber value of the callGasLimit is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.verificationGasLimit._hex,
+          "The hex value of the verificationGasLimit is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.verificationGasLimit._isBigNumber,
+          "The isBigNumber value of the verificationGasLimit is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.maxFeePerGas._hex,
+          "The hex value of the maxFeePerGas is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.maxFeePerGas._isBigNumber,
+          "The isBigNumber value of the maxFeePerGas is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.maxPriorityFeePerGas._hex,
+          "The hex value of the maxPriorityFeePerGas is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.maxPriorityFeePerGas._isBigNumber,
+          "The isBigNumber value of the maxPriorityFeePerGas is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.paymasterAndData,
+          "The paymasterAndData value is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.preVerificationGas._hex,
+          "The hex value of the preVerificationGas is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          op.preVerificationGas._isBigNumber,
+          "The isBigNumber value of the preVerificationGas is false in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          op.signature,
+          "The signature value is empty in the sign transactions added to the batch response."
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sign transactions added to the batch is not performed.");
+    }
+
+    // sending to the bundler
+    let uoHash;
+    try {
+      uoHash = await maticMainNetSdk.send(op);
+
+      assert.isNotEmpty(
+        uoHash,
+        "The uoHash value is empty in the sending bundler response."
+      );
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sending to the bundler action is not performed.");
+    }
+
+    // get transaction hash
+    try {
+      console.log("Waiting for transaction...");
+      let txHash = await maticMainNetSdk.getUserOpReceipt(uoHash);
+
+      assert.isNotEmpty(
+        txHash,
+        "The txHash value is empty in the sending bundler response."
+      );
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get transaction hash action is not performed.");
+    }
+  });
+
   it("Regression: Perform the transfer native token with the incorrect To Address while sign the added transactions to the batch on the matic network", async () => {
     // clear the transaction batch
     try {
@@ -764,7 +1045,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     }
   });
 
-  xit("Regression: Perform the transfer native token with the same To Address i.e. sender address while sign the added transactions to the batch on the matic network", async () => {
+  it("Regression: Perform the transfer native token with the same To Address i.e. sender address while sign the added transactions to the batch on the matic network", async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -796,28 +1077,23 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     // sign transactions added to the batch
     let op;
     try {
-      op = await arbitrumMainNetSdk.sign();
-    } catch (e) {
-      console.error(e.error);
-      assert.fail("The sign transactions added to the batch is not performed.");
-    }
+      op = await maticMainNetSdk.sign();
 
-    // sending to the bundler
-    let uoHash;
-    try {
-      uoHash = await arbitrumMainNetSdk.send(op);
+      assert.fail(
+        "The expected validation is not displayed when entered the invalid recipient while sign the added transactions to the batch."
+      );
     } catch (e) {
-      console.error(e);
-      assert.fail("The sending to the bundler action is not performed.");
-    }
-
-    // get transaction hash
-    try {
-      console.log("Waiting for transaction...");
-      await maticMainNetSdk.getUserOpReceipt(uoHash);
-    } catch (e) {
-      console.error(e);
-      assert.fail("The get transaction hash action is not performed.");
+      let error = e.reason;
+      if (error.includes("invalid address")) {
+        console.log(
+          "The validation for Recipient is displayed as expected while sign the added transactions to the batch."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when entered the invalid recipient while sign the added transactions to the batch."
+        );
+      }
     }
   });
 
@@ -925,7 +1201,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
         "The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch."
       );
     } catch (e) {
-      if (e.reason === "bad response") {
+      if (e.reason === "Transaction reverted") {
         console.log(
           "The validation for value is displayed as expected while sign the added transactions to the batch."
         );
@@ -1161,7 +1437,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     }
   });
 
-  it("Regression: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the matic network", async () => {
+  it("Regression: Perform the transfer native token with the past TxHash while getting the transaction hash on the matic network", async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1223,6 +1499,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(
@@ -1265,6 +1542,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(); // without provider
@@ -1305,6 +1583,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(
@@ -1347,6 +1626,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1391,6 +1671,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1435,6 +1716,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1466,6 +1748,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1520,6 +1803,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1574,6 +1858,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1628,6 +1913,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with exceeded value while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1679,7 +1965,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
         "The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch."
       );
     } catch (e) {
-      if (e.reason === "bad response") {
+      if (e.reason === "Transaction reverted") {
         console.log(
           "The validation for value is displayed as expected while sign the added transactions to the batch."
         );
@@ -1693,6 +1979,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1746,6 +2033,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1801,6 +2089,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1855,7 +2144,8 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     }
   });
 
-  xit("REGRESSION: Perform the transfer ERC20 token with same recipient i.e. sender address while Getting the transferFrom encoded data on the matic network", async () => {
+  it("REGRESSION: Perform the transfer ERC20 token with same recipient i.e. sender address while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1911,6 +2201,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -1964,6 +2255,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with the incorrect To Address while adding transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2049,6 +2341,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2134,6 +2427,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2219,6 +2513,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2303,6 +2598,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("REGRESSION: Perform the transfer ERC20 token without transactionData while adding transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2387,6 +2683,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("Regression: Perform the transfer ERC20 token without adding transaction to the batch while sign the added transactions to the batch on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2460,6 +2757,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("Regression: Perform the transfer ERC20 token with the invalid TxHash i.e. odd number while getting the transaction hash on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2534,7 +2832,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await maticMainNetSdk.getUserOpReceipt(uoHash);
+      await maticMainNetSdk.getUserOpReceipt(oddInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
@@ -2554,6 +2852,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("Regression: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2628,7 +2927,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await maticMainNetSdk.getUserOpReceipt(uoHash);
+      await maticMainNetSdk.getUserOpReceipt(evenInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash."
@@ -2648,6 +2947,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("Regression: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2722,7 +3022,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await maticMainNetSdk.getUserOpReceipt(uoHash);
+      await maticMainNetSdk.getUserOpReceipt(incorrectTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
@@ -2742,6 +3042,7 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
   });
 
   it("Regression: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the matic network", async () => {
+    // get the respective provider details
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(providerNetwork);
@@ -2816,7 +3117,572 @@ describe("The SDK, when transfer a token with matic network on the MainNet", () 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await maticMainNetSdk.getUserOpReceipt(uoHash);
+      await maticMainNetSdk.getUserOpReceipt(pastTxHash);
+
+      assert.fail(
+        "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
+      );
+    } catch (e) {
+      if (e.showDiff === false) {
+        console.log(
+          "The validation for transaction is displayed as expected while getting the transaction hash."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token with incorrect Sender Address while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        incorrectSender, // incorrect sender address
+        recipient,
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when added the incorrect sender address while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason.includes("bad address checksum")) {
+        console.log(
+          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the incorrect sender address while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        invalidSender, // invalid sender address
+        recipient,
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason.includes("invalid address")) {
+        console.log(
+          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the invalid Sender Address i.e. missing character while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token without Sender Address while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        recipient, // not added sender address
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when not added the Sender Address while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason === "types/values length mismatch") {
+        console.log(
+          "The validation for sender address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when not added the Sender Address while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token with incorrect Recipient Address while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        incorrectRecipient, // incorrect recipient address
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when added the incorrect recipient address while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason.includes("bad address checksum")) {
+        console.log(
+          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the incorrect recipient address while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        invalidRecipient, // invalid recipient address
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason.includes("invalid address")) {
+        console.log(
+          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token without Recipient Address while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender, // not added recipient address
+        tokenId,
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when not added the Recipient Address while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason === "types/values length mismatch") {
+        console.log(
+          "The validation for recipient address is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when not added the Recipient Address while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token with incorrect tokenId while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        incorrectTokenId, // incorrect tokenid
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when added the incorrect tokenId while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason === "invalid BigNumber string") {
+        console.log(
+          "The validation for tokenId is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the incorrect tokenId while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT token without tokenId while getting the erc721 Contract Interface on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient, // not added tokenid
+      ]);
+
+      assert.fail(
+        "The expected validation is not displayed when not added the tokenid while getting the erc721 Contract Interface."
+      );
+    } catch (e) {
+      if (e.reason === "types/values length mismatch") {
+        console.log(
+          "The validation for tokenid is displayed as expected while getting the erc721 Contract Interface."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when not added the tokenid while getting the erc721 Contract Interface."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT Token without adding transaction to the batch while sign the added transactions to the batch on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // get balance of the account address
+    let balance;
+    try {
+      balance = await maticMainNetSdk.getNativeBalance();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The balance of the ERC721 NFT Token is not displayed.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+
+      assert.fail(
+        "The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch."
+      );
+    } catch (e) {
+      if (e.message === "cannot sign empty transaction batch") {
+        console.log(
+          "The validation for transaction batch is displayed as expected while adding the sign transactions to the batch."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. odd number while getting the transaction hash on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await maticMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sign transactions added to the batch is not performed.");
+    }
+
+    // get transaction hash
+    try {
+      console.log("Waiting for transaction...");
+      await maticMainNetSdk.getUserOpReceipt(oddInvalidTxHash);
+
+      assert.fail(
+        "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
+      );
+    } catch (e) {
+      if (e.reason === "hex data is odd-length") {
+        console.log(
+          "The validation for transaction is displayed as expected while getting the transaction hash."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await maticMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sign transactions added to the batch is not performed.");
+    }
+
+    // get transaction hash
+    try {
+      console.log("Waiting for transaction...");
+      await maticMainNetSdk.getUserOpReceipt(evenInvalidTxHash);
+
+      assert.fail(
+        "The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash."
+      );
+    } catch (e) {
+      if (e.showDiff === false) {
+        console.log(
+          "The validation for transaction is displayed as expected while getting the transaction hash."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await maticMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sign transactions added to the batch is not performed.");
+    }
+
+    // get transaction hash
+    try {
+      console.log("Waiting for transaction...");
+      await maticMainNetSdk.getUserOpReceipt(incorrectTxHash);
+
+      assert.fail(
+        "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
+      );
+    } catch (e) {
+      if (e.showDiff === false) {
+        console.log(
+          "The validation for transaction is displayed as expected while getting the transaction hash."
+        );
+      } else {
+        console.error(e);
+        assert.fail(
+          "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
+        );
+      }
+    }
+  });
+
+  it("Regression: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the matic network", async () => {
+    // get erc721 Contract Interface
+    let erc721Interface;
+    let erc721Data;
+    try {
+      erc721Interface = new ethers.utils.Interface(abi.abi);
+
+      erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
+        sender,
+        recipient,
+        tokenId,
+      ]);
+    } catch (e) {
+      console.error(e);
+      assert.fail("The get erc721 Contract Interface is not performed.");
+    }
+
+    // clear the transaction batch
+    try {
+      await maticMainNetSdk.clearUserOpsFromBatch();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // add transactions to the batch
+    let userOpsBatch;
+    try {
+      userOpsBatch = await maticMainNetSdk.addUserOpsToBatch({
+        to: nft_tokenAddress,
+        data: erc721Data,
+      });
+    } catch (e) {
+      console.error(e);
+      assert.fail("The transaction of the batch is not clear correctly.");
+    }
+
+    // sign transactions added to the batch
+    let op;
+    try {
+      op = await maticMainNetSdk.sign();
+    } catch (e) {
+      console.error(e);
+      assert.fail("The sign transactions added to the batch is not performed.");
+    }
+
+    // get transaction hash
+    try {
+      console.log("Waiting for transaction...");
+      await maticMainNetSdk.getUserOpReceipt(pastTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
