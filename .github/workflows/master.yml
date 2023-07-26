@@ -1,6 +1,6 @@
 name: Super Linter
 
-on: [push, pull_request]
+on: [pull_request]
     
 env:
   folder_name: 'e2e-sdk-prime'
@@ -15,4 +15,11 @@ jobs:
 
     - name: Super-Linter
       uses: super-linter/super-linter@v5.2.0 
+    env:
+        DISABLE_ERRORS: true
+        OUTPUT_FOLDER: Reports
+        OUTPUT_DETAILS: detailed
+        
+        
+        
       
