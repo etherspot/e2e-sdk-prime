@@ -2,46 +2,20 @@ import { PrimeSdk } from "@etherspot/prime-sdk";
 import { ethers } from "ethers";
 import { assert } from "chai";
 import { ERC20_ABI } from "@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js";
+import data from "../../../data/testData.json" assert { type: "json" };
 import abi from "../../../data/NFTabi.json" assert { type: "json" };
 import * as dotenv from "dotenv";
 dotenv.config(); // init dotenv
 
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
-let sender = "0x97EC9803387fcBc4A238BCeA2C6C1b75438D39C3";
-let incorrectSender = "0x97ECC803387fcBc44238BCeA2CCC1b75433D39C0";
-let invalidSender = "0x97EC9803387fcBc4A238BCeA2C6C1b75438D39C";
-let recipient = "0x71Bec2309cC6BDD5F1D73474688A6154c28Db4B5";
-let incorrectRecipient = "0x71Bec2309AC6BCD5F1D7347468AA6154c2DDb4BB";
-let invalidRecipient = "0x71Bec2309cC6BDD5F1D73474688A6154c28Db4B";
-let nft_tokenAddress = "0xe55C5793a52AF819fBf3e87a23B36708E6FDd2Cc";
-let tokenId = "2357194";
-let incorrectTokenId = "abc";
-let value = "0.00001";
-let invalidValue = "abcd";
-let smallValue = "0.0000000000000000001";
-let exceededValue = "1000000000";
-let oddInvalidTxHash =
-  "0x1a44fe659f15021f49315792be9c69bd76953baf422bfa306f9a3485a52d444";
-let evenInvalidTxHash =
-  "0x1a44fe659f15021f49315792be9c69bd76953baf422bfa306f9a3485a52d44";
-let incorrectTxHash =
-  "0x1a44fe659f1502ff49315722be9c69bd76653baf422bfa30669a3485a52d4446";
-let pastTxHash =
-  "0x1a44fe659f15021f49315792be9c69bd76953baf422bfa306f9a3485a52d4445";
-let tokenAddress = "0x7F5c764cBc14f9669B88837ca1490cCa17c31607";
-let incorrectTokenAddress = "0x7FFc764cBcc4f9669b888A7c11490cCa17c31600";
-let invalidTokenAddress = "0x7F5c764cBc14f9669B88837ca1490cCa17c3160";
-let providerNetwork = "https://optimism-bundler.etherspot.io";
-let invalidProviderNetwork = "http://optimism-bundler.etherspot.io";
-let otherProviderNetwork = "https://polygon-bundler.etherspot.io";
 
 describe("The SDK, when transfer a token with optimism network on the MainNet", () => {
   beforeEach(async () => {
     // initializating sdk
     try {
       optimismMainNetSdk = new PrimeSdk(process.env.PRIVATE_KEY, {
-        chainId: Number(process.env.POLYGON_CHAINID),
+        chainId: Number(process.env.OPTIMISM_CHAINID),
       });
 
       assert.strictEqual(
@@ -61,7 +35,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
 
       assert.strictEqual(
         optimismEtherspotWalletAddress,
-        sender,
+        data.sender,
         "The Etherspot Wallet Address is not calculated correctly."
       );
     } catch (e) {
@@ -85,14 +59,14 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseEther(value),
+        to: data.recipient,
+        value: ethers.utils.parseEther(data.value),
       });
 
       try {
         assert.isNotEmpty(
           transactionBatch.to,
-          "The To Address value is empty in the transaction batch response."
+          "The To Address value is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -101,7 +75,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           transactionBatch.data,
-          "The data value is empty in the transaction batch response."
+          "The data value is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -110,7 +84,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           transactionBatch.value,
-          "The value's value is empty in the transaction batch response."
+          "The value's value is empty in the add transactions to batch response."
         );
       } catch (e) {
         console.error(e);
@@ -146,7 +120,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.strictEqual(
           op.sender,
-          sender,
+          data.sender,
           "The send value is not correct in the sign transactions added to the batch response."
         );
       } catch (e) {
@@ -343,7 +317,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
 
       try {
         assert.isTrue(
@@ -361,7 +337,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -391,8 +371,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
 
       try {
@@ -422,14 +402,14 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress,
+        to: data.tokenAddress_optimismUSDC,
         data: transactionData,
       });
 
       try {
         assert.isNotEmpty(
           userOpsBatch.to,
-          "The To Address value is empty in the add transactions to batch response."
+          "The To Address value is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -438,7 +418,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           userOpsBatch.data,
-          "The data value is empty in the add transactions to batch response."
+          "The data value is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -447,7 +427,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           userOpsBatch.value[0]._hex,
-          "The hex value of the userOpsBatch is empty in the add transactions to batch response."
+          "The hex value of the userOpsBatch is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -456,7 +436,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isTrue(
           userOpsBatch.value[0]._isBigNumber,
-          "The isBigNumber value of the userOpsBatch is false in the add transactions to batch response."
+          "The isBigNumber value of the userOpsBatch is false in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -474,7 +454,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.strictEqual(
           op.sender,
-          sender,
+          data.sender,
           "The send value is not correct in the sign transactions added to the batch response."
         );
       } catch (e) {
@@ -675,9 +655,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
 
       try {
@@ -705,14 +685,14 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
 
       try {
         assert.isNotEmpty(
           userOpsBatch.to[0],
-          "The To Address value is empty in the add transactions to batch response."
+          "The To Address value is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -721,7 +701,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           userOpsBatch.data[0],
-          "The data value is empty in the add transactions to batch response."
+          "The data value is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -730,7 +710,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isNotEmpty(
           userOpsBatch.value[0]._hex,
-          "The hex value of the userOpsBatch is empty in the add transactions to batch response."
+          "The hex value of the userOpsBatch is empty in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -739,7 +719,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.isTrue(
           userOpsBatch.value[0]._isBigNumber,
-          "The isBigNumber value of the userOpsBatch is false in the add transactions to batch response."
+          "The isBigNumber value of the userOpsBatch is false in the userops batch response."
         );
       } catch (e) {
         console.error(e);
@@ -757,7 +737,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       try {
         assert.strictEqual(
           op.sender,
-          sender,
+          data.sender,
           "The send value is not correct in the sign transactions added to the batch response."
         );
       } catch (e) {
@@ -953,8 +933,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: incorrectRecipient, // incorrect to address
-        value: ethers.utils.parseEther(value),
+        to: data.incorrectRecipient, // incorrect to address
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1005,8 +985,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: invalidRecipient, // invalid to address
-        value: ethers.utils.parseEther(value),
+        to: data.invalidRecipient, // invalid to address
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1057,8 +1037,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: sender, // same to address
-        value: ethers.utils.parseEther(value),
+        to: data.sender, // same to address
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1078,6 +1058,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let op;
     try {
       op = await optimismMainNetSdk.sign();
+
       assert.fail(
         "The expected validation is not displayed when entered the invalid recipient while sign the added transactions to the batch."
       );
@@ -1108,8 +1089,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseUnits(invalidValue), // invalid value
+        to: data.recipient,
+        value: ethers.utils.parseUnits(data.invalidValue), // invalid value
       });
 
       assert.fail(
@@ -1141,8 +1122,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseUnits(smallValue), // very small value
+        to: data.recipient,
+        value: ethers.utils.parseUnits(data.smallValue), // very small value
       });
 
       assert.fail(
@@ -1174,8 +1155,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: exceededValue, // exceeded value
+        to: data.recipient,
+        value: data.exceededValue, // exceeded value
       });
     } catch (e) {
       console.error(e);
@@ -1200,6 +1181,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
         "The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch."
       );
     } catch (e) {
+      console.log(e);
       if (e.reason === "Transaction reverted") {
         console.log(
           "The validation for value is displayed as expected while sign the added transactions to the batch."
@@ -1266,8 +1248,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseEther(value),
+        to: data.recipient,
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1295,7 +1277,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(oddInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
@@ -1327,8 +1309,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseEther(value),
+        to: data.recipient,
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1356,7 +1338,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(evenInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash."
@@ -1388,8 +1370,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseEther(value),
+        to: data.recipient,
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1417,7 +1399,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(incorrectTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
@@ -1449,8 +1431,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionBatch;
     try {
       transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: recipient,
-        value: ethers.utils.parseEther(value),
+        to: data.recipient,
+        value: ethers.utils.parseEther(data.value),
       });
     } catch (e) {
       console.error(e);
@@ -1478,7 +1460,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(pastTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.pastTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
@@ -1502,7 +1484,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(
-        invalidProviderNetwork // invalid provider
+        data.invalidProviderNetwork_optimism // invalid provider
       );
     } catch (e) {
       console.error(e);
@@ -1512,7 +1494,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1553,7 +1539,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1586,7 +1576,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let provider;
     try {
       provider = new ethers.providers.JsonRpcProvider(
-        otherProviderNetwork // other provider
+        data.otherProviderNetwork_optimism // other provider
       );
     } catch (e) {
       console.error(e);
@@ -1596,7 +1586,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1628,7 +1622,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1638,7 +1634,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let erc20Instance;
     try {
       erc20Instance = new ethers.Contract(
-        incorrectTokenAddress, // incorrect token address
+        data.incorrectTokenAddress_optimismUSDC, // incorrect token address
         ERC20_ABI,
         provider
       );
@@ -1673,7 +1669,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1683,7 +1681,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let erc20Instance;
     try {
       erc20Instance = new ethers.Contract(
-        invalidTokenAddress, // invalid token address
+        data.invalidTokenAddress_optimismUSDC, // invalid token address
         ERC20_ABI,
         provider
       );
@@ -1718,7 +1716,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1750,7 +1750,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1759,7 +1761,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1781,7 +1787,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     try {
       transactionData = erc20Instance.interface.encodeFunctionData(
         "transferr",
-        [recipient, ethers.utils.parseUnits(value, decimals)]
+        [data.recipient, ethers.utils.parseUnits(data.value, decimals)]
       );
 
       assert.fail(
@@ -1805,7 +1811,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1814,7 +1822,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1835,8 +1847,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(invalidValue, decimals), // invalid value
+        data.recipient,
+        ethers.utils.parseUnits(data.invalidValue, decimals), // invalid value
       ]);
 
       assert.fail(
@@ -1860,7 +1872,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1869,7 +1883,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1890,8 +1908,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(smallValue, decimals), // very small value
+        data.recipient,
+        ethers.utils.parseUnits(data.smallValue, decimals), // very small value
       ]);
 
       assert.fail(
@@ -1915,7 +1933,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1924,7 +1944,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -1945,8 +1969,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(exceededValue, decimals), // exceeded value
+        data.recipient,
+        ethers.utils.parseUnits(data.exceededValue, decimals), // exceeded value
       ]);
     } catch (e) {
       console.error(e);
@@ -1981,7 +2005,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -1990,7 +2016,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2011,7 +2041,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
+        data.recipient,
       ]);
 
       assert.fail(
@@ -2035,7 +2065,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2044,7 +2076,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2065,8 +2101,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        incorrectRecipient, // incorrect recipient address
-        ethers.utils.parseUnits(value, decimals),
+        data.incorrectRecipient, // incorrect recipient address
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
 
       assert.fail(
@@ -2091,7 +2127,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2100,7 +2138,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2121,8 +2163,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        invalidRecipient, // invalid recipient address
-        ethers.utils.parseUnits(value, decimals),
+        data.invalidRecipient, // invalid recipient address
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
 
       assert.fail(
@@ -2147,7 +2189,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2156,7 +2200,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2177,8 +2225,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        sender, // same recipient address
-        ethers.utils.parseUnits(value, decimals),
+        data.sender, // same recipient address
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
 
       assert.fail(
@@ -2203,7 +2251,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2212,7 +2262,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2233,7 +2287,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        ethers.utils.parseUnits(value, decimals),
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
 
       assert.fail(
@@ -2257,7 +2311,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2266,7 +2322,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2287,8 +2347,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2309,7 +2369,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: incorrectTokenAddress, // Incorrect Token Address
+        to: data.incorrectTokenAddress_optimismUSDC, // Incorrect Token Address
         data: transactionData,
       });
     } catch (e) {
@@ -2343,7 +2403,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2352,7 +2414,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2373,8 +2439,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2395,7 +2461,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: invalidTokenAddress, // Invalid Token Address
+        to: data.invalidTokenAddress_optimismUSDC, // Invalid Token Address
         data: transactionData,
       });
     } catch (e) {
@@ -2429,7 +2495,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2438,7 +2506,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2459,8 +2531,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2515,7 +2587,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2524,7 +2598,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2545,8 +2623,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2600,7 +2678,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2609,7 +2689,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2630,8 +2714,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2652,7 +2736,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress, // without transactionData
+        to: data.tokenAddress_optimismUSDC, // without transactionData
       });
     } catch (e) {
       console.error(e);
@@ -2685,7 +2769,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2694,7 +2780,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2715,8 +2805,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2759,7 +2849,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2768,7 +2860,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2789,8 +2885,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2811,7 +2907,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress,
+        to: data.tokenAddress_optimismUSDC,
         data: transactionData,
       });
     } catch (e) {
@@ -2831,7 +2927,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(oddInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
@@ -2854,7 +2950,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2863,7 +2961,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2884,8 +2986,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -2906,7 +3008,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress,
+        to: data.tokenAddress_optimismUSDC,
         data: transactionData,
       });
     } catch (e) {
@@ -2926,7 +3028,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(evenInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash."
@@ -2949,7 +3051,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -2958,7 +3062,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -2979,8 +3087,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -3001,7 +3109,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress,
+        to: data.tokenAddress_optimismUSDC,
         data: transactionData,
       });
     } catch (e) {
@@ -3021,7 +3129,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(incorrectTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
@@ -3044,7 +3152,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get the respective provider details
     let provider;
     try {
-      provider = new ethers.providers.JsonRpcProvider(providerNetwork);
+      provider = new ethers.providers.JsonRpcProvider(
+        data.providerNetwork_optimism
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The provider response is not displayed correctly.");
@@ -3053,7 +3163,11 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get erc20 Contract Interface
     let erc20Instance;
     try {
-      erc20Instance = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      erc20Instance = new ethers.Contract(
+        data.tokenAddress_optimismUSDC,
+        ERC20_ABI,
+        provider
+      );
     } catch (e) {
       console.error(e);
       assert.fail("The get erc20 Contract Interface is not performed.");
@@ -3074,8 +3188,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let transactionData;
     try {
       transactionData = erc20Instance.interface.encodeFunctionData("transfer", [
-        recipient,
-        ethers.utils.parseUnits(value, decimals),
+        data.recipient,
+        ethers.utils.parseUnits(data.value, decimals),
       ]);
     } catch (e) {
       console.error(e);
@@ -3096,7 +3210,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: tokenAddress,
+        to: data.tokenAddress_optimismUSDC,
         data: transactionData,
       });
     } catch (e) {
@@ -3116,7 +3230,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(pastTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.pastTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
@@ -3143,9 +3257,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        incorrectSender, // incorrect sender address
-        recipient,
-        tokenId,
+        data.incorrectSender, // incorrect sender address
+        data.recipient,
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3173,9 +3287,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        invalidSender, // invalid sender address
-        recipient,
-        tokenId,
+        data.invalidSender, // invalid sender address
+        data.recipient,
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3203,8 +3317,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        recipient, // not added sender address
-        tokenId,
+        data.recipient, // not added sender address
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3232,9 +3346,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        incorrectRecipient, // incorrect recipient address
-        tokenId,
+        data.sender,
+        data.incorrectRecipient, // incorrect recipient address
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3262,9 +3376,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        invalidRecipient, // invalid recipient address
-        tokenId,
+        data.sender,
+        data.invalidRecipient, // invalid recipient address
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3292,8 +3406,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender, // not added recipient address
-        tokenId,
+        data.sender, // not added recipient address
+        data.tokenId,
       ]);
 
       assert.fail(
@@ -3321,9 +3435,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        incorrectTokenId, // incorrect tokenid
+        data.sender,
+        data.recipient,
+        data.incorrectTokenId, // incorrect tokenid
       ]);
 
       assert.fail(
@@ -3351,8 +3465,8 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient, // not added tokenid
+        data.sender,
+        data.recipient, // not added tokenid
       ]);
 
       assert.fail(
@@ -3380,9 +3494,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        sender,
-        tokenId,
+        data.sender,
+        data.sender,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3401,7 +3515,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3440,9 +3554,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        recipient,
-        recipient,
-        tokenId,
+        data.recipient,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3461,7 +3575,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3500,9 +3614,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3556,9 +3670,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3577,7 +3691,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3597,7 +3711,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(oddInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash."
@@ -3624,9 +3738,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3645,7 +3759,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3665,7 +3779,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(evenInvalidTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash."
@@ -3692,9 +3806,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3713,7 +3827,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3733,7 +3847,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(incorrectTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash."
@@ -3760,9 +3874,9 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
       erc721Interface = new ethers.utils.Interface(abi.abi);
 
       erc721Data = erc721Interface.encodeFunctionData("transferFrom", [
-        sender,
-        recipient,
-        tokenId,
+        data.sender,
+        data.recipient,
+        data.tokenId,
       ]);
     } catch (e) {
       console.error(e);
@@ -3781,7 +3895,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     let userOpsBatch;
     try {
       userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-        to: nft_tokenAddress,
+        to: data.nft_tokenAddress,
         data: erc721Data,
       });
     } catch (e) {
@@ -3801,7 +3915,7 @@ describe("The SDK, when transfer a token with optimism network on the MainNet", 
     // get transaction hash
     try {
       console.log("Waiting for transaction...");
-      await optimismMainNetSdk.getUserOpReceipt(pastTxHash);
+      await optimismMainNetSdk.getUserOpReceipt(data.pastTxHash);
 
       assert.fail(
         "The expected validation is not displayed when added the past TxHash while getting the transaction hash."
