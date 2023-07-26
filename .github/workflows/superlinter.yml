@@ -11,14 +11,17 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Super-Linter
       uses: super-linter/super-linter@v5.2.0 
     env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DISABLE_ERRORS: true
         OUTPUT_FOLDER: Reports
         OUTPUT_DETAILS: detailed
+        IGNORE_GITIGNORED_FILES: true
+        VALIDATE_ALL_CODEBASE: true
         
         
         
