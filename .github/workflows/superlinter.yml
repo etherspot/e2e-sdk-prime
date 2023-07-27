@@ -2,9 +2,9 @@ name: Super Linter
 
 on: 
     push:
-        branches: [master, transactionFund]
+        branches: [transactionFund]
     pull_request:
-        branches: [master, transactionFund]
+        branches: [transactionFund]
 
 env:
   folder_name: 'e2e-sdk-prime'
