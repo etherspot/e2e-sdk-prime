@@ -1,6 +1,8 @@
 name: Super Linter
 
 on: 
+    push:
+        branches: [transactionFund]
     pull_request:
         branches: [transactionFund]
 
