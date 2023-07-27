@@ -308,7 +308,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
 
     // get transaction hash
     try {
-      console.log('Waiting for transaction...');
+      console.log('Waiting for transaction..');
       let txHash = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
 
       assert.isNotEmpty(
