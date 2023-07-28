@@ -14,6 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/eslint-parser": "^7.22.9",
+    "@babel/plugin-syntax-import-assertions": "^7.22.5",
     "@etherspot/contracts": "^2.0.1",
     "@etherspot/prime-sdk": "file:../etherspot-prime-sdk/dist/index.js",
     "@reactivex/rxjs": "^6.6.7",
@@ -21,9 +23,17 @@
     "chai": "^4.3.7",
     "dotenv": "^16.0.3",
     "erc-20-abi": "^1.0.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "ethers": "5.7.0",
     "mocha": "^10.2.0",
+    "prettier": "^3.0.0",
     "rxjs": "^7.8.1",
     "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0"
   }
 }
