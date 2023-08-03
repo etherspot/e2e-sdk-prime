@@ -2,6 +2,7 @@ import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
+import Helper from '../../../utils/Helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import abi from '../../../data/NFTabi.json' assert { type: 'json' };
 import * as dotenv from 'dotenv';
@@ -120,16 +121,16 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch and get the fee data for the UserOp
     let op;
     try {
-      op = await maticMainNetSdk.sign();
+      op = await maticMainNetSdk.estimate();
 
       try {
         assert.strictEqual(
           op.sender,
           data.sender,
-          'The send value is not correct in the sign transactions added to the batch response.',
+          'The sender value is not correct in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -138,7 +139,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.nonce._hex,
-          'The hex value of the nonce is empty in the sign transactions added to the batch response.',
+          'The hex value of the nonce is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -147,7 +148,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.nonce._isBigNumber,
-          'The isBigNumber value of the nonce is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the nonce is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -156,7 +157,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.initCode,
-          'The initCode value is empty in the sign transactions added to the batch response.',
+          'The initCode value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -165,7 +166,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callData,
-          'The callData value is empty in the sign transactions added to the batch response.',
+          'The callData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -174,7 +175,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callGasLimit._hex,
-          'The hex value of the callGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -183,7 +184,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.callGasLimit._isBigNumber,
-          'The isBigNumber value of the callGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -192,7 +193,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.verificationGasLimit._hex,
-          'The hex value of the verificationGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the verificationGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -201,7 +202,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.verificationGasLimit._isBigNumber,
-          'The isBigNumber value of the verificationGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the verificationGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -209,17 +210,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxFeePerGas._hex,
-          'The hex value of the maxFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxFeePerGas is false in the sign transactions added to the batch response.',
+          op.maxFeePerGas,
+          'The maxFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -227,26 +219,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxPriorityFeePerGas._hex,
-          'The hex value of the maxPriorityFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxPriorityFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxPriorityFeePerGas is false in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isNumber(
-          op.chainId,
-          'The chainId value is not number in the sign transactions added to the batch response.',
+          op.maxPriorityFeePerGas,
+          'The maxPriorityFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -255,7 +229,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.paymasterAndData,
-          'The paymasterAndData value is empty in the sign transactions added to the batch response.',
+          'The paymasterAndData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -264,7 +238,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.preVerificationGas._hex,
-          'The hex value of the preVerificationGas is empty in the sign transactions added to the batch response.',
+          'The hex value of the preVerificationGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -273,7 +247,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.preVerificationGas._isBigNumber,
-          'The isBigNumber value of the preVerificationGas is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the preVerificationGas is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -282,39 +256,236 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.signature,
-          'The signature value is empty in the sign transactions added to the batch response.',
+          'The signature value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
       }
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
+      );
     }
 
-    // sending to the bundler
+    // sign the UserOp and sending to the bundler
     let uoHash;
     try {
       uoHash = await maticMainNetSdk.send(op);
 
-      assert.isNotEmpty(
-        uoHash,
-        'The uoHash value is empty in the sending bundler response.',
-      );
+      try {
+        assert.isNotEmpty(
+          uoHash,
+          'The uoHash value is empty in the sending bundler response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
     } catch (e) {
       console.error(e);
-      assert.fail('The sending to the bundler action is not performed.');
+      assert.fail(
+        'The sign the UserOp and sending to the bundler action is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      let txHash = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      }
 
-      assert.isNotEmpty(
-        txHash,
-        'The txHash value is empty in the sending bundler response.',
-      );
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.userOpHash,
+          'The userOpHash value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.sender,
+          'The sender value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.nonce,
+          'The nonce value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasCost,
+          'The actualGasCost value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasUsed,
+          'The actualGasUsed value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.success,
+          'The success value is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.to,
+          'The to value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.from,
+          'The from value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionIndex,
+          'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.gasUsed,
+          'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logsBloom,
+          'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockHash,
+          'The blockHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionHash,
+          'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logs,
+          'The logs value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockNumber,
+          'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.confirmations,
+          'The confirmations value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.cumulativeGasUsed,
+          'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.effectiveGasPrice,
+          'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.status,
+          'The status value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.type,
+          'The type value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.receipt.byzantium,
+          'The byzantium value of the receipt is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
     } catch (e) {
       console.error(e);
       assert.fail('The get transaction hash action is not performed.');
@@ -454,16 +625,16 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch and get the fee data for the UserOp
     let op;
     try {
-      op = await maticMainNetSdk.sign();
+      op = await maticMainNetSdk.estimate();
 
       try {
         assert.strictEqual(
           op.sender,
           data.sender,
-          'The send value is not correct in the sign transactions added to the batch response.',
+          'The sender value is not correct in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -472,7 +643,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.nonce._hex,
-          'The hex value of the nonce is empty in the sign transactions added to the batch response.',
+          'The hex value of the nonce is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -481,7 +652,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.nonce._isBigNumber,
-          'The isBigNumber value of the nonce is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the nonce is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -490,7 +661,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.initCode,
-          'The initCode value is empty in the sign transactions added to the batch response.',
+          'The initCode value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -499,7 +670,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callData,
-          'The callData value is empty in the sign transactions added to the batch response.',
+          'The callData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -508,7 +679,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callGasLimit._hex,
-          'The hex value of the callGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -517,7 +688,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.callGasLimit._isBigNumber,
-          'The isBigNumber value of the callGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -526,7 +697,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.verificationGasLimit._hex,
-          'The hex value of the verificationGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the verificationGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -535,7 +706,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.verificationGasLimit._isBigNumber,
-          'The isBigNumber value of the verificationGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the verificationGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -543,17 +714,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxFeePerGas._hex,
-          'The hex value of the maxFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxFeePerGas is false in the sign transactions added to the batch response.',
+          op.maxFeePerGas,
+          'The maxFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -561,26 +723,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxPriorityFeePerGas._hex,
-          'The hex value of the maxPriorityFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxPriorityFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxPriorityFeePerGas is false in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isNumber(
-          op.chainId,
-          'The chainId value is not number in the sign transactions added to the batch response.',
+          op.maxPriorityFeePerGas,
+          'The maxPriorityFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -589,7 +733,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.paymasterAndData,
-          'The paymasterAndData value is empty in the sign transactions added to the batch response.',
+          'The paymasterAndData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -598,7 +742,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.preVerificationGas._hex,
-          'The hex value of the preVerificationGas is empty in the sign transactions added to the batch response.',
+          'The hex value of the preVerificationGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -607,7 +751,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.preVerificationGas._isBigNumber,
-          'The isBigNumber value of the preVerificationGas is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the preVerificationGas is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -616,17 +760,19 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.signature,
-          'The signature value is empty in the sign transactions added to the batch response.',
+          'The signature value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
       }
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
-    // sending to the bundler
+    // sign the UserOp and sending to the bundler
     let uoHash;
     try {
       uoHash = await maticMainNetSdk.send(op);
@@ -641,14 +787,203 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      let txHash = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      }
 
-      assert.isNotEmpty(
-        txHash,
-        'The txHash value is empty in the sending bundler response.',
-      );
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.userOpHash,
+          'The userOpHash value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.sender,
+          'The sender value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.nonce,
+          'The nonce value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasCost,
+          'The actualGasCost value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasUsed,
+          'The actualGasUsed value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.success,
+          'The success value is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.to,
+          'The to value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.from,
+          'The from value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionIndex,
+          'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.gasUsed,
+          'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logsBloom,
+          'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockHash,
+          'The blockHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionHash,
+          'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logs,
+          'The logs value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockNumber,
+          'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.confirmations,
+          'The confirmations value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.cumulativeGasUsed,
+          'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.effectiveGasPrice,
+          'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.status,
+          'The status value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.type,
+          'The type value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.receipt.byzantium,
+          'The byzantium value of the receipt is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
     } catch (e) {
       console.error(e);
       assert.fail('The get transaction hash action is not performed.');
@@ -737,16 +1072,16 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     let op;
     try {
-      op = await maticMainNetSdk.sign();
+      op = await maticMainNetSdk.estimate();
 
       try {
         assert.strictEqual(
           op.sender,
           data.sender,
-          'The send value is not correct in the sign transactions added to the batch response.',
+          'The sender value is not correct in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -755,7 +1090,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.nonce._hex,
-          'The hex value of the nonce is empty in the sign transactions added to the batch response.',
+          'The hex value of the nonce is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -764,7 +1099,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.nonce._isBigNumber,
-          'The isBigNumber value of the nonce is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the nonce is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -773,7 +1108,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.initCode,
-          'The initCode value is empty in the sign transactions added to the batch response.',
+          'The initCode value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -782,7 +1117,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callData,
-          'The callData value is empty in the sign transactions added to the batch response.',
+          'The callData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -791,7 +1126,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.callGasLimit._hex,
-          'The hex value of the callGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -800,7 +1135,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.callGasLimit._isBigNumber,
-          'The isBigNumber value of the callGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -809,7 +1144,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.verificationGasLimit._hex,
-          'The hex value of the verificationGasLimit is empty in the sign transactions added to the batch response.',
+          'The hex value of the verificationGasLimit is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -818,7 +1153,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.verificationGasLimit._isBigNumber,
-          'The isBigNumber value of the verificationGasLimit is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the verificationGasLimit is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -826,17 +1161,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxFeePerGas._hex,
-          'The hex value of the maxFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxFeePerGas is false in the sign transactions added to the batch response.',
+          op.maxFeePerGas,
+          'The maxFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -844,17 +1170,8 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
 
       try {
         assert.isNotEmpty(
-          op.maxPriorityFeePerGas._hex,
-          'The hex value of the maxPriorityFeePerGas is empty in the sign transactions added to the batch response.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-
-      try {
-        assert.isTrue(
-          op.maxPriorityFeePerGas._isBigNumber,
-          'The isBigNumber value of the maxPriorityFeePerGas is false in the sign transactions added to the batch response.',
+          op.maxPriorityFeePerGas,
+          'The maxPriorityFeePerGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -863,7 +1180,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.paymasterAndData,
-          'The paymasterAndData value is empty in the sign transactions added to the batch response.',
+          'The paymasterAndData value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -872,7 +1189,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.preVerificationGas._hex,
-          'The hex value of the preVerificationGas is empty in the sign transactions added to the batch response.',
+          'The hex value of the preVerificationGas is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -881,7 +1198,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isTrue(
           op.preVerificationGas._isBigNumber,
-          'The isBigNumber value of the preVerificationGas is false in the sign transactions added to the batch response.',
+          'The isBigNumber value of the preVerificationGas is false in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
@@ -890,14 +1207,16 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       try {
         assert.isNotEmpty(
           op.signature,
-          'The signature value is empty in the sign transactions added to the batch response.',
+          'The signature value is empty in the estimate transactions added to the batch response.',
         );
       } catch (e) {
         console.error(e);
       }
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // sending to the bundler
@@ -915,21 +1234,210 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      let txHash = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+      }
 
-      assert.isNotEmpty(
-        txHash,
-        'The txHash value is empty in the sending bundler response.',
-      );
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.userOpHash,
+          'The userOpHash value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.sender,
+          'The sender value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.nonce,
+          'The nonce value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasCost,
+          'The actualGasCost value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.actualGasUsed,
+          'The actualGasUsed value is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.success,
+          'The success value is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.to,
+          'The to value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.from,
+          'The from value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionIndex,
+          'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.gasUsed,
+          'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logsBloom,
+          'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockHash,
+          'The blockHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.transactionHash,
+          'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.logs,
+          'The logs value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.blockNumber,
+          'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.confirmations,
+          'The confirmations value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.cumulativeGasUsed,
+          'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.effectiveGasPrice,
+          'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.status,
+          'The status value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isNotEmpty(
+          userOpsReceipt.receipt.type,
+          'The type value of the receipt is empty in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        assert.isTrue(
+          userOpsReceipt.receipt.byzantium,
+          'The byzantium value of the receipt is false in the get transaction hash response.',
+        );
+      } catch (e) {
+        console.error(e);
+      }
     } catch (e) {
       console.error(e);
       assert.fail('The get transaction hash action is not performed.');
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect To Address while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -956,29 +1464,29 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the incorrect To Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('bad address checksum')) {
         console.log(
-          'The validation for To Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for To Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the incorrect To Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1005,29 +1513,29 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the invalid To Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('invalid address')) {
         console.log(
-          'The validation for To Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for To Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the invalid To Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1054,29 +1562,29 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the invalid recipient while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the invalid recipient while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('invalid address')) {
         console.log(
-          'The validation for Recipient is displayed as expected while sign the added transactions to the batch.',
+          'The validation for Recipient is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the invalid recipient while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the invalid recipient while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid Value while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1108,7 +1616,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the very small Value while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1140,7 +1648,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the exceeded Value while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token with the exceeded Value while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1167,29 +1675,29 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
       );
     } catch (e) {
       console.log(e);
       if (e.reason === 'Transaction reverted') {
         console.log(
-          'The validation for value is displayed as expected while sign the added transactions to the batch.',
+          'The validation for value is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1206,80 +1714,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
+        'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
       );
     } catch (e) {
       if (e.message === 'cannot sign empty transaction batch') {
         console.log(
-          'The validation for transaction batch is displayed as expected while adding the sign transactions to the batch.',
+          'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
-        );
-      }
-    }
-  });
-
-  it('REGRESSION: Perform the transfer native token with the invalid TxHash i.e. odd number while getting the transaction hash on the matic network', async () => {
-    // clear the transaction batch
-    try {
-      await maticMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await maticMainNetSdk.addUserOpsToBatch({
-        to: data.recipient,
-        value: ethers.utils.parseEther(data.value),
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The addition of transaction in the batch is not performed.');
-    }
-
-    // get balance of the account address
-    try {
-      await maticMainNetSdk.getNativeBalance();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The balance of the native token is not displayed.');
-    }
-
-    // sign transactions added to the batch
-    try {
-      await maticMainNetSdk.sign();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
-    }
-
-    // get transaction hash
-    try {
-      console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.reason === 'hex data is odd-length') {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
+          'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
         );
       }
     }
@@ -1313,18 +1763,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.evenInvalidTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
@@ -1371,18 +1830,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.incorrectTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
@@ -1429,18 +1897,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the native token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.pastTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.pastTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
@@ -1582,7 +2059,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
         'The expected validation is not displayed when entered the other Provider Network while Getting the Decimal from ERC20 Contract.',
       );
     } catch (e) {
-      if (e.code === 'CALL_EXCEPTION') {
+      if (e.reason === 'could not detect network') {
         console.log(
           'The validation for Provider Network is displayed as expected while Getting the Decimal from ERC20 Contract.',
         );
@@ -1949,22 +2426,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       );
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
       );
     } catch (e) {
       if (e.reason === 'Transaction reverted') {
         console.log(
-          'The validation for value is displayed as expected while sign the added transactions to the batch.',
+          'The validation for value is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the exceeded value while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
         );
       }
     }
@@ -2337,22 +2814,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
       assert.fail(
-        'The expected validation is not displayed when entered the incorrect Token Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the incorrect Token Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('bad address checksum')) {
         console.log(
-          'The validation for Token Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for Token Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the incorrect Token Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the incorrect Token Address while estimate the added transactions to the batch.',
         );
       }
     }
@@ -2427,22 +2904,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
       assert.fail(
-        'The expected validation is not displayed when entered the invalid Token Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the invalid Token Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('invalid address')) {
         console.log(
-          'The validation for Token Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for Token Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the invalid Token Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the invalid Token Address while estimate the added transactions to the batch.',
         );
       }
     }
@@ -2517,22 +2994,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when entered the null Token Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the null Token Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       if (e.reason.includes('invalid address')) {
         console.log(
-          'The validation for Token Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for Token Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the null Token Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the null Token Address while estimate the added transactions to the batch.',
         );
       }
     }
@@ -2606,22 +3083,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when not entered the Token Address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when not entered the Token Address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       if (e.reason.includes('invalid address')) {
         console.log(
-          'The validation for Token Address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for Token Address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when not entered the Token Address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when not entered the Token Address while estimate the added transactions to the batch.',
         );
       }
     }
@@ -2694,28 +3171,28 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when not entered the transactionData while sign the added transactions to the batch.',
+        'The expected validation is not displayed when not entered the transactionData while estimate the added transactions to the batch.',
       );
     } catch (e) {
       if (e.reason === 'bad response') {
         console.log(
-          'The validation for transactionData is displayed as expected while sign the added transactions to the batch.',
+          'The validation for transactionData is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when not entered the transactionData while sign the added transactions to the batch.',
+          'The expected validation is not displayed when not entered the transactionData while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the matic network', async () => {
     // get the respective provider details
     let provider;
     try {
@@ -2772,121 +3249,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
+        'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
       );
     } catch (e) {
       if (e.message === 'cannot sign empty transaction batch') {
         console.log(
-          'The validation for transaction batch is displayed as expected while adding the sign transactions to the batch.',
+          'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
-        );
-      }
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. odd number while getting the transaction hash on the matic network', async () => {
-    // get the respective provider details
-    let provider;
-    try {
-      provider = new ethers.providers.JsonRpcProvider(
-        data.providerNetwork_matic,
-      );
-    } catch (e) {
-      console.error(e);
-      assert.fail('The provider response is not displayed correctly.');
-    }
-
-    // get erc20 Contract Interface
-    let erc20Instance;
-    try {
-      erc20Instance = new ethers.Contract(
-        data.tokenAddress_maticUSDC,
-        ERC20_ABI,
-        provider,
-      );
-    } catch (e) {
-      console.error(e);
-      assert.fail('The get erc20 Contract Interface is not performed.');
-    }
-
-    // get decimals from erc20 contract
-    let decimals;
-    try {
-      decimals = await erc20Instance.functions.decimals();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The decimals from erc20 contract is not displayed correctly.',
-      );
-    }
-
-    // get transferFrom encoded data
-    let transactionData;
-    try {
-      transactionData = erc20Instance.interface.encodeFunctionData('transfer', [
-        data.recipient,
-        ethers.utils.parseUnits(data.value, decimals),
-      ]);
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The decimals from erc20 contract is not displayed correctly.',
-      );
-    }
-
-    // clear the transaction batch
-    try {
-      await maticMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await maticMainNetSdk.addUserOpsToBatch({
-        to: data.tokenAddress_maticUSDC,
-        data: transactionData,
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // sign transactions added to the batch
-    try {
-      await maticMainNetSdk.sign();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
-    }
-
-    // get transaction hash
-    try {
-      console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.reason === 'hex data is odd-length') {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
+          'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
         );
       }
     }
@@ -2961,18 +3339,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.evenInvalidTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
@@ -3060,18 +3447,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.incorrectTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
@@ -3159,18 +3555,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.pastTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.pastTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
@@ -3454,23 +3859,34 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
+    let op;
     try {
-      await maticMainNetSdk.sign();
+      op = await maticMainNetSdk.estimate();
+    } catch (e) {
+      console.error(e);
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
+    }
+
+    // sending to the bundler
+    try {
+      await maticMainNetSdk.send(op);
 
       assert.fail(
-        'The expected validation is not displayed when entered the same sender address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the same sender address while estimate the added transactions to the batch.',
       );
     } catch (e) {
       let error = e.reason;
       if (error.includes('invalid address')) {
         console.log(
-          'The validation for sender address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for sender address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the same sender address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the same sender address while estimate the added transactions to the batch.',
         );
       }
     }
@@ -3512,29 +3928,41 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
+    let op;
     try {
-      await maticMainNetSdk.sign();
+      op = await maticMainNetSdk.estimate();
+    } catch (e) {
+      console.error(e);
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
+    }
+
+    // sending to the bundler
+    try {
+      await maticMainNetSdk.send(op);
 
       assert.fail(
-        'The expected validation is not displayed when entered the same recipient address while sign the added transactions to the batch.',
+        'The expected validation is not displayed when entered the same recipient address while estimate the added transactions to the batch.',
       );
     } catch (e) {
+      console.error(e);
       let error = e.reason;
       if (error.includes('invalid address')) {
         console.log(
-          'The validation for recipient address is displayed as expected while sign the added transactions to the batch.',
+          'The validation for recipient address is displayed as expected while estimate the added transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when entered the same recipient address while sign the added transactions to the batch.',
+          'The expected validation is not displayed when entered the same recipient address while estimate the added transactions to the batch.',
         );
       }
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while sign the added transactions to the batch on the matic network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the matic network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3566,88 +3994,22 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The balance of the ERC721 NFT Token is not displayed.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
 
       assert.fail(
-        'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
+        'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
       );
     } catch (e) {
       if (e.message === 'cannot sign empty transaction batch') {
         console.log(
-          'The validation for transaction batch is displayed as expected while adding the sign transactions to the batch.',
+          'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
         );
       } else {
         console.error(e);
         assert.fail(
-          'The expected validation is not displayed when not added the transaction to the batch while adding the sign transactions to the batch.',
-        );
-      }
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. odd number while getting the transaction hash on the matic network', async () => {
-    // get erc721 Contract Interface
-    let erc721Interface;
-    let erc721Data;
-    try {
-      erc721Interface = new ethers.utils.Interface(abi.abi);
-
-      erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-        data.sender,
-        data.recipient,
-        data.tokenId,
-      ]);
-    } catch (e) {
-      console.error(e);
-      assert.fail('The get erc721 Contract Interface is not performed.');
-    }
-
-    // clear the transaction batch
-    try {
-      await maticMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await maticMainNetSdk.addUserOpsToBatch({
-        to: data.nft_tokenAddress,
-        data: erc721Data,
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // sign transactions added to the batch
-    try {
-      await maticMainNetSdk.sign();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
-    }
-
-    // get transaction hash
-    try {
-      console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.oddInvalidTxHash);
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.reason === 'hex data is odd-length') {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
+          'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
         );
       }
     }
@@ -3689,18 +4051,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.evenInvalidTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.evenInvalidTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
@@ -3755,18 +4126,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.incorrectTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.incorrectTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
@@ -3821,18 +4201,27 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       assert.fail('The transaction of the batch is not clear correctly.');
     }
 
-    // sign transactions added to the batch
+    // estimate transactions added to the batch
     try {
-      await maticMainNetSdk.sign();
+      await maticMainNetSdk.estimate();
     } catch (e) {
       console.error(e);
-      assert.fail('The sign transactions added to the batch is not performed.');
+      assert.fail(
+        'The estimate transactions added to the batch is not performed.',
+      );
     }
 
     // get transaction hash
+    let userOpsReceipt = null;
     try {
       console.log('Waiting for transaction...');
-      await maticMainNetSdk.getUserOpReceipt(data.pastTxHash);
+      const timeout = Date.now() + 60000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        Helper.wait(2000);
+        userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
+          data.pastTxHash,
+        );
+      }
 
       assert.fail(
         'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
