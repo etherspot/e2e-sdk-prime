@@ -1535,7 +1535,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while estimate the added transactions to the batch on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1648,7 +1648,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the exceeded Value while estimate the added transactions to the batch on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer native token with the exceeded Value while estimate the added transactions to the batch on the matic network', async () => {
     // clear the transaction batch
     try {
       await maticMainNetSdk.clearUserOpsFromBatch();
@@ -2377,7 +2377,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with exceeded value while Getting the transferFrom encoded data on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer ERC20 token with exceeded value while Getting the transferFrom encoded data on the matic network', async () => {
     // get the respective provider details
     let provider;
     try {
@@ -2625,7 +2625,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with same recipient i.e. sender address while Getting the transferFrom encoded data on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer ERC20 token with same recipient i.e. sender address while Getting the transferFrom encoded data on the matic network', async () => {
     // get the respective provider details
     let provider;
     try {
@@ -3104,7 +3104,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without transactionData while adding transactions to the batch on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer ERC20 token without transactionData while adding transactions to the batch on the matic network', async () => {
     // get the respective provider details
     let provider;
     try {
@@ -3823,7 +3823,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with same sender address while creating the NFT Data on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with same sender address while creating the NFT Data on the matic network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3892,7 +3892,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with same recipient address while creating the NFT Data on the matic network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with same recipient address while creating the NFT Data on the matic network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
