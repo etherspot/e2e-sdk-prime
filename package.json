@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha --timeout 600000",
-    "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/*/*.js",
+    "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Arbitrum.spec.js --spec test/specs/mainnet/01_TransferringFunds/Matic.spec.js",
     "test-mainnet-transfertoken-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Arbitrum.spec.js",
     "test-mainnet-transfertoken-matic": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Matic.spec.js",
     "test-mainnet-transfertoken-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Optimism.spec.js"
