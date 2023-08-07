@@ -294,7 +294,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
       }
 
@@ -792,7 +792,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
       }
 
@@ -1239,7 +1239,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
       }
 
@@ -1779,7 +1779,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.evenInvalidTxHash,
         );
@@ -1846,7 +1846,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.incorrectTxHash,
         );
@@ -1913,7 +1913,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.pastTxHash,
         );
@@ -3355,7 +3355,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.evenInvalidTxHash,
         );
@@ -3463,7 +3463,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.incorrectTxHash,
         );
@@ -3571,7 +3571,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.pastTxHash,
         );
@@ -4067,7 +4067,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.evenInvalidTxHash,
         );
@@ -4142,7 +4142,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.incorrectTxHash,
         );
@@ -4217,7 +4217,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
       console.log('Waiting for transaction...');
       const timeout = Date.now() + 60000; // 1 minute timeout
       while (userOpsReceipt == null && Date.now() < timeout) {
-        Helper.wait(2000);
+        await Helper.wait(2000);
         userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(
           data.pastTxHash,
         );
