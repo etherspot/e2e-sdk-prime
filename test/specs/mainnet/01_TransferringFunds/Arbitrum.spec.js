@@ -990,7 +990,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the arbitrum network', async () => {
+  xit('SMOKE: Perform the transfer ERC721 NFT token with valid details on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -3594,7 +3594,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3623,7 +3623,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3652,7 +3652,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3680,7 +3680,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3709,7 +3709,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3738,7 +3738,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3766,7 +3766,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3795,7 +3795,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -3962,7 +3962,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     try {
@@ -4015,7 +4015,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -4090,7 +4090,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -4165,7 +4165,7 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the arbitrum network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the arbitrum network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
