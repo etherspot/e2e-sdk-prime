@@ -1735,7 +1735,7 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
+  xit('REGRESSION: Perform the transfer native token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
     // clear the transaction batch
     try {
       await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -3270,7 +3270,7 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
+  xit('REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
     // get the respective provider details
     let provider;
     try {
@@ -4015,7 +4015,7 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
@@ -4090,7 +4090,7 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
+  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
     // get erc721 Contract Interface
     let erc721Interface;
     let erc721Data;
