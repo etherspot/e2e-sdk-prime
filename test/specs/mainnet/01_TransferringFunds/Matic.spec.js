@@ -2059,7 +2059,7 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
         'The expected validation is not displayed when entered the other Provider Network while Getting the Decimal from ERC20 Contract.',
       );
     } catch (e) {
-      if (e.reason === 'could not detect network') {
+      if (e.code === 'CALL_EXCEPTION') {
         console.log(
           'The validation for Provider Network is displayed as expected while Getting the Decimal from ERC20 Contract.',
         );
