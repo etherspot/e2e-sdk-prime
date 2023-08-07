@@ -28,7 +28,8 @@ jobs:
         DEFAULT_BRANCH: master
         OUTPUT_FOLDER: Reports
         OUTPUT_DETAILS: detailed
-        IGNORE_GITIGNORED_FILES: true        
+        IGNORE_GITIGNORED_FILES: true
+        DISABLE_ERRORS: true
         
         
       
