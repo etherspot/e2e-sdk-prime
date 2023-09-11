@@ -15,9 +15,13 @@ describe('The SDK, when transfer a token with arbitrum network on the MainNet', 
   beforeEach(async () => {
     // initializating sdk
     try {
-      arbitrumMainNetSdk = new PrimeSdk(process.env.PRIVATE_KEY, {
-        chainId: Number(process.env.ARBITRUM_CHAINID),
-      });
+      arbitrumMainNetSdk = new PrimeSdk(
+        { privateKey: process.env.PRIVATE_KEY },
+        {
+          chainId: Number(process.env.ARBITRUM_CHAINID),
+          projectKey: process.env.PROJECT_KEY,
+        },
+      );
 
       try {
         assert.strictEqual(

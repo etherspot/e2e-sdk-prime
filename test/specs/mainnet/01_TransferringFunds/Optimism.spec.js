@@ -15,9 +15,13 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
   beforeEach(async () => {
     // initializating sdk
     try {
-      optimismMainNetSdk = new PrimeSdk(process.env.PRIVATE_KEY, {
-        chainId: Number(process.env.OPTIMISM_CHAINID),
-      });
+      optimismMainNetSdk = new PrimeSdk(
+        { privateKey: process.env.PRIVATE_KEY },
+        {
+          chainId: Number(process.env.OPTIMISM_CHAINID),
+          projectKey: process.env.PROJECT_KEY,
+        },
+      );
 
       try {
         assert.strictEqual(

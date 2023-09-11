@@ -15,9 +15,13 @@ describe('The SDK, when transfer a token with matic network on the MainNet', () 
   beforeEach(async () => {
     // initializating sdk
     try {
-      maticMainNetSdk = new PrimeSdk(process.env.PRIVATE_KEY, {
-        chainId: Number(process.env.POLYGON_CHAINID),
-      });
+      maticMainNetSdk = new PrimeSdk(
+        { privateKey: process.env.PRIVATE_KEY },
+        {
+          chainId: Number(process.env.POLYGON_CHAINID),
+          projectKey: process.env.PROJECT_KEY,
+        },
+      );
 
       try {
         assert.strictEqual(
