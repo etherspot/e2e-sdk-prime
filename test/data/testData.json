@@ -34,5 +34,13 @@
   "invalidTokenAddress_optimismUSDC": "0x7F5c764cBc14f9669B88837ca1490cCa17c3160",
   "providerNetwork_optimism": "https://optimism-bundler.etherspot.io",
   "invalidProviderNetwork_optimism": "http://optimism-bundler.etherspot.io",
-  "otherProviderNetwork_optimism": "https://polygon-bundler.etherspot.io"
+  "otherProviderNetwork_optimism": "https://polygon-bundler.etherspot.io",
+  "incorrect_hash": "0x3df9fe91b29f4b2bf1b148baf2f9E207e98137F8318ccf39eDc930d1ceA551df",
+  "invalid_hash": "0x3df9fe91b29f4b2bf1b148baf2f9E207e98137F8z18ccf39eDc930d1ceA551df",
+  "arbitrum_chainid": 42161,
+  "matic_chainid": 10,
+  "optimism_chainid": 137,
+  "invalid_arbitrum_chainid": 42656,
+  "invalid_matic_chainid": 19,
+  "invalid_optimism_chainid": 158
 }
