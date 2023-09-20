@@ -11,13 +11,20 @@ dotenv.config(); // init dotenv
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
 
-describe('The SDK, when transfer a token with optimism network on the MainNet', () => {
+describe('The PrimeSDK, when transfer a token with optimism network on the MainNet', () => {
   beforeEach(async () => {
+    // wait for the 2 mins
+    Helper.wait(2000);
+
     // initializating sdk
     try {
-      optimismMainNetSdk = new PrimeSdk(process.env.PRIVATE_KEY, {
-        chainId: Number(process.env.OPTIMISM_CHAINID),
-      });
+      optimismMainNetSdk = new PrimeSdk(
+        { privateKey: process.env.PRIVATE_KEY },
+        {
+          chainId: Number(process.env.OPTIMISM_CHAINID),
+          projectKey: process.env.PROJECT_KEY,
+        },
+      );
 
       try {
         assert.strictEqual(
@@ -1253,8 +1260,9 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
       }
 
       try {
-        assert.isNotEmpty(
+        assert.strictEqual(
           userOpsReceipt.sender,
+          data.sender,
           'The sender value is empty in the get transaction hash response.',
         );
       } catch (e) {
@@ -1730,73 +1738,6 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
         console.error(e);
         assert.fail(
           'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
-        );
-      }
-    }
-  });
-
-  xit('REGRESSION: Perform the transfer native token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
-    // clear the transaction batch
-    try {
-      await optimismMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await optimismMainNetSdk.addUserOpsToBatch({
-        to: data.recipient,
-        value: ethers.utils.parseEther(data.value),
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The addition of transaction in the batch is not performed.');
-    }
-
-    // get balance of the account address
-    try {
-      await optimismMainNetSdk.getNativeBalance();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The balance of the native token is not displayed.');
-    }
-
-    // estimate transactions added to the batch
-    try {
-      await optimismMainNetSdk.estimate();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The estimate transactions added to the batch is not performed.',
-      );
-    }
-
-    // get transaction hash
-    let userOpsReceipt = null;
-    try {
-      console.log('Waiting for transaction...');
-      const timeout = Date.now() + 60000; // 1 minute timeout
-      while (userOpsReceipt == null && Date.now() < timeout) {
-        await Helper.wait(2000);
-        userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
-          data.evenInvalidTxHash,
-        );
-      }
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.showDiff === false) {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
         );
       }
     }
@@ -3270,114 +3211,6 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
     }
   });
 
-  xit('REGRESSION: Perform the transfer ERC20 token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
-    // get the respective provider details
-    let provider;
-    try {
-      provider = new ethers.providers.JsonRpcProvider(
-        data.providerNetwork_optimism,
-      );
-    } catch (e) {
-      console.error(e);
-      assert.fail('The provider response is not displayed correctly.');
-    }
-
-    // get erc20 Contract Interface
-    let erc20Instance;
-    try {
-      erc20Instance = new ethers.Contract(
-        data.tokenAddress_optimismUSDC,
-        ERC20_ABI,
-        provider,
-      );
-    } catch (e) {
-      console.error(e);
-      assert.fail('The get erc20 Contract Interface is not performed.');
-    }
-
-    // get decimals from erc20 contract
-    let decimals;
-    try {
-      decimals = await erc20Instance.functions.decimals();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The decimals from erc20 contract is not displayed correctly.',
-      );
-    }
-
-    // get transferFrom encoded data
-    let transactionData;
-    try {
-      transactionData = erc20Instance.interface.encodeFunctionData('transfer', [
-        data.recipient,
-        ethers.utils.parseUnits(data.value, decimals),
-      ]);
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The decimals from erc20 contract is not displayed correctly.',
-      );
-    }
-
-    // clear the transaction batch
-    try {
-      await optimismMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await optimismMainNetSdk.addUserOpsToBatch({
-        to: data.tokenAddress_optimismUSDC,
-        data: transactionData,
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // estimate transactions added to the batch
-    try {
-      await optimismMainNetSdk.estimate();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The estimate transactions added to the batch is not performed.',
-      );
-    }
-
-    // get transaction hash
-    let userOpsReceipt = null;
-    try {
-      console.log('Waiting for transaction...');
-      const timeout = Date.now() + 60000; // 1 minute timeout
-      while (userOpsReceipt == null && Date.now() < timeout) {
-        await Helper.wait(2000);
-        userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
-          data.evenInvalidTxHash,
-        );
-      }
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.showDiff === false) {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
-        );
-      }
-    }
-  });
-
   it('REGRESSION: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
     // get the respective provider details
     let provider;
@@ -4010,81 +3843,6 @@ describe('The SDK, when transfer a token with optimism network on the MainNet', 
         console.error(e);
         assert.fail(
           'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
-        );
-      }
-    }
-  });
-
-  xit('REGRESSION: Perform the transfer ERC721 NFT Token with the invalid TxHash i.e. even number while getting the transaction hash on the optimism network', async () => {
-    // get erc721 Contract Interface
-    let erc721Interface;
-    let erc721Data;
-    try {
-      erc721Interface = new ethers.utils.Interface(abi.abi);
-
-      erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-        data.sender,
-        data.recipient,
-        data.tokenId,
-      ]);
-    } catch (e) {
-      console.error(e);
-      assert.fail('The get erc721 Contract Interface is not performed.');
-    }
-
-    // clear the transaction batch
-    try {
-      await optimismMainNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await optimismMainNetSdk.addUserOpsToBatch({
-        to: data.nft_tokenAddress,
-        data: erc721Data,
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // estimate transactions added to the batch
-    try {
-      await optimismMainNetSdk.estimate();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The estimate transactions added to the batch is not performed.',
-      );
-    }
-
-    // get transaction hash
-    let userOpsReceipt = null;
-    try {
-      console.log('Waiting for transaction...');
-      const timeout = Date.now() + 60000; // 1 minute timeout
-      while (userOpsReceipt == null && Date.now() < timeout) {
-        await Helper.wait(2000);
-        userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
-          data.evenInvalidTxHash,
-        );
-      }
-
-      assert.fail(
-        'The expected validation is not displayed when added the invalid TxHash i.e. even number while getting the transaction hash.',
-      );
-    } catch (e) {
-      if (e.showDiff === false) {
-        console.log(
-          'The validation for transaction is displayed as expected while getting the transaction hash.',
-        );
-      } else {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when added the invalid TxHash i.e. odd number while getting the transaction hash.',
         );
       }
     }
