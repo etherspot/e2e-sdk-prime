@@ -1,4 +1,7 @@
 {
+  "shortTimeout": 1000,
+  "mediumTimeout": 3000,
+  "longTimeout": 10000,
   "eoaAddress": "0xa5494Ed2eB09F37b4b0526a8e4789565c226C84f",
   "sender": "0xE05FB316eB8C4ba7288D43c1bd87BE8a8d16761C",
   "incorrectSender": "0xF00FB316eB8C44a7288D43c11d87BE8a8dD6761C",
@@ -28,7 +31,7 @@
   "invalidTokenAddress_maticUSDC": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa8417",
   "providerNetwork_matic": "https://polygon-bundler.etherspot.io",
   "invalidProviderNetwork_matic": "http://polygon-bundler.etherspot.io",
-  "otherProviderNetwork_matic": "https://matic-bundler.etherspot.io",
+  "otherProviderNetwork_matic": "https://arbitrum-bundler.etherspot.io",
   "tokenAddress_optimismUSDC": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
   "incorrectTokenAddress_optimismUSDC": "0x7FFc764cBcc4f9669b888A7c11490cCa17c31600",
   "invalidTokenAddress_optimismUSDC": "0x7F5c764cBc14f9669B88837ca1490cCa17c3160",
@@ -42,5 +45,19 @@
   "optimism_chainid": 137,
   "invalid_arbitrum_chainid": 42656,
   "invalid_matic_chainid": 19,
-  "invalid_optimism_chainid": 158
+  "invalid_optimism_chainid": 158,
+  "minimum_token_balance": 0.0001,
+  "minimum_native_balance": 0.0001,
+  "arbitrumUsdcAddress": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+  "invalid_arbitrumUsdcAddress": "0xFe970C61A04b1cA11834A43f5dE4433eBDDB5CC8",
+  "arbitrumUsdtAddress": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+  "invalid_arbitrumUsdtAddress": "0xFD006bC7CDcC481DCC9Cc5ebE478A110b69Ffbb9",
+  "maticUsdcAddress": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+  "invalid_maticUsdcAddress": "0x28a1Bca1f22e4661Ee88A30C9997a9449Aa84474",
+  "maticUsdtAddress": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+  "invalid_maticUsdtAddress": "0xcE112D05D31cd14a87Cc611C10788AEb04458e8F",
+  "optimismUsdcAddress": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+  "invalid_optimismUsdcAddress": "0x7755764cBc1cf9669B88b37ca14a0cCa17c33607",
+  "optimismUsdtAddress": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
+  "invalid_optimismUsdtAddress": "0x99b000aA00579c4307B0EF2cc99aD98a8cc58e58"
 }
