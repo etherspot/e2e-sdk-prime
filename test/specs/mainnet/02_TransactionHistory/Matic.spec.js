@@ -91,7 +91,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('SMOKE: Validate the transaction history of the native token transaction on the matic network', async () => {
+  it('SMOKE: Validate the transaction history of the native token transaction on the matic network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
@@ -158,17 +158,19 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         assert.fail('The get transaction hash action is not performed.');
       }
 
+      // ADDED FEW COMMENTS IN BELOW CODE DUE TO REMOVED GETTRANSACTIONS ENDPOINT IN 1.2.8 RELEASE
+
       // get single transaction history details
       let transactionHash;
       let singleTransaction;
-      let blockNumber_singleTransaction;
-      let from_singleTransaction;
-      let gasLimit_singleTransaction;
-      let gasPrice_singleTransaction;
-      let gasUsed_singleTransaction;
-      let hash_singleTransaction;
-      let status_singleTransaction;
-      let blockExplorerUrl_singleTransaction;
+      // let blockNumber_singleTransaction;
+      // let from_singleTransaction;
+      // let gasLimit_singleTransaction;
+      // let gasPrice_singleTransaction;
+      // let gasUsed_singleTransaction;
+      // let hash_singleTransaction;
+      // let status_singleTransaction;
+      // let blockExplorerUrl_singleTransaction;
       try {
         transactionHash = userOpsReceipt.recipient.transactionHash;
         singleTransaction = await maticMainNetSdk.getTransaction({
@@ -189,7 +191,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             singleTransaction.blockNumber,
             'The blockNumber value is not number in the transaction details response.',
           );
-          blockNumber_singleTransaction = singleTransaction.blockNumber;
+          // blockNumber_singleTransaction = singleTransaction.blockNumber;
         } catch (e) {
           console.error(e);
         }
@@ -200,7 +202,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             data.sender,
             'The from address value is not correct in the transaction details response.',
           );
-          from_singleTransaction = singleTransaction.from;
+          // from_singleTransaction = singleTransaction.from;
         } catch (e) {
           console.error(e);
         }
@@ -210,7 +212,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             singleTransaction.gasLimit,
             'The gasLimit value is not number in the transaction details response.',
           );
-          gasLimit_singleTransaction = singleTransaction.gasLimit;
+          // gasLimit_singleTransaction = singleTransaction.gasLimit;
         } catch (e) {
           console.error(e);
         }
@@ -220,7 +222,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             singleTransaction.gasPrice,
             'The gasPrice value is empty in the transaction details response.',
           );
-          gasPrice_singleTransaction = singleTransaction.gasPrice;
+          // gasPrice_singleTransaction = singleTransaction.gasPrice;
         } catch (e) {
           console.error(e);
         }
@@ -230,7 +232,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             singleTransaction.gasUsed,
             'The gasUsed value is not number in the transaction details response.',
           );
-          gasUsed_singleTransaction = singleTransaction.gasUsed;
+          // gasUsed_singleTransaction = singleTransaction.gasUsed;
         } catch (e) {
           console.error(e);
         }
@@ -240,7 +242,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             singleTransaction.hash,
             'The hash value is empty in the transaction details response.',
           );
-          hash_singleTransaction = singleTransaction.hash;
+          // hash_singleTransaction = singleTransaction.hash;
         } catch (e) {
           console.error(e);
         }
@@ -342,7 +344,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'The status value is not correct in the transaction details response.',
           );
 
-          status_singleTransaction = singleTransaction.status;
+          // status_singleTransaction = singleTransaction.status;
         } catch (e) {
           console.error(e);
         }
@@ -380,8 +382,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'The blockExplorerUrl value is empty in the transaction details response.',
           );
 
-          blockExplorerUrl_singleTransaction =
-            singleTransaction.blockExplorerUrl;
+          // blockExplorerUrl_singleTransaction =
+          //   singleTransaction.blockExplorerUrl;
         } catch (e) {
           console.error(e);
         }
@@ -390,327 +392,329 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         assert.fail('The get transaction details is not performed.');
       }
 
-      // get transactions history
-      let transactions;
-      let blockNumber_transactions;
-      let from_transactions;
-      let gasLimit_transactions;
-      let gasPrice_transactions;
-      let gasUsed_transactions;
-      let hash_transactions;
-      let status_transactions;
-      let blockExplorerUrl_transactions;
-      try {
-        transactions = await maticMainNetSdk.getTransactions({
-          chainId: Number(process.env.POLYGON_CHAINID),
-          account: data.sender,
-        });
+      // REMOVED GETTRANSACTIONS ENDPOINT IN 1.2.8 RELEASE
 
-        for (let x = 0; x < transactions.items.length; x++) {
-          blockNumber_transactions = transactions.items[x].blockNumber;
+      // // get transactions history
+      // let transactions;
+      // let blockNumber_transactions;
+      // let from_transactions;
+      // let gasLimit_transactions;
+      // let gasPrice_transactions;
+      // let gasUsed_transactions;
+      // let hash_transactions;
+      // let status_transactions;
+      // let blockExplorerUrl_transactions;
+      // try {
+      //   transactions = await maticMainNetSdk.getTransactions({
+      //     chainId: Number(process.env.POLYGON_CHAINID),
+      //     account: data.sender,
+      //   });
 
-          if (blockNumber_singleTransaction == blockNumber_transactions) {
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].blockHash,
-                'The blockHash value is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //   for (let x = 0; x < transactions.items.length; x++) {
+      //     blockNumber_transactions = transactions.items[x].blockNumber;
 
-            try {
-              assert.isNumber(
-                transactions.items[x].blockNumber,
-                'The blockNumber value is not number in the transaction details response.',
-              );
-              blockNumber_transactions = transactions.items[x].blockNumber;
-            } catch (e) {
-              console.error(e);
-            }
+      //     if (blockNumber_singleTransaction == blockNumber_transactions) {
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].blockHash,
+      //           'The blockHash value is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.strictEqual(
-                blockNumber_singleTransaction,
-                blockNumber_transactions,
-                'The blockNumber of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].blockNumber,
+      //           'The blockNumber value is not number in the transaction details response.',
+      //         );
+      //         blockNumber_transactions = transactions.items[x].blockNumber;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.strictEqual(
-                transactions.items[x].from,
-                data.sender,
-                'The from address value is not correct in the transaction details response.',
-              );
-              from_transactions = transactions.items[x].from;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.strictEqual(
+      //           blockNumber_singleTransaction,
+      //           blockNumber_transactions,
+      //           'The blockNumber of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.strictEqual(
-                from_singleTransaction,
-                from_transactions,
-                'The from address of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.strictEqual(
+      //           transactions.items[x].from,
+      //           data.sender,
+      //           'The from address value is not correct in the transaction details response.',
+      //         );
+      //         from_transactions = transactions.items[x].from;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].gasLimit,
-                'The gasLimit value is not number in the transaction details response.',
-              );
+      //       try {
+      //         assert.strictEqual(
+      //           from_singleTransaction,
+      //           from_transactions,
+      //           'The from address of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-              gasLimit_transactions = transactions.items[x].gasLimit;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].gasLimit,
+      //           'The gasLimit value is not number in the transaction details response.',
+      //         );
 
-            try {
-              assert.strictEqual(
-                gasLimit_singleTransaction,
-                gasLimit_transactions,
-                'The gasLimit of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //         gasLimit_transactions = transactions.items[x].gasLimit;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].gasPrice,
-                'The gasPrice value is empty in the transaction details response.',
-              );
+      //       try {
+      //         assert.strictEqual(
+      //           gasLimit_singleTransaction,
+      //           gasLimit_transactions,
+      //           'The gasLimit of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-              gasPrice_transactions = transactions.items[x].gasPrice;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].gasPrice,
+      //           'The gasPrice value is empty in the transaction details response.',
+      //         );
 
-            try {
-              assert.strictEqual(
-                gasPrice_singleTransaction,
-                gasPrice_transactions,
-                'The gasPrice of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //         gasPrice_transactions = transactions.items[x].gasPrice;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].gasUsed,
-                'The gasUsed value is not number in the transaction details response.',
-              );
-              gasUsed_transactions = transactions.items[x].gasUsed;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.strictEqual(
+      //           gasPrice_singleTransaction,
+      //           gasPrice_transactions,
+      //           'The gasPrice of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.strictEqual(
-                gasUsed_singleTransaction,
-                gasUsed_transactions,
-                'The gasUsed of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].gasUsed,
+      //           'The gasUsed value is not number in the transaction details response.',
+      //         );
+      //         gasUsed_transactions = transactions.items[x].gasUsed;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].hash,
-                'The hash value is empty in the transaction details response.',
-              );
+      //       try {
+      //         assert.strictEqual(
+      //           gasUsed_singleTransaction,
+      //           gasUsed_transactions,
+      //           'The gasUsed of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-              hash_transactions = transactions.items[x].hash;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].hash,
+      //           'The hash value is empty in the transaction details response.',
+      //         );
 
-            try {
-              assert.strictEqual(
-                hash_singleTransaction,
-                hash_transactions,
-                'The hash of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //         hash_transactions = transactions.items[x].hash;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].input,
-                'The input value is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.strictEqual(
+      //           hash_singleTransaction,
+      //           hash_transactions,
+      //           'The hash of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].logs[0].transactionIndex,
-                'The transactionIndex value of the logs is not number in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].input,
+      //           'The input value is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].logs[0].blockNumber,
-                'The blockNumber value of the logs is not number in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].logs[0].transactionIndex,
+      //           'The transactionIndex value of the logs is not number in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].logs[0].transactionHash,
-                'The transactionHash value of the logs is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].logs[0].blockNumber,
+      //           'The blockNumber value of the logs is not number in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].logs[0].address,
-                'The address value of the logs is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].logs[0].transactionHash,
+      //           'The transactionHash value of the logs is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].logs[0].topics,
-                'The topics value of the logs is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].logs[0].address,
+      //           'The address value of the logs is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].logs[0].data,
-                'The data value of the logs is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].logs[0].topics,
+      //           'The topics value of the logs is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].logs[0].logIndex,
-                'The logIndex value of the logs is not number in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].logs[0].data,
+      //           'The data value of the logs is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].logs[0].blockHash,
-                'The blockHash value of the logs is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].logs[0].logIndex,
+      //           'The logIndex value of the logs is not number in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].nonce,
-                'The nonce value is not number in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].logs[0].blockHash,
+      //           'The blockHash value of the logs is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].status,
-                'The status value is not correct in the transaction details response.',
-              );
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].nonce,
+      //           'The nonce value is not number in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-              status_transactions = transactions.items[x].status;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].status,
+      //           'The status value is not correct in the transaction details response.',
+      //         );
 
-            try {
-              assert.strictEqual(
-                status_singleTransaction,
-                status_transactions,
-                'The status of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //         status_transactions = transactions.items[x].status;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].to,
-                'The to address value is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.strictEqual(
+      //           status_singleTransaction,
+      //           status_transactions,
+      //           'The status of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNumber(
-                transactions.items[x].transactionIndex,
-                'The transactionIndex value is not number in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].to,
+      //           'The to address value is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].value,
-                'The value details is empty in the transaction details response.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNumber(
+      //           transactions.items[x].transactionIndex,
+      //           'The transactionIndex value is not number in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-            try {
-              assert.isNotEmpty(
-                transactions.items[x].blockExplorerUrl,
-                'The blockExplorerUrl value is empty in the transaction details response.',
-              );
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].value,
+      //           'The value details is empty in the transaction details response.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
 
-              blockExplorerUrl_transactions =
-                transactions.items[x].blockExplorerUrl;
-            } catch (e) {
-              console.error(e);
-            }
+      //       try {
+      //         assert.isNotEmpty(
+      //           transactions.items[x].blockExplorerUrl,
+      //           'The blockExplorerUrl value is empty in the transaction details response.',
+      //         );
 
-            try {
-              assert.strictEqual(
-                blockExplorerUrl_singleTransaction,
-                blockExplorerUrl_transactions,
-                'The blockExplorerUrl of get single transaction response and get transactions response are not matched.',
-              );
-            } catch (e) {
-              console.error(e);
-            }
-            break;
-          }
-        }
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The history of the transactions of the respective address is not performed correctly.',
-        );
-      }
+      //         blockExplorerUrl_transactions =
+      //           transactions.items[x].blockExplorerUrl;
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
+
+      //       try {
+      //         assert.strictEqual(
+      //           blockExplorerUrl_singleTransaction,
+      //           blockExplorerUrl_transactions,
+      //           'The blockExplorerUrl of get single transaction response and get transactions response are not matched.',
+      //         );
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
+      //       break;
+      //     }
+      //   }
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail(
+      //     'The history of the transactions of the respective address is not performed correctly.',
+      //   );
+      // }
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE matic NETWORK',
@@ -1370,7 +1374,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with invalid chainid in matic network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid chainid in matic network', async () => {
     if (runTest) {
       try {
         await maticMainNetSdk.getTransactions({
@@ -1399,7 +1403,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with incorrect chainid in matic network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in matic network', async () => {
     if (runTest) {
       try {
         await maticMainNetSdk.getTransactions({
@@ -1428,7 +1432,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with invalid account in matic network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid account in matic network', async () => {
     if (runTest) {
       try {
         await maticMainNetSdk.getTransactions({
@@ -1457,7 +1461,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with incorrect account in matic network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect account in matic network', async () => {
     if (runTest) {
       try {
         await maticMainNetSdk.getTransactions({

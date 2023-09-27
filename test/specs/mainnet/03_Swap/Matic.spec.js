@@ -94,6 +94,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
   it('SMOKE: Validate the getCrossChainQuotes response with valid details on the matic network', async () => {
     if (runTest) {
       let quoteRequestPayload;
+      let quotes;
       try {
         quoteRequestPayload = {
           fromChainId: data.matic_chainid,
@@ -101,17 +102,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        const quotes = await maticMainNetSdk.getCrossChainQuotes(
-          quoteRequestPayload,
-        );
+        quotes = await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         if (quotes.items.length > 0) {
           try {
             assert.isNotEmpty(
-              quotes.item[0].provider,
+              quotes.items[0].provider,
               'The provider value is empty in the getCrossChainQuotes response.',
             );
           } catch (e) {
@@ -120,7 +119,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              quotes.item[0].transaction[0].data,
+              quotes.items[0].transaction.data,
               'The data value of the transaction is empty in the getCrossChainQuotes response.',
             );
           } catch (e) {
@@ -129,7 +128,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              quotes.item[0].transaction[0].to,
+              quotes.items[0].transaction.to,
               'The to value of the transaction is empty in the getCrossChainQuotes response.',
             );
           } catch (e) {
@@ -138,7 +137,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              quotes.item[0].transaction[0].value,
+              quotes.items[0].transaction.value,
               'The value value of the transaction is empty in the getCrossChainQuotes response.',
             );
           } catch (e) {
@@ -147,7 +146,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.strictEqual(
-              quotes.item[0].transaction[0].from,
+              quotes.items[0].transaction.from,
               data.sender,
               'The from value of the transaction is not correct in the getCrossChainQuotes response.',
             );
@@ -157,19 +156,19 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNumber(
-              quotes.item[0].transaction[0].chainId,
+              quotes.items[0].transaction.chainId,
               'The chainId value of the transaction is not number in the getCrossChainQuotes response.',
             );
           } catch (e) {
             console.error(e);
           }
         } else {
-          console.log(
+          assert.fail(
             'The items are not available in the getCrossChainQuotes response.',
           );
         }
       } catch (e) {
-        console.log(
+        assert.fail(
           'The quotes are not display in the getCrossChainQuotes response',
         );
       }
@@ -183,18 +182,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
   it('SMOKE: Validate the getAdvanceRoutesLiFi response with valid details on the matic network', async () => {
     if (runTest) {
       let quoteRequestPayload;
+      let quotes;
       try {
         quoteRequestPayload = {
           fromChainId: data.matic_chainid,
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits('0.0001', 6),
         };
 
-        const quotes = await maticMainNetSdk.getAdvanceRoutesLiFi(
-          quoteRequestPayload,
-        );
+        quotes =
+          await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         if (quotes.items.length > 0) {
           const quote = quotes.items[0]; // Selected the first route
@@ -204,15 +203,129 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              quotes.item.data,
-              'The data value is empty in the getAdvanceRoutesLiFi response.',
+              quotes.items[0].id,
+              'The id value of the first item is empty in the getAdvanceRoutesLiFi response.',
             );
           } catch (e) {
             console.error(e);
           }
+
+          try {
+            assert.strictEqual(
+              quotes.items[0].fromChainId,
+              data.matic_chainid,
+              'The fromChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].fromAmountUSD,
+              'The fromAmountUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].fromAmount,
+              'The fromAmount value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].fromToken,
+              'The fromToken value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.strictEqual(
+              quotes.items[0].fromAddress,
+              data.sender,
+              'The fromAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.strictEqual(
+              quotes.items[0].toChainId,
+              data.arbitrum_chainid,
+              'The toChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].toAmountUSD,
+              'The toAmountUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].toAmount,
+              'The toAmount value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].toAmountMin,
+              'The toAmountMin value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].toToken,
+              'The toToken value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.strictEqual(
+              quotes.items[0].toAddress,
+              data.sender,
+              'The toAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+
+          try {
+            assert.isNotEmpty(
+              quotes.items[0].gasCostUSD,
+              'The gasCostUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+            );
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          assert.fail('The quotes are not display in the quote list');
         }
       } catch (e) {
-        console.log('The quotes are not display in the quote list');
+        assert.fail('The quotes are not display in the quote list');
       }
     } else {
       console.warn(
@@ -230,7 +343,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -266,7 +379,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -303,7 +416,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.invalidTokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -340,7 +453,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.incorrectTokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -376,7 +489,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -413,7 +526,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.invalidTokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -450,7 +563,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.incorrectTokenAddress_arbitrumUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -486,7 +599,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -523,7 +636,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.invalidSender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -560,7 +673,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
           fromAddress: data.incorrectSender,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
@@ -631,7 +744,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -666,7 +779,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromChainId: data.matic_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -702,7 +815,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.invalidTokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -738,7 +851,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.incorrectTokenAddress_maticUSDC,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -773,7 +886,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromChainId: data.matic_chainid,
           toChainId: data.arbitrum_chainid,
           toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -809,7 +922,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.invalidTokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -845,7 +958,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
           toTokenAddress: data.incorrectTokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
@@ -880,7 +993,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           fromChainId: data.matic_chainid,
           toChainId: data.arbitrum_chainid,
           fromTokenAddress: data.tokenAddress_maticUSDC,
-          fromAmount: utils.parseUnits(data.value, 6),
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
         await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
