@@ -10,12 +10,15 @@
     "test-mainnet-transfertoken-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Arbitrum.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-transfertoken-matic": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Matic.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-transfertoken-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/Optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
+    "test-mainnet-transfertoken": "mocha --timeout 600000 --spec test/specs/mainnet/01_TransferringFunds/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-transactionhistory-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/02_TransactionHistory/Arbitrum.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-transactionhistory-matic": "mocha --timeout 600000 --spec test/specs/mainnet/02_TransactionHistory/Matic.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-transactionhistory-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/02_TransactionHistory/Optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
+    "test-mainnet-transactionhistory": "mocha --timeout 600000 --spec test/specs/mainnet/02_TransactionHistory/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-swap-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/03_Swap/Arbitrum.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
     "test-mainnet-swap-matic": "mocha --timeout 600000 --spec test/specs/mainnet/03_Swap/Matic.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
-    "test-mainnet-swap-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/03_Swap/Optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false"
+    "test-mainnet-swap-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/03_Swap/Optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false",
+    "test-mainnet-swap": "mocha --timeout 600000 --spec test/specs/mainnet/03_Swap/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false"
   },
   "author": "",
   "license": "ISC",
