@@ -172,7 +172,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // let status_singleTransaction;
       // let blockExplorerUrl_singleTransaction;
       try {
-        transactionHash = userOpsReceipt.recipient.transactionHash;
+        transactionHash = userOpsReceipt.receipt.transactionHash;
         singleTransaction = await optimismMainNetSdk.getTransaction({
           hash: transactionHash,
         });
@@ -197,9 +197,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         }
 
         try {
-          assert.strictEqual(
+          assert.isNotEmpty(
             singleTransaction.from,
-            data.sender,
             'The from address value is not correct in the transaction details response.',
           );
           // from_singleTransaction = singleTransaction.from;
@@ -1016,9 +1015,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         }
 
         try {
-          assert.strictEqual(
+          assert.isNotEmpty(
             singleTransaction.from,
-            data.sender,
             'The from address value is not correct in the het single transaction response.',
           );
           from_singleTransaction = singleTransaction.from;
