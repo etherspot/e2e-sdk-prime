@@ -6,29 +6,31 @@ import data from '../../../data/testData.json' assert { type: 'json' };
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
-let arbitrumMainNetSdk;
-let arbitrumEtherspotWalletAddress;
-let arbitrumNativeAddress = null;
+let xdaiMainNetSdk;
+let xdaiEtherspotWalletAddress;
+let xdaiNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get the single transaction and multiple transaction details with arbitrum network on the MainNet', () => {
+describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', () => {
   beforeEach(async () => {
     // added timeout
     Helper.wait(data.mediumTimeout);
 
     // initializating sdk
     try {
-      arbitrumMainNetSdk = new PrimeSdk(
+      xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+          chainId: Number(process.env.XDAI_CHAINID),
           projectKey: process.env.PROJECT_KEY,
+          rpcProviderUrl: data.providerNetwork_xdai,
+          bundlerRpcUrl: data.providerNetwork_xdai,
         },
       );
 
       try {
         assert.strictEqual(
-          arbitrumMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.walletAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -42,12 +44,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     // get EtherspotWallet address
     try {
-      arbitrumEtherspotWalletAddress =
-        await arbitrumMainNetSdk.getCounterFactualAddress();
+      xdaiEtherspotWalletAddress =
+        await xdaiMainNetSdk.getCounterFactualAddress();
 
       try {
         assert.strictEqual(
-          arbitrumEtherspotWalletAddress,
+          xdaiEtherspotWalletAddress,
           data.sender,
           'The Etherspot Wallet Address is not calculated correctly.',
         );
@@ -61,9 +63,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await arbitrumMainNetSdk.getAccountBalances({
+    let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.ARBITRUM_CHAINID),
+      chainId: Number(process.env.XDAI_CHAINID),
     });
     let native_balance;
     let usdc_balance;
@@ -72,10 +74,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     for (let i = 0; i < output.items.length; i++) {
       let tokenAddress = output.items[i].token;
-      if (tokenAddress === arbitrumNativeAddress) {
+      if (tokenAddress === xdaiNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_arbitrumUSDC) {
+      } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
@@ -91,11 +93,11 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the transaction history of the native token transaction on the arbitrum network', async () => {
+  it('SMOKE: Validate the transaction history of the native token transaction on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await arbitrumMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -103,7 +105,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // add transactions to the batch
       try {
-        await arbitrumMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseEther(data.value),
         });
@@ -116,7 +118,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // get balance of the account address
       try {
-        await arbitrumMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -125,7 +127,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // estimate transactions added to the batch and get the fee data for the UserOp
       let op;
       try {
-        op = await arbitrumMainNetSdk.estimate();
+        op = await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -136,7 +138,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // sign the UserOp and sending to the bundler
       let uoHash;
       try {
-        uoHash = await arbitrumMainNetSdk.send(op);
+        uoHash = await xdaiMainNetSdk.send(op);
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -151,7 +153,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
         }
 
         console.log('userOpsReceipt::::::::::', userOpsReceipt);
@@ -175,7 +177,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // let blockExplorerUrl_singleTransaction;
       try {
         transactionHash = userOpsReceipt.receipt.transactionHash;
-        singleTransaction = await arbitrumMainNetSdk.getTransaction({
+        singleTransaction = await xdaiMainNetSdk.getTransaction({
           hash: transactionHash,
         });
 
@@ -406,8 +408,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // let status_transactions;
       // let blockExplorerUrl_transactions;
       // try {
-      //   transactions = await arbitrumMainNetSdk.getTransactions({
-      //     chainId: Number(process.env.ARBITRUM_CHAINID),
+      //   transactions = await xdaiMainNetSdk.getTransactions({
+      //     chainId: Number(process.env.XDAI_CHAINID),
       //     account: data.sender,
       //   });
 
@@ -718,17 +720,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE xdai NETWORK',
       );
     }
   });
 
-  it('SMOKE: Validate the NFT List on the arbitrum network', async () => {
+  it('SMOKE: Validate the NFT List on the xdai network', async () => {
     if (runTest) {
       let nfts;
       try {
-        nfts = await arbitrumMainNetSdk.getNftList({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        nfts = await xdaiMainNetSdk.getNftList({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.sender,
         });
 
@@ -824,12 +826,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with random hash in arbitrum network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with random hash in xdai network', async () => {
     if (runTest) {
       // Fetching historical transactions
       let transactions;
@@ -845,8 +847,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       let blockExplorerUrl_transactions;
 
       try {
-        transactions = await arbitrumMainNetSdk.getTransactions({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        transactions = await xdaiMainNetSdk.getTransactions({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.sender,
         });
         randomTransaction =
@@ -993,7 +995,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       let blockExplorerUrl_singleTransaction;
 
       try {
-        singleTransaction = await arbitrumMainNetSdk.getTransaction({
+        singleTransaction = await xdaiMainNetSdk.getTransaction({
           hash: randomHash, // Add your transaction hash
         });
 
@@ -1299,17 +1301,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response with invalid hash on arbitrum network', async () => {
+  it('REGRESSION: Validate the get transaction history response with invalid hash on xdai network', async () => {
     if (runTest) {
       // Fetching a single transaction
       let transaction;
       try {
-        transaction = await arbitrumMainNetSdk.getTransaction({
+        transaction = await xdaiMainNetSdk.getTransaction({
           hash: data.incorrect_hash, // Incorrect Transaction Hash
         });
 
@@ -1331,17 +1333,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on arbitrum network', async () => {
+  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on xdai network', async () => {
     if (runTest) {
       // Fetching a single transaction
       try {
         try {
-          await arbitrumMainNetSdk.getTransaction({
+          await xdaiMainNetSdk.getTransaction({
             hash: data.invalid_hash, // Invalid Transaction Hash
           });
           assert.fail(
@@ -1369,16 +1371,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid chainid in arbitrum network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getTransactions({
-          chainId: Number(process.env.INVALID_ARBITRUM_CHAINID),
+        await xdaiMainNetSdk.getTransactions({
+          chainId: Number(process.env.INVALID_XDAI_CHAINID),
           account: data.sender,
         });
         assert.fail(
@@ -1398,15 +1400,15 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in arbitrum network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getTransactions({
+        await xdaiMainNetSdk.getTransactions({
           chainId: Number(process.env.MATIC_CHAINID),
           account: data.sender,
         });
@@ -1427,16 +1429,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid account in arbitrum network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid account in xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getTransactions({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        await xdaiMainNetSdk.getTransactions({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.invalidSender,
         });
         assert.fail(
@@ -1456,16 +1458,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect account in arbitrum network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect account in xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getTransactions({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        await xdaiMainNetSdk.getTransactions({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.incorrectSender,
         });
         assert.fail(
@@ -1485,16 +1487,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid chainid on the arbitrum network', async () => {
+  it('REGRESSION: Validate the NFT List with invalid chainid on the xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getNftList({
-          chainId: process.env.INVALID_ARBITRUM_CHAINID,
+        await xdaiMainNetSdk.getNftList({
+          chainId: process.env.INVALID_XDAI_CHAINID,
           account: data.sender,
         });
 
@@ -1513,16 +1515,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid account address on the arbitrum network', async () => {
+  it('REGRESSION: Validate the NFT List with invalid account address on the xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getNftList({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        await xdaiMainNetSdk.getNftList({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.invalidSender,
         });
 
@@ -1543,16 +1545,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with incorrect account address on the arbitrum network', async () => {
+  it('REGRESSION: Validate the NFT List with incorrect account address on the xdai network', async () => {
     if (runTest) {
       try {
-        await arbitrumMainNetSdk.getNftList({
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+        await xdaiMainNetSdk.getNftList({
+          chainId: Number(process.env.XDAI_CHAINID),
           account: data.incorrectSender,
         });
         assert.fail(
@@ -1572,7 +1574,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE ARBITRUM NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE xdai NETWORK',
       );
     }
   });

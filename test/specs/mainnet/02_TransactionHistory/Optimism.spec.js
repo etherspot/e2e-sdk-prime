@@ -75,7 +75,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       if (tokenAddress === optimismNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.optimismUsdcAddress) {
+      } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }

@@ -1,0 +1,19 @@
+{
+  "eoaAddress": "0xa5494Ed2eB09F37b4b0526a8e4789565c226C84f",
+  "sender": "0x684E10D67dc4159B813Db70a1DAeB5FcC98bd034",
+  "recipient": "0x71Bec2309cC6BDD5F1D73474688A6154c28Db4B5",
+  "amount": 0.000001,
+  "arbitrum_chainid_mainnet": 42161,
+  "matic_chainid_mainnet": 137,
+  "optimism_chainid_mainnet": 10,
+  "xdai_chainid_mainnet": 100,
+  "mumbai_chainid_testnet": 80001,
+  "xdai_chainid_testnet": 5,
+  "arka_deposit": "https://arka.etherspot.io/deposit",
+  "arka_whitelist": "https://arka.etherspot.io/whitelist",
+  "arka_checkwhitelist": "https://arka.etherspot.io/checkWhitelist",
+  "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress",
+  "address": "0x684E10D67dc4159B813Db70a1DAeB5FcC98bd034",
+  "entryPointAddress": "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+  "usdc_token": "USDC"
+}
