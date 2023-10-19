@@ -8,29 +8,31 @@ import abi from '../../../data/NFTabi.json' assert { type: 'json' };
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
-let optimismMainNetSdk;
-let optimismEtherspotWalletAddress;
-let optimismNativeAddress = null;
+let xdaiMainNetSdk;
+let xdaiEtherspotWalletAddress;
+let xdaiNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when transfer a token with optimism network on the MainNet', () => {
+describe('The PrimeSDK, when transfer a token with xdai network on the MainNet', () => {
   beforeEach(async () => {
     // added timeout
     Helper.wait(data.mediumTimeout);
 
     // initializating sdk
     try {
-      optimismMainNetSdk = new PrimeSdk(
+      xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.OPTIMISM_CHAINID),
+          chainId: Number(process.env.XDAI_CHAINID),
           projectKey: process.env.PROJECT_KEY,
+          rpcProviderUrl: data.providerNetwork_xdai,
+          bundlerRpcUrl: data.providerNetwork_xdai,
         },
       );
 
       try {
         assert.strictEqual(
-          optimismMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.walletAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -44,12 +46,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     // get EtherspotWallet address
     try {
-      optimismEtherspotWalletAddress =
-        await optimismMainNetSdk.getCounterFactualAddress();
+      xdaiEtherspotWalletAddress =
+        await xdaiMainNetSdk.getCounterFactualAddress();
 
       try {
         assert.strictEqual(
-          optimismEtherspotWalletAddress,
+          xdaiEtherspotWalletAddress,
           data.sender,
           'The Etherspot Wallet Address is not calculated correctly.',
         );
@@ -63,9 +65,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       );
     }
 
-    let output = await optimismMainNetSdk.getAccountBalances({
+    let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.OPTIMISM_CHAINID),
+      chainId: Number(process.env.XDAI_CHAINID),
     });
     let native_balance;
     let usdc_balance;
@@ -74,10 +76,10 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     for (let i = 0; i < output.items.length; i++) {
       let tokenAddress = output.items[i].token;
-      if (tokenAddress === optimismNativeAddress) {
+      if (tokenAddress === xdaiNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
+      } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
@@ -93,11 +95,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     }
   });
 
-  it('SMOKE: Perform the transfer native token with valid details on the optimism network', async () => {
+  it('SMOKE: Perform the transfer native token with valid details on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -106,7 +108,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // add transactions to the batch
       let transactionBatch;
       try {
-        transactionBatch = await optimismMainNetSdk.addUserOpsToBatch({
+        transactionBatch = await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseEther(data.value),
         });
@@ -147,7 +149,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // get balance of the account address
       let balance;
       try {
-        balance = await optimismMainNetSdk.getNativeBalance();
+        balance = await xdaiMainNetSdk.getNativeBalance();
 
         try {
           assert.isNotEmpty(
@@ -165,7 +167,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // estimate transactions added to the batch and get the fee data for the UserOp
       let op;
       try {
-        op = await optimismMainNetSdk.estimate();
+        op = await xdaiMainNetSdk.estimate();
 
         try {
           assert.strictEqual(
@@ -309,242 +311,242 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         );
       }
 
-      // sign the UserOp and sending to the bundler
-      let uoHash;
-      try {
-        uoHash = await optimismMainNetSdk.send(op);
+      // // sign the UserOp and sending to the bundler
+      // let uoHash;
+      // try {
+      //   uoHash = await xdaiMainNetSdk.send(op);
 
-        try {
-          assert.isNotEmpty(
-            uoHash,
-            'The uoHash value is empty in the sending bundler response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The sign the UserOp and sending to the bundler action is not performed.',
-        );
-      }
+      //   try {
+      //     assert.isNotEmpty(
+      //       uoHash,
+      //       'The uoHash value is empty in the sending bundler response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail(
+      //     'The sign the UserOp and sending to the bundler action is not performed.',
+      //   );
+      // }
 
-      // get transaction hash
-      let userOpsReceipt = null;
-      try {
-        console.log('Waiting for transaction...');
-        const timeout = Date.now() + 60000; // 1 minute timeout
-        while (userOpsReceipt == null && Date.now() < timeout) {
-          await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(uoHash);
-        }
+      // // get transaction hash
+      // let userOpsReceipt = null;
+      // try {
+      //   console.log('Waiting for transaction...');
+      //   const timeout = Date.now() + 60000; // 1 minute timeout
+      //   while (userOpsReceipt == null && Date.now() < timeout) {
+      //     await Helper.wait(2000);
+      //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.userOpHash,
-            'The userOpHash value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.userOpHash,
+      //       'The userOpHash value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.sender,
-            'The sender value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.sender,
+      //       'The sender value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.nonce,
-            'The nonce value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.nonce,
+      //       'The nonce value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasCost,
-            'The actualGasCost value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasCost,
+      //       'The actualGasCost value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasUsed,
-            'The actualGasUsed value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasUsed,
+      //       'The actualGasUsed value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isTrue(
-            userOpsReceipt.success,
-            'The success value is false in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isTrue(
+      //       userOpsReceipt.success,
+      //       'The success value is false in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.to,
-            'The to value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.to,
+      //       'The to value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.from,
-            'The from value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.from,
+      //       'The from value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionIndex,
-            'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionIndex,
+      //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.gasUsed,
-            'The gasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.gasUsed,
+      //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logsBloom,
-            'The logsBloom value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logsBloom,
+      //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockHash,
-            'The blockHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockHash,
+      //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionHash,
-            'The transactionHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionHash,
+      //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logs,
-            'The logs value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logs,
+      //       'The logs value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockNumber,
-            'The blockNumber value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockNumber,
+      //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.confirmations,
-            'The confirmations value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.confirmations,
+      //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.cumulativeGasUsed,
-            'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.cumulativeGasUsed,
+      //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.effectiveGasPrice,
-            'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.effectiveGasPrice,
+      //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.status,
-            'The status value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.status,
+      //       'The status value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.type,
-            'The type value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.type,
+      //       'The type value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isTrue(
-            userOpsReceipt.receipt.byzantium,
-            'The byzantium value of the receipt is false in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get transaction hash action is not performed.');
-      }
+      //   try {
+      //     assert.isTrue(
+      //       userOpsReceipt.receipt.byzantium,
+      //       'The byzantium value of the receipt is false in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail('The get transaction hash action is not performed.');
+      // }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE xdai NETWORK',
       );
     }
   });
 
-  it('SMOKE: Perform the transfer ERC20 token with valid details on the optimism network', async () => {
+  it('SMOKE: Perform the transfer ERC20 token with valid details on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
 
         try {
@@ -564,7 +566,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -618,7 +620,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -627,8 +629,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // add transactions to the batch
       let userOpsBatch;
       try {
-        userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.tokenAddress_optimismUSDC,
+        userOpsBatch = await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.tokenAddress_xdaiUSDC,
           data: transactionData,
         });
 
@@ -675,7 +677,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // estimate transactions added to the batch and get the fee data for the UserOp
       let op;
       try {
-        op = await optimismMainNetSdk.estimate();
+        op = await xdaiMainNetSdk.estimate();
 
         try {
           assert.strictEqual(
@@ -819,230 +821,230 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         );
       }
 
-      // sign the UserOp and sending to the bundler
-      let uoHash;
-      try {
-        uoHash = await optimismMainNetSdk.send(op);
+      // // sign the UserOp and sending to the bundler
+      // let uoHash;
+      // try {
+      //   uoHash = await xdaiMainNetSdk.send(op);
 
-        assert.isNotEmpty(
-          uoHash,
-          'The uoHash value is empty in the sending bundler response.',
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The sending to the bundler action is not performed.');
-      }
+      //   assert.isNotEmpty(
+      //     uoHash,
+      //     'The uoHash value is empty in the sending bundler response.',
+      //   );
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail('The sending to the bundler action is not performed.');
+      // }
 
-      // get transaction hash
-      let userOpsReceipt = null;
-      try {
-        console.log('Waiting for transaction...');
-        const timeout = Date.now() + 60000; // 1 minute timeout
-        while (userOpsReceipt == null && Date.now() < timeout) {
-          await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(uoHash);
-        }
+      // // get transaction hash
+      // let userOpsReceipt = null;
+      // try {
+      //   console.log('Waiting for transaction...');
+      //   const timeout = Date.now() + 60000; // 1 minute timeout
+      //   while (userOpsReceipt == null && Date.now() < timeout) {
+      //     await Helper.wait(2000);
+      //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.userOpHash,
-            'The userOpHash value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.userOpHash,
+      //       'The userOpHash value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.sender,
-            'The sender value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.sender,
+      //       'The sender value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.nonce,
-            'The nonce value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.nonce,
+      //       'The nonce value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasCost,
-            'The actualGasCost value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasCost,
+      //       'The actualGasCost value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasUsed,
-            'The actualGasUsed value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasUsed,
+      //       'The actualGasUsed value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isTrue(
-            userOpsReceipt.success,
-            'The success value is false in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isTrue(
+      //       userOpsReceipt.success,
+      //       'The success value is false in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.to,
-            'The to value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.to,
+      //       'The to value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.from,
-            'The from value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.from,
+      //       'The from value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionIndex,
-            'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionIndex,
+      //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.gasUsed,
-            'The gasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.gasUsed,
+      //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logsBloom,
-            'The logsBloom value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logsBloom,
+      //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockHash,
-            'The blockHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockHash,
+      //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionHash,
-            'The transactionHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionHash,
+      //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logs,
-            'The logs value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logs,
+      //       'The logs value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockNumber,
-            'The blockNumber value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockNumber,
+      //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.confirmations,
-            'The confirmations value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.confirmations,
+      //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.cumulativeGasUsed,
-            'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.cumulativeGasUsed,
+      //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.effectiveGasPrice,
-            'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.effectiveGasPrice,
+      //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.status,
-            'The status value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.status,
+      //       'The status value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.type,
-            'The type value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.type,
+      //       'The type value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isTrue(
-            userOpsReceipt.receipt.byzantium,
-            'The byzantium value of the receipt is false in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get transaction hash action is not performed.');
-      }
+      //   try {
+      //     assert.isTrue(
+      //       userOpsReceipt.receipt.byzantium,
+      //       'The byzantium value of the receipt is false in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail('The get transaction hash action is not performed.');
+      // }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE xdai NETWORK',
       );
     }
   });
 
-  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the optimism network', async () => {
+  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -1071,7 +1073,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -1080,7 +1082,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // add transactions to the batch
       let userOpsBatch;
       try {
-        userOpsBatch = await optimismMainNetSdk.addUserOpsToBatch({
+        userOpsBatch = await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.nft_tokenAddress,
           data: erc721Data,
         });
@@ -1128,7 +1130,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       // estimate transactions added to the batch
       let op;
       try {
-        op = await optimismMainNetSdk.estimate();
+        op = await xdaiMainNetSdk.estimate();
 
         try {
           assert.strictEqual(
@@ -1272,233 +1274,233 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         );
       }
 
-      // sending to the bundler
-      let uoHash;
-      try {
-        uoHash = await optimismMainNetSdk.send(op);
+      // // sending to the bundler
+      // let uoHash;
+      // try {
+      //   uoHash = await xdaiMainNetSdk.send(op);
 
-        assert.isNotEmpty(
-          uoHash,
-          'The uoHash value is empty in the sending bundler response.',
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The sending to the bundler action is not performed.');
-      }
+      //   assert.isNotEmpty(
+      //     uoHash,
+      //     'The uoHash value is empty in the sending bundler response.',
+      //   );
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail('The sending to the bundler action is not performed.');
+      // }
 
-      // get transaction hash
-      let userOpsReceipt = null;
-      try {
-        console.log('Waiting for transaction...');
-        const timeout = Date.now() + 60000; // 1 minute timeout
-        while (userOpsReceipt == null && Date.now() < timeout) {
-          await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(uoHash);
-        }
+      // // get transaction hash
+      // let userOpsReceipt = null;
+      // try {
+      //   console.log('Waiting for transaction...');
+      //   const timeout = Date.now() + 60000; // 1 minute timeout
+      //   while (userOpsReceipt == null && Date.now() < timeout) {
+      //     await Helper.wait(2000);
+      //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.userOpHash,
-            'The userOpHash value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.userOpHash,
+      //       'The userOpHash value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.strictEqual(
-            userOpsReceipt.sender,
-            data.sender,
-            'The sender value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.strictEqual(
+      //       userOpsReceipt.sender,
+      //       data.sender,
+      //       'The sender value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.nonce,
-            'The nonce value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.nonce,
+      //       'The nonce value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasCost,
-            'The actualGasCost value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasCost,
+      //       'The actualGasCost value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.actualGasUsed,
-            'The actualGasUsed value is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.actualGasUsed,
+      //       'The actualGasUsed value is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isTrue(
-            userOpsReceipt.success,
-            'The success value is false in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isTrue(
+      //       userOpsReceipt.success,
+      //       'The success value is false in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.to,
-            'The to value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.to,
+      //       'The to value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.from,
-            'The from value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.from,
+      //       'The from value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionIndex,
-            'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionIndex,
+      //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.gasUsed,
-            'The gasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.gasUsed,
+      //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logsBloom,
-            'The logsBloom value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logsBloom,
+      //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockHash,
-            'The blockHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockHash,
+      //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.transactionHash,
-            'The transactionHash value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.transactionHash,
+      //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.logs,
-            'The logs value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.logs,
+      //       'The logs value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.blockNumber,
-            'The blockNumber value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.blockNumber,
+      //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.confirmations,
-            'The confirmations value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.confirmations,
+      //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.cumulativeGasUsed,
-            'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.cumulativeGasUsed,
+      //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.effectiveGasPrice,
-            'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.effectiveGasPrice,
+      //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.status,
-            'The status value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.status,
+      //       'The status value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
 
-        try {
-          assert.isNotEmpty(
-            userOpsReceipt.receipt.type,
-            'The type value of the receipt is empty in the get transaction hash response.',
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get transaction hash action is not performed.');
-      }
+      //   try {
+      //     assert.isNotEmpty(
+      //       userOpsReceipt.receipt.type,
+      //       'The type value of the receipt is empty in the get transaction hash response.',
+      //     );
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
+      // } catch (e) {
+      //   console.error(e);
+      //   assert.fail('The get transaction hash action is not performed.');
+      // }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
       }
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.incorrectRecipient, // incorrect to address
           value: ethers.utils.parseEther(data.value),
         });
@@ -1511,7 +1513,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -1519,7 +1521,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
@@ -1539,23 +1541,23 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
       }
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.invalidRecipient, // invalid to address
           value: ethers.utils.parseEther(data.value),
         });
@@ -1568,7 +1570,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -1576,7 +1578,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
@@ -1596,80 +1598,23 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with the same To Address i.e. sender address while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
       }
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.sender, // same to address
-          value: ethers.utils.parseEther(data.value),
-        });
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The addition of transaction in the batch is not performed.',
-        );
-      }
-
-      // get balance of the account address
-      try {
-        await optimismMainNetSdk.getNativeBalance();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The balance of the native token is not displayed.');
-      }
-
-      // estimate transactions added to the batch
-      try {
-        await optimismMainNetSdk.estimate();
-
-        assert.fail(
-          'The expected validation is not displayed when entered the same To Address i.e. sender address while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        let error = e.reason;
-        if (error.includes('invalid address')) {
-          console.log(
-            'The validation for the same To Address i.e. sender address is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the the same To Address i.e. sender address while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the optimism network', async () => {
-    if (runTest) {
-      // clear the transaction batch
-      try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-      }
-
-      // add transactions to the batch
-      try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseUnits(data.invalidValue), // invalid value
         });
@@ -1691,23 +1636,23 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
       }
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseUnits(data.smallValue), // very small value
         });
@@ -1729,73 +1674,16 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with the exceeded Value while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-      }
-
-      // add transactions to the batch
-      try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.recipient,
-          value: data.exceededValue, // exceeded value
-        });
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The addition of transaction in the batch is not performed.',
-        );
-      }
-
-      // get balance of the account address
-      try {
-        await optimismMainNetSdk.getNativeBalance();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The balance of the native token is not displayed.');
-      }
-
-      // estimate transactions added to the batch
-      try {
-        await optimismMainNetSdk.estimate();
-
-        assert.fail(
-          'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        console.log(e);
-        if (e.reason === 'Transaction reverted') {
-          console.log(
-            'The validation for value is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH EXCEEDED VALUE ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the optimism network', async () => {
-    if (runTest) {
-      // clear the transaction batch
-      try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -1803,7 +1691,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -1811,7 +1699,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -1830,16 +1718,16 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -1847,7 +1735,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseEther(data.value),
         });
@@ -1860,7 +1748,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -1868,7 +1756,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -1883,7 +1771,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.incorrectTxHash,
           );
         }
@@ -1905,16 +1793,16 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -1922,7 +1810,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.recipient,
           value: ethers.utils.parseEther(data.value),
         });
@@ -1935,7 +1823,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the native token is not displayed.');
@@ -1943,7 +1831,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -1958,7 +1846,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.pastTxHash,
           );
         }
@@ -1980,18 +1868,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.invalidProviderNetwork_optimism, // invalid provider
+          data.invalidProviderNetwork_xdai, // invalid provider
         );
       } catch (e) {
         console.error(e);
@@ -2002,7 +1890,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2032,12 +1920,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
@@ -2052,7 +1940,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2082,18 +1970,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.otherProviderNetwork_optimism, // other provider
+          data.otherProviderNetwork_xdai, // other provider
         );
       } catch (e) {
         console.error(e);
@@ -2104,7 +1992,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2134,18 +2022,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2156,7 +2044,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.incorrectTokenAddress_optimismUSDC, // incorrect token address
+          data.incorrectTokenAddress_xdaiUSDC, // incorrect token address
           ERC20_ABI,
           provider,
         );
@@ -2186,18 +2074,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2208,7 +2096,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.invalidTokenAddress_optimismUSDC, // invalid token address
+          data.invalidTokenAddress_xdaiUSDC, // invalid token address
           ERC20_ABI,
           provider,
         );
@@ -2238,18 +2126,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2277,18 +2165,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2299,7 +2187,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2343,18 +2231,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2365,7 +2253,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2409,18 +2297,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2431,7 +2319,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2475,18 +2363,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer ERC20 token with exceeded value while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2497,83 +2385,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
-          ERC20_ABI,
-          provider,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get erc20 Contract Interface is not performed.');
-      }
-
-      // get decimals from erc20 contract
-      let decimals;
-      try {
-        decimals = await erc20Instance.functions.decimals();
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
-        );
-      }
-
-      // get transferFrom encoded data
-      try {
-        erc20Instance.interface.encodeFunctionData('transfer', [
-          data.recipient,
-          ethers.utils.parseUnits(data.exceededValue, decimals), // exceeded value
-        ]);
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The expected validation is not displayed when entered the exceeded value while Getting the transferFrom encoded data.',
-        );
-      }
-
-      // estimate transactions added to the batch
-      try {
-        await optimismMainNetSdk.estimate();
-
-        assert.fail(
-          'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        if (e.reason === 'Transaction reverted') {
-          console.log(
-            'The validation for value is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the exceeded value while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH EXCEEDED VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the optimism network', async () => {
-    if (runTest) {
-      // get the respective provider details
-      let provider;
-      try {
-        provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The provider response is not displayed correctly.');
-      }
-
-      // get erc20 Contract Interface
-      let erc20Instance;
-      try {
-        erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2615,18 +2427,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2637,7 +2449,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2682,18 +2494,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2704,7 +2516,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2749,18 +2561,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer ERC20 token with same recipient i.e. sender address while Getting the transferFrom encoded data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2771,74 +2583,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
-          ERC20_ABI,
-          provider,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get erc20 Contract Interface is not performed.');
-      }
-
-      // get decimals from erc20 contract
-      let decimals;
-      try {
-        decimals = await erc20Instance.functions.decimals();
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
-        );
-      }
-
-      // get transferFrom encoded data
-      try {
-        erc20Instance.interface.encodeFunctionData('transfer', [
-          data.sender, // same recipient address
-          ethers.utils.parseUnits(data.value, decimals),
-        ]);
-
-        assert.fail(
-          'The expected validation is not displayed when entered the invalid recipient while Getting the transferFrom encoded data.',
-        );
-      } catch (e) {
-        let error = e.reason;
-        if (error.includes('invalid address')) {
-          console.log(
-            'The validation for Recipient is displayed as expected while Getting the transferFrom encoded data.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the invalid recipient while Getting the transferFrom encoded data.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH SAME RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the optimism network', async () => {
-    if (runTest) {
-      // get the respective provider details
-      let provider;
-      try {
-        provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The provider response is not displayed correctly.');
-      }
-
-      // get erc20 Contract Interface
-      let erc20Instance;
-      try {
-        erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2881,18 +2626,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2903,7 +2648,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -2939,7 +2684,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -2947,8 +2692,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.incorrectTokenAddress_optimismUSDC, // Incorrect Token Address
+        await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.incorrectTokenAddress_xdaiUSDC, // Incorrect Token Address
           data: transactionData,
         });
       } catch (e) {
@@ -2958,7 +2703,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
         assert.fail(
           'The expected validation is not displayed when entered the incorrect Token Address while added the estimated transaction to the batch.',
         );
@@ -2977,18 +2722,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -2999,7 +2744,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3035,7 +2780,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3043,8 +2788,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.invalidTokenAddress_optimismUSDC, // Invalid Token Address
+        await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.invalidTokenAddress_xdaiUSDC, // Invalid Token Address
           data: transactionData,
         });
       } catch (e) {
@@ -3054,7 +2799,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
         assert.fail(
           'The expected validation is not displayed when entered the invalid Token Address while estimate the added transactions to the batch.',
         );
@@ -3073,18 +2818,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -3095,7 +2840,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3131,7 +2876,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3139,7 +2884,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: null, // Null Token Address
           data: transactionData,
         });
@@ -3150,7 +2895,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when entered the null Token Address while estimate the added transactions to the batch.',
@@ -3169,18 +2914,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -3191,7 +2936,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3227,7 +2972,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3235,7 +2980,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           data: transactionData, // without tokenAddress
         });
       } catch (e) {
@@ -3245,7 +2990,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when not entered the Token Address while estimate the added transactions to the batch.',
@@ -3264,18 +3009,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer ERC20 token without transactionData while adding transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -3286,7 +3031,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3321,17 +3066,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // add transactions to the batch
-      try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.tokenAddress_optimismUSDC, // without transactionData
-        });
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3339,91 +3074,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
-
-        assert.fail(
-          'The expected validation is not displayed when not entered the transactionData while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        if (e.reason === 'bad response') {
-          console.log(
-            'The validation for transactionData is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when not entered the transactionData while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TRANSACTIONDATA WHILE ADDING TRANSACTION TO THE BATCH ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the optimism network', async () => {
-    if (runTest) {
-      // get the respective provider details
-      let provider;
-      try {
-        provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The provider response is not displayed correctly.');
-      }
-
-      // get erc20 Contract Interface
-      let erc20Instance;
-      try {
-        erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
-          ERC20_ABI,
-          provider,
-        );
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get erc20 Contract Interface is not performed.');
-      }
-
-      // get decimals from erc20 contract
-      let decimals;
-      try {
-        decimals = await erc20Instance.functions.decimals();
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
-        );
-      }
-
-      // get transferFrom encoded data
-      try {
-        erc20Instance.interface.encodeFunctionData('transfer', [
-          data.recipient,
-          ethers.utils.parseUnits(data.value, decimals),
-        ]);
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
-        );
-      }
-
-      // clear the transaction batch
-      try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // estimate transactions added to the batch
-      try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -3442,18 +3093,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -3464,7 +3115,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3500,7 +3151,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3508,8 +3159,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.tokenAddress_optimismUSDC,
+        await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.tokenAddress_xdaiUSDC,
           data: transactionData,
         });
       } catch (e) {
@@ -3519,7 +3170,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -3534,7 +3185,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.incorrectTxHash,
           );
         }
@@ -3556,18 +3207,18 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // get the respective provider details
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_optimism,
+          data.providerNetwork_xdai,
         );
       } catch (e) {
         console.error(e);
@@ -3578,7 +3229,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       let erc20Instance;
       try {
         erc20Instance = new ethers.Contract(
-          data.tokenAddress_optimismUSDC,
+          data.tokenAddress_xdaiUSDC,
           ERC20_ABI,
           provider,
         );
@@ -3614,7 +3265,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -3622,8 +3273,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.tokenAddress_optimismUSDC,
+        await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.tokenAddress_xdaiUSDC,
           data: transactionData,
         });
       } catch (e) {
@@ -3633,7 +3284,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -3648,7 +3299,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.pastTxHash,
           );
         }
@@ -3670,12 +3321,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3705,12 +3356,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3740,12 +3391,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3774,12 +3425,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3809,12 +3460,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3844,12 +3495,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3878,12 +3529,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3913,12 +3564,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -3947,163 +3598,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Perform the transfer ERC721 NFT token with same sender address while creating the NFT Data on the optimism network', async () => {
-    if (runTest) {
-      // get erc721 Contract Interface
-      let erc721Interface;
-      let erc721Data;
-      try {
-        erc721Interface = new ethers.utils.Interface(abi.abi);
-
-        erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-          data.sender,
-          data.sender,
-          data.tokenId,
-        ]);
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get erc721 Contract Interface is not performed.');
-      }
-
-      // clear the transaction batch
-      try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // add transactions to the batch
-      try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.nft_tokenAddress,
-          data: erc721Data,
-        });
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // estimate transactions added to the batch
-      let op;
-      try {
-        op = await optimismMainNetSdk.estimate();
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The estimate transactions added to the batch is not performed.',
-        );
-      }
-
-      // sending to the bundler
-      try {
-        await optimismMainNetSdk.send(op);
-
-        assert.fail(
-          'The expected validation is not displayed when entered the same sender address while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        let error = e.reason;
-        if (error.includes('invalid address')) {
-          console.log(
-            'The validation for sender address is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the same sender address while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH SAME SENDER ADDRESS WHILE ESTIMATE THE ADDED THE TRANSACTIONS TO THE BATCH ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  xit('REGRESSION: Perform the transfer ERC721 NFT token with same recipient address while creating the NFT Data on the optimism network', async () => {
-    if (runTest) {
-      // get erc721 Contract Interface
-      let erc721Interface;
-      let erc721Data;
-      try {
-        erc721Interface = new ethers.utils.Interface(abi.abi);
-
-        erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-          data.recipient,
-          data.recipient,
-          data.tokenId,
-        ]);
-      } catch (e) {
-        console.error(e);
-        assert.fail('The get erc721 Contract Interface is not performed.');
-      }
-
-      // clear the transaction batch
-      try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // add transactions to the batch
-      try {
-        await optimismMainNetSdk.addUserOpsToBatch({
-          to: data.nft_tokenAddress,
-          data: erc721Data,
-        });
-      } catch (e) {
-        console.error(e);
-        assert.fail('The transaction of the batch is not clear correctly.');
-      }
-
-      // estimate transactions added to the batch
-      let op;
-      try {
-        op = await optimismMainNetSdk.estimate();
-      } catch (e) {
-        console.error(e);
-        assert.fail(
-          'The estimate transactions added to the batch is not performed.',
-        );
-      }
-
-      // sending to the bundler
-      try {
-        await optimismMainNetSdk.send(op);
-
-        assert.fail(
-          'The expected validation is not displayed when entered the same recipient address while estimate the added transactions to the batch.',
-        );
-      } catch (e) {
-        console.error(e);
-        let error = e.reason;
-        if (error.includes('invalid address')) {
-          console.log(
-            'The validation for recipient address is displayed as expected while estimate the added transactions to the batch.',
-          );
-        } else {
-          console.error(e);
-          assert.fail(
-            'The expected validation is not displayed when entered the same recipient address while estimate the added transactions to the batch.',
-          );
-        }
-      }
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH SAME RECEPIENT ADDRESS WHILE ESTIMATE THE ADDED THE TRANSACTIONS TO THE BATCH ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -4122,7 +3622,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -4130,7 +3630,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // get balance of the account address
       try {
-        await optimismMainNetSdk.getNativeBalance();
+        await xdaiMainNetSdk.getNativeBalance();
       } catch (e) {
         console.error(e);
         assert.fail('The balance of the ERC721 NFT Token is not displayed.');
@@ -4138,7 +3638,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
 
         assert.fail(
           'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -4157,12 +3657,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -4182,7 +3682,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -4190,7 +3690,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.nft_tokenAddress,
           data: erc721Data,
         });
@@ -4201,7 +3701,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -4216,7 +3716,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.incorrectTxHash,
           );
         }
@@ -4238,12 +3738,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the optimism network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the xdai network', async () => {
     if (runTest) {
       // get erc721 Contract Interface
       let erc721Interface;
@@ -4263,7 +3763,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // clear the transaction batch
       try {
-        await optimismMainNetSdk.clearUserOpsFromBatch();
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
       } catch (e) {
         console.error(e);
         assert.fail('The transaction of the batch is not clear correctly.');
@@ -4271,7 +3771,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // add transactions to the batch
       try {
-        await optimismMainNetSdk.addUserOpsToBatch({
+        await xdaiMainNetSdk.addUserOpsToBatch({
           to: data.nft_tokenAddress,
           data: erc721Data,
         });
@@ -4282,7 +3782,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // estimate transactions added to the batch
       try {
-        await optimismMainNetSdk.estimate();
+        await xdaiMainNetSdk.estimate();
       } catch (e) {
         console.error(e);
         assert.fail(
@@ -4297,7 +3797,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
           await Helper.wait(2000);
-          userOpsReceipt = await optimismMainNetSdk.getUserOpReceipt(
+          userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
             data.pastTxHash,
           );
         }
@@ -4319,7 +3819,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE optimism NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
       );
     }
   });

@@ -6,29 +6,29 @@ import Helper from '../../../utils/Helper.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
-let maticMainNetSdk;
-let maticEtherspotWalletAddress;
-let maticNativeAddress = null;
+let xdaiMainNetSdk;
+let xdaiEtherspotWalletAddress;
+let xdaiNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with matic network on the MainNet', () => {
+describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with xdai network on the MainNet', () => {
   beforeEach(async () => {
     // added timeout
     Helper.wait(data.mediumTimeout);
 
     // initializating sdk
     try {
-      maticMainNetSdk = new PrimeSdk(
+      xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.POLYGON_CHAINID),
+          chainId: Number(process.env.XDAI_CHAINID),
           projectKey: process.env.PROJECT_KEY,
         },
       );
 
       try {
         assert.strictEqual(
-          maticMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.walletAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -42,12 +42,12 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
     // get EtherspotWallet address
     try {
-      maticEtherspotWalletAddress =
-        await maticMainNetSdk.getCounterFactualAddress();
+      xdaiEtherspotWalletAddress =
+        await xdaiMainNetSdk.getCounterFactualAddress();
 
       try {
         assert.strictEqual(
-          maticEtherspotWalletAddress,
+          xdaiEtherspotWalletAddress,
           data.sender,
           'The Etherspot Wallet Address is not calculated correctly.',
         );
@@ -61,9 +61,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       );
     }
 
-    let output = await maticMainNetSdk.getAccountBalances({
+    let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.POLYGON_CHAINID),
+      chainId: Number(process.env.XDAI_CHAINID),
     });
     let native_balance;
     let usdc_balance;
@@ -72,10 +72,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
     for (let i = 0; i < output.items.length; i++) {
       let tokenAddress = output.items[i].token;
-      if (tokenAddress === maticNativeAddress) {
+      if (tokenAddress === xdaiNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_maticUSDC) {
+      } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
@@ -91,21 +91,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Validate the getCrossChainQuotes response with valid details on the matic network', async () => {
+  it('SMOKE: Validate the getCrossChainQuotes response with valid details on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       let quotes;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        quotes = await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        quotes = await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         if (quotes.items.length > 0) {
           try {
@@ -174,30 +174,29 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE ON THE xdai NETWORK',
       );
     }
   });
 
-  it('SMOKE: Validate the getAdvanceRoutesLiFi response with valid details on the matic network', async () => {
+  it('SMOKE: Validate the getAdvanceRoutesLiFi response with valid details on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       let quotes;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
-          fromAmount: utils.parseUnits('0.0001', 6),
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
+          fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        quotes =
-          await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        quotes = await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         if (quotes.items.length > 0) {
           const quote = quotes.items[0]; // Selected the first route
-          await maticMainNetSdk.getStepTransaction({
+          await xdaiMainNetSdk.getStepTransaction({
             route: quote,
           });
 
@@ -213,7 +212,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.strictEqual(
               quotes.items[0].fromChainId,
-              data.matic_chainid,
+              data.xdai_chainid,
               'The fromChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
             );
           } catch (e) {
@@ -260,7 +259,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.strictEqual(
               quotes.items[0].toChainId,
-              data.arbitrum_chainid,
+              data.matic_chainid,
               'The toChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
             );
           } catch (e) {
@@ -329,24 +328,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform without fromchainid detail',
@@ -365,24 +364,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMCHAINID DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMCHAINID DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform without toChainId detail',
@@ -401,25 +400,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOCHAINID DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOCHAINID DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.invalidTokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.invalidTokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with invalid fromTokenAddress detail',
@@ -438,25 +437,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.incorrectTokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.incorrectTokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with incorrect fromTokenAddress detail',
@@ -475,24 +474,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform without fromTokenAddress detail',
@@ -511,25 +510,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.invalidTokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.invalidTokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with invalid toTokenAddress detail',
@@ -548,25 +547,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.incorrectTokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.incorrectTokenAddress_maticUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with incorrect toTokenAddress detail',
@@ -585,24 +584,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
           fromAddress: data.sender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform without toTokenAddress detail',
@@ -621,25 +620,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.invalidSender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with invalid fromAddress detail',
@@ -658,25 +657,25 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.incorrectSender,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform with incorrect fromAddress detail',
@@ -695,24 +694,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the matic network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAddress: data.sender,
         };
 
-        await maticMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+        await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
 
         assert.fail(
           'The getCrossChainQuotes request allowed to perform without fromAmount detail',
@@ -731,23 +730,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromChainId detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromChainId detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform without fromchainid detail',
@@ -766,23 +765,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMCHAINID DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMCHAINID DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toChainId detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toChainId detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform without toChainId detail',
@@ -801,24 +800,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOCHAINID DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOCHAINID DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.invalidTokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.invalidTokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform with invalid fromTokenAddress detail',
@@ -837,24 +836,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.incorrectTokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.incorrectTokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform with incorrect fromTokenAddress detail',
@@ -873,23 +872,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          toTokenAddress: data.tokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform without fromTokenAddress detail',
@@ -908,24 +907,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.invalidTokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.invalidTokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform with invalid toTokenAddress detail',
@@ -944,24 +943,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.incorrectTokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.incorrectTokenAddress_maticUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform with incorrect toTokenAddress detail',
@@ -980,23 +979,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toTokenAddress detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toTokenAddress detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
           fromAmount: utils.parseUnits(data.swap_value, 6),
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform without toTokenAddress detail',
@@ -1015,23 +1014,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromAmount detail on the matic network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromAmount detail on the xdai network', async () => {
     if (runTest) {
       let quoteRequestPayload;
       try {
         quoteRequestPayload = {
-          fromChainId: data.matic_chainid,
-          toChainId: data.arbitrum_chainid,
-          fromTokenAddress: data.tokenAddress_maticUSDC,
-          toTokenAddress: data.tokenAddress_arbitrumUSDC,
+          fromChainId: data.xdai_chainid,
+          toChainId: data.matic_chainid,
+          fromTokenAddress: data.tokenAddress_xdaiUSDC,
+          toTokenAddress: data.tokenAddress_maticUSDC,
         };
 
-        await maticMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+        await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
 
         assert.fail(
           'The getAdvanceRoutesLiFi request allowed to perform without fromAmount detail',
@@ -1050,7 +1049,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       }
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMADDRESS DETAIL ON THE matic NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMADDRESS DETAIL ON THE xdai NETWORK',
       );
     }
   });

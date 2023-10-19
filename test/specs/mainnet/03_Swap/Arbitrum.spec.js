@@ -75,7 +75,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       if (tokenAddress === arbitrumNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.arbitrumUsdcAddress) {
+      } else if (tokenAddress === data.tokenAddress_arbitrumUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
