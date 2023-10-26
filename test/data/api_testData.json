@@ -15,5 +15,6 @@
   "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress",
   "address": "0x684E10D67dc4159B813Db70a1DAeB5FcC98bd034",
   "entryPointAddress": "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-  "usdc_token": "USDC"
+  "usdc_token": "USDC",
+  "blockCount": 15
 }

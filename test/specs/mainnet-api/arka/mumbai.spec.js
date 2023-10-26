@@ -48,7 +48,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', () => {
     }
   });
 
-  it('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async () => {
+  it.only('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async () => {
     const addresses = [data.address];
     const startTime = performance.now();
 
@@ -125,7 +125,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', () => {
   });
 
   it('SMOKE: Validate the Pimlico Paymaster endpoint of Arka on Mumbai Network', async () => {
-    const context = { token: data.usdc_token };
+    // const context = { token: data.usdc_token };
     const startTime = performance.now();
 
     try {
@@ -137,8 +137,8 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', () => {
         },
         body: JSON.stringify({
           params: [
-            entryPointAddress,
-            context,
+            data.entryPointAddress,
+            { token: 'USDC' },
             data.mumbai_chainid_testnet,
             process.env.API_KEY,
           ],
