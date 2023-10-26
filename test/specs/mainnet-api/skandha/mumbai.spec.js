@@ -102,7 +102,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     }
   });
 
-  xit('SMOKE: Validate the skandha_feeHistory method of the skandha with valid details on Mumbai Network', async () => {
+  it('SMOKE: Validate the skandha_feeHistory method of the skandha with valid details on Mumbai Network', async () => {
     const startTime = performance.now();
 
     try {
@@ -113,7 +113,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
         },
         body: JSON.stringify({
           method: 'skandha_feeHistory',
-          params: [],
+          params: [data.entryPointAddress, data.blockCount, 'latest'],
           id: 46,
           jsonrpc: '2.0',
         }),
@@ -240,83 +240,9 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     }
   });
 
-  it.only('SMOKE: Perform the transfer native token with valid details on the Mumbai network', async () => {
+  it('SMOKE: Validate the eth_sendUserOperation method of the skandha with valid details on Mumbai Network', async () => {
     const startTime = performance.now();
 
-    // initializating sdk
-    try {
-      mumbaiTestNetSdk = new PrimeSdk(
-        { privateKey: process.env.PRIVATE_KEY },
-        {
-          chainId: Number(process.env.POLYGON_CHAINID_TESTNET),
-          projectKey: process.env.PROJECT_KEY,
-        },
-      );
-
-      try {
-        assert.strictEqual(
-          mumbaiTestNetSdk.state.walletAddress,
-          data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
-        );
-      } catch (e) {
-        console.error(e);
-      }
-    } catch (e) {
-      console.error(e);
-      assert.fail('The SDK is not initialled successfully.');
-    }
-
-    // get EtherspotWallet address
-    try {
-      await mumbaiTestNetSdk.getCounterFactualAddress();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
-      );
-    }
-
-    // clear the transaction batch
-    try {
-      await mumbaiTestNetSdk.clearUserOpsFromBatch();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The transaction of the batch is not clear correctly.');
-    }
-
-    // add transactions to the batch
-    try {
-      await mumbaiTestNetSdk.addUserOpsToBatch({
-        to: data.recipient,
-        value: ethers.utils.parseEther('0.000001'),
-      });
-    } catch (e) {
-      console.error(e);
-      assert.fail('The addition of transaction in the batch is not performed.');
-    }
-
-    // get balance of the account address
-    try {
-      await mumbaiTestNetSdk.getNativeBalance();
-    } catch (e) {
-      console.error(e);
-      assert.fail('The balance of the native token is not displayed.');
-    }
-
-    // estimate transactions added to the batch and get the fee data for the UserOp
-    let op;
-
-    try {
-      op = await mumbaiTestNetSdk.estimate();
-    } catch (e) {
-      console.error(e);
-      assert.fail(
-        'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
-      );
-    }
-
-    // validate the eth_estimateUserOperationGas method of skandha
     try {
       const response = await fetch('https://mumbai-bundler.etherspot.io/', {
         method: 'POST',
@@ -324,8 +250,8 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          method: 'eth_estimateUserOperationGas',
-          params: [op, data.entryPointAddress],
+          method: 'eth_sendUserOperation',
+          params: [],
           id: 46,
           jsonrpc: '2.0',
         }),
@@ -347,7 +273,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the skandha_getGasPrice response.',
+            'The result value is empty in the eth_supportedEntryPoints response.',
           );
         } catch (e) {
           console.error(e);
@@ -358,6 +284,10 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
       console.error('Fetch error:', error);
       assert.fail('Getting an error');
     }
+  });
+
+  it('SMOKE: Perform the transfer native token with valid details on the Mumbai network', async () => {
+    const startTime = performance.now();
 
     // validate the eth_sendUserOperation method of skandha
     try {
@@ -368,7 +298,29 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
         },
         body: JSON.stringify({
           method: 'eth_sendUserOperation',
-          params: [op],
+          params: [
+            {
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'eth_sendUserOperation',
+              params: [
+                {
+                  sender, // address
+                  nonce, // uint256
+                  initCode, // bytes
+                  callData, // bytes
+                  callGasLimit, // uint256
+                  verificationGasLimit, // uint256
+                  preVerificationGas, // uint256
+                  maxFeePerGas, // uint256
+                  maxPriorityFeePerGas, // uint256
+                  paymasterAndData, // bytes
+                  signature, // bytes
+                },
+                entryPoint, // address
+              ],
+            },
+          ],
           id: 46,
           jsonrpc: '2.0',
         }),

@@ -55,6 +55,6 @@
   "invalid_matic_chainid": 19,
   "invalid_optimism_chainid": 158,
   "invalid_xdai_chainid": 105,
-  "minimum_token_balance": 0.0001,
-  "minimum_native_balance": 0.0001
+  "minimum_token_balance": 0.00001,
+  "minimum_native_balance": 0.00001
 }
