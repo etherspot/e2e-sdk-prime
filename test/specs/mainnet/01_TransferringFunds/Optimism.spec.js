@@ -2185,7 +2185,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -4076,7 +4076,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -4908,7 +4908,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );

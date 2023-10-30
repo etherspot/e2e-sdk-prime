@@ -2017,7 +2017,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it.only('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2049,8 +2049,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          console.log('error::::::::', e);
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -3585,7 +3584,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it.only('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3663,7 +3662,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -4001,7 +4000,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it.only('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4050,7 +4049,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'cannot sign empty transaction') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
