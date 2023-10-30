@@ -2017,7 +2017,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it.only('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3584,7 +3584,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it.only('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4000,7 +4000,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it.only('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
