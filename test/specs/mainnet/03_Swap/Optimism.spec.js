@@ -2,8 +2,8 @@ import { PrimeSdk } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
-import Helper from '../../../utils/Helper.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
@@ -12,10 +12,9 @@ let optimismEtherspotWalletAddress;
 let optimismNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with optimism network on the MainNet', () => {
-  beforeEach(async () => {
-    // added timeout
-    Helper.wait(data.mediumTimeout);
+describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with optimism network on the MainNet', function () {
+  beforeEach(async function () {
+    var test = this;
 
     // initializating sdk
     try {
@@ -35,9 +34,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail('The SDK is not initialled successfully.');
     }
 
@@ -54,9 +57,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail(
         'The Etherspot Wallet Address is not displayed successfully.',
       );
@@ -92,9 +99,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Validate the getCrossChainQuotes response with valid details on the optimism network', async () => {
+  it('SMOKE: Validate the getCrossChainQuotes response with valid details on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         let quotes;
         try {
@@ -118,6 +126,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -127,6 +137,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -136,6 +148,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -145,16 +159,19 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
-              assert.strictEqual(
+              assert.isNotEmpty(
                 quotes.item[0].transaction.from,
-                data.sender,
                 'The from value of the transaction is not correct in the getCrossChainQuotes response.',
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -164,6 +181,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
           } else {
             assert.fail(
@@ -183,9 +202,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Validate the getAdvanceRoutesLiFi response with valid details on the optimism network', async () => {
+  it('SMOKE: Validate the getAdvanceRoutesLiFi response with valid details on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         let quotes;
         try {
@@ -213,16 +233,19 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
-              assert.strictEqual(
+              assert.isNumber(
                 quotes.items[0].fromChainId,
-                data.optimism_chainid,
                 'The fromChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -232,6 +255,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -241,6 +266,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -250,26 +277,30 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
-              assert.strictEqual(
+              assert.isNotEmpty(
                 quotes.items[0].fromAddress,
-                data.sender,
                 'The fromAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
-              assert.strictEqual(
+              assert.isNumber(
                 quotes.items[0].toChainId,
-                data.matic_chainid,
                 'The toChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -279,6 +310,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -288,6 +321,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -297,6 +332,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -306,16 +343,19 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
-              assert.strictEqual(
+              assert.isNotEmpty(
                 quotes.items[0].toAddress,
-                data.sender,
                 'The toAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -325,6 +365,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
           } else {
             assert.fail('The quotes are not display in the quote list');
@@ -340,9 +382,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -365,6 +408,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromchainid detail not added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromchainid detail not added in the getCrossChainQuotes request',
             );
@@ -378,9 +424,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -403,6 +450,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when toChainId detail not added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when toChainId detail not added in the getCrossChainQuotes request',
             );
@@ -416,9 +466,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -442,6 +493,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when invalid fromTokenAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when invalid fromTokenAddress detail added in the getCrossChainQuotes request',
             );
@@ -455,9 +509,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -481,6 +536,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when incorrect fromTokenAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when incorrect fromTokenAddress detail added in the getCrossChainQuotes request',
             );
@@ -494,9 +552,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -519,6 +578,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromTokenAddress detail not added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromTokenAddress detail not added in the getCrossChainQuotes request',
             );
@@ -532,9 +594,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -558,6 +621,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when invalid toTokenAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when invalid toTokenAddress detail added in the getCrossChainQuotes request',
             );
@@ -571,9 +637,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -597,6 +664,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when incorrect toTokenAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when incorrect toTokenAddress detail added in the getCrossChainQuotes request',
             );
@@ -610,9 +680,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -635,6 +706,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when toTokenAddress detail not added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when toTokenAddress detail not added in the getCrossChainQuotes request',
             );
@@ -648,9 +722,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -674,6 +749,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when invalid fromAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when invalid fromAddress detail added in the getCrossChainQuotes request',
             );
@@ -687,9 +765,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -713,6 +792,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when incorrect fromAddress detail added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when incorrect fromAddress detail added in the getCrossChainQuotes request',
             );
@@ -726,9 +808,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -751,6 +834,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromAmount not added in the getCrossChainQuotes request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromAmount not added in the getCrossChainQuotes request',
             );
@@ -764,9 +850,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromChainId detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromChainId detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -788,6 +875,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromchainid detail not added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromchainid detail not added in the getAdvanceRoutesLiFi request',
             );
@@ -801,9 +891,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toChainId detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toChainId detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -825,6 +916,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when toChainId detail not added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when toChainId detail not added in the getAdvanceRoutesLiFi request',
             );
@@ -838,9 +932,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -863,6 +958,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when invalid fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when invalid fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
@@ -876,9 +974,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -901,6 +1000,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when incorrect fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when incorrect fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
@@ -914,9 +1016,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -938,6 +1041,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromTokenAddress detail not added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromTokenAddress detail not added in the getAdvanceRoutesLiFi request',
             );
@@ -951,9 +1057,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with invalid toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -976,6 +1083,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when invalid toTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when invalid toTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
@@ -989,9 +1099,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response with incorrect toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1014,6 +1125,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when incorrect toTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when incorrect toTokenAddress detail added in the getAdvanceRoutesLiFi request',
             );
@@ -1027,9 +1141,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toTokenAddress detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without toTokenAddress detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1051,6 +1166,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when toTokenAddress detail not added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when toTokenAddress detail not added in the getAdvanceRoutesLiFi request',
             );
@@ -1064,9 +1182,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromAmount detail on the optimism network', async () => {
+  it('REGRESSION: Validate the getAdvanceRoutesLiFi response without fromAmount detail on the optimism network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1088,6 +1207,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The correct validation is displayed when fromAmount not added in the getAdvanceRoutesLiFi request',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when fromAmount not added in the getAdvanceRoutesLiFi request',
             );

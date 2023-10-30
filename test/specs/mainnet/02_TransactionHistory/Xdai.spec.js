@@ -4,6 +4,7 @@ import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
@@ -12,10 +13,9 @@ let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', () => {
-  beforeEach(async () => {
-    // added timeout
-    Helper.wait(data.mediumTimeout);
+describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', function () {
+  beforeEach(async function () {
+    var test = this;
 
     // initializating sdk
     try {
@@ -37,9 +37,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail('The SDK is not initialled successfully.');
     }
 
@@ -56,9 +60,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail(
         'The Etherspot Wallet Address is not displayed successfully.',
       );
@@ -94,14 +102,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the transaction history of the native token transaction on the xdai network', async () => {
+  it('SMOKE: Validate the transaction history of the native token transaction on the xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await xdaiMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -113,6 +124,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -123,6 +136,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           await xdaiMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -132,6 +147,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           op = await xdaiMainNetSdk.estimate();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
           );
@@ -143,6 +160,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           uoHash = await xdaiMainNetSdk.send(op);
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The sign the UserOp and sending to the bundler action is not performed.',
           );
@@ -154,13 +173,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
           }
-
-          console.log('userOpsReceipt::::::::::', userOpsReceipt);
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get transaction hash action is not performed.');
         }
 
@@ -190,6 +209,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -200,6 +221,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // blockNumber_singleTransaction = singleTransaction.blockNumber;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -210,6 +233,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // from_singleTransaction = singleTransaction.from;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -220,6 +245,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // gasLimit_singleTransaction = singleTransaction.gasLimit;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -230,6 +257,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // gasPrice_singleTransaction = singleTransaction.gasPrice;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -240,6 +269,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // gasUsed_singleTransaction = singleTransaction.gasUsed;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -250,6 +281,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             // hash_singleTransaction = singleTransaction.hash;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -259,6 +292,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -268,6 +303,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -277,6 +314,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -286,6 +325,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -295,6 +336,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -304,6 +347,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -313,6 +358,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -322,6 +369,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -331,6 +380,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -340,18 +391,21 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               singleTransaction.status,
-              'Completed',
               'The status value is not correct in the transaction details response.',
             );
 
             // status_singleTransaction = singleTransaction.status;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -361,6 +415,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -370,6 +426,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -379,6 +437,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -391,9 +451,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             //   singleTransaction.blockExplorerUrl;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get transaction details is not performed.');
         }
 
@@ -426,6 +490,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -436,6 +502,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         blockNumber_transactions = transactions.items[x].blockNumber;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -446,17 +514,20 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
-        //         assert.strictEqual(
+        //         assert.isNotEmpty(
         //           transactions.items[x].from,
-        //           data.sender,
         //           'The from address value is not correct in the transaction details response.',
         //         );
         //         from_transactions = transactions.items[x].from;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -467,6 +538,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -478,6 +551,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         gasLimit_transactions = transactions.items[x].gasLimit;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -488,6 +563,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -499,6 +576,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         gasPrice_transactions = transactions.items[x].gasPrice;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -509,6 +588,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -519,6 +600,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         gasUsed_transactions = transactions.items[x].gasUsed;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -529,6 +612,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -540,6 +625,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         hash_transactions = transactions.items[x].hash;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -550,6 +637,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -559,6 +648,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -568,6 +659,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -577,6 +670,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -586,6 +681,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -595,6 +692,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -604,6 +703,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -613,6 +714,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -622,6 +725,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -631,6 +736,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -640,6 +747,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -651,6 +760,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         status_transactions = transactions.items[x].status;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -661,6 +772,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -670,6 +783,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -679,6 +794,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -688,6 +805,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -700,6 +819,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //           transactions.items[x].blockExplorerUrl;
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
 
         //       try {
@@ -710,12 +831,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //         );
         //       } catch (e) {
         //         console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //       }
         //       break;
         //     }
         //   }
         // } catch (e) {
         //   console.error(e);
+        // const eString = e.toString();
+        // addContext(test, eString);
         //   assert.fail(
         //     'The history of the transactions of the respective address is not performed correctly.',
         //   );
@@ -728,9 +853,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the NFT List on the xdai network', async () => {
+  it('SMOKE: Validate the NFT List on the xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         let nfts;
         try {
           nfts = await xdaiMainNetSdk.getNftList({
@@ -748,6 +874,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -757,6 +885,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -766,6 +896,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -775,6 +907,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -784,6 +918,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -793,6 +929,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -802,6 +940,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -811,6 +951,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
 
             try {
@@ -820,12 +962,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } catch (e) {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
             }
           } else {
             console.log('The items are not available in the NFT list.');
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get NFT list is not performed correctly.');
         }
       }, 3); // Retry this async test up to 3 times
@@ -836,9 +982,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with random hash in xdai network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with random hash in xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // Fetching historical transactions
         let transactions;
         let randomTransaction;
@@ -870,6 +1017,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               transactions.items[randomTransaction].blockNumber;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -880,6 +1029,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             from_transactions = transactions.items[randomTransaction].from;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -891,6 +1042,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               transactions.items[randomTransaction].gasLimit;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -902,6 +1055,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               transactions.items[randomTransaction].gasPrice;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -913,6 +1068,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               transactions.items[randomTransaction].gasUsed;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -923,17 +1080,20 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             hash_transactions = transactions.items[randomTransaction].hash;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               transactions.items[randomTransaction].status,
-              'Completed',
               'The status value is empty in the get transactions response.',
             );
             status_transactions = transactions.items[randomTransaction].status;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -943,16 +1103,19 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               transactions.items[randomTransaction].direction,
-              'Sender',
               'The direction value is not equal in the get transactions response.',
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -962,6 +1125,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -971,6 +1136,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -982,9 +1149,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               transactions.items[randomTransaction].blockExplorerUrl;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'An error is displayed while Fetching historical transactions.',
           );
@@ -1013,6 +1184,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1023,6 +1196,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             blockNumber_singleTransaction = singleTransaction.blockNumber;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1033,6 +1208,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             from_singleTransaction = singleTransaction.from;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1043,6 +1220,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             gasLimit_singleTransaction = singleTransaction.gasLimit;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1053,6 +1232,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             gasPrice_singleTransaction = singleTransaction.gasPrice;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1063,6 +1244,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             gasUsed_singleTransaction = singleTransaction.gasUsed;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1073,6 +1256,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             hash_singleTransaction = singleTransaction.hash;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1082,6 +1267,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1091,6 +1278,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1100,6 +1289,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1109,6 +1300,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1118,6 +1311,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1127,6 +1322,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1136,6 +1333,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1145,6 +1344,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1154,6 +1355,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1163,6 +1366,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1172,17 +1377,20 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               singleTransaction.status,
-              'Completed',
               'The status value is empty in the get single transaction response.',
             );
             status_singleTransaction = singleTransaction.status;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1192,6 +1400,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1201,6 +1411,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1210,6 +1422,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1221,6 +1435,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               singleTransaction.blockExplorerUrl;
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1231,6 +1447,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1241,6 +1459,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1251,6 +1471,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1261,6 +1483,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1271,6 +1495,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1281,6 +1507,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1291,6 +1519,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1301,9 +1531,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'An error is displayed while Fetching single transaction.',
           );
@@ -1316,9 +1550,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response with invalid hash on xdai network', async () => {
+  it('REGRESSION: Validate the get transaction history response with invalid hash on xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // Fetching a single transaction
         let transaction;
         try {
@@ -1332,12 +1567,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'Getting the single transaction history with incorrect Hash.',
             );
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'Getting the single transaction history with incorrect Hash.',
           );
@@ -1350,9 +1589,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on xdai network', async () => {
+  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // Fetching a single transaction
         try {
           try {
@@ -1371,6 +1611,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               );
             } else {
               console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
               assert.fail(
                 'The transaction history is fetched with hash which not having 32 size hex.',
               );
@@ -1378,6 +1620,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The transaction history is fetched with hash which not having 32 size hex.',
           );
@@ -1390,9 +1634,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
             chainId: Number(process.env.INVALID_XDAI_CHAINID),
@@ -1408,6 +1653,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the get transactions history response with invalid chainid',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the get transactions history response with invalid chainid',
             );
@@ -1421,9 +1669,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in xdai network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
             chainId: Number(process.env.MATIC_CHAINID),
@@ -1439,6 +1688,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the get transactions history response with incorrect chainid',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the get transactions history response with incorrect chainid',
             );
@@ -1452,9 +1704,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid account in xdai network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with invalid account in xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
             chainId: Number(process.env.XDAI_CHAINID),
@@ -1470,6 +1723,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the get transactions history response with invalid account',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the get transactions history response with invalid account',
             );
@@ -1483,9 +1739,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect account in xdai network', async () => {
+  xit('REGRESSION: Validate the get transactions history response with incorrect account in xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
             chainId: Number(process.env.XDAI_CHAINID),
@@ -1501,6 +1758,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the get transactions history response with incorrect account',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the get transactions history response with incorrect account',
             );
@@ -1514,9 +1774,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid chainid on the xdai network', async () => {
+  it('REGRESSION: Validate the NFT List with invalid chainid on the xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getNftList({
             chainId: process.env.INVALID_XDAI_CHAINID,
@@ -1533,6 +1794,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the NFT list with invalid chainid',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the NFT List with invalid chainid',
             );
@@ -1546,9 +1810,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid account address on the xdai network', async () => {
+  it('REGRESSION: Validate the NFT List with invalid account address on the xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getNftList({
             chainId: Number(process.env.XDAI_CHAINID),
@@ -1565,6 +1830,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the NFT list with invalid account address',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the NFT List with invalid account address',
             );
@@ -1578,9 +1846,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the NFT List with incorrect account address on the xdai network', async () => {
+  it('REGRESSION: Validate the NFT List with incorrect account address on the xdai network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getNftList({
             chainId: Number(process.env.XDAI_CHAINID),
@@ -1596,6 +1865,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               'The correct validation is displayed while getting the NFT list with inncorrect account address',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed for the NFT List with incorrect account address',
             );

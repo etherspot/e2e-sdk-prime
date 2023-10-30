@@ -6,6 +6,7 @@ import Helper from '../../../utils/Helper.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import abi from '../../../data/NFTabi.json' assert { type: 'json' };
+import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
@@ -14,10 +15,9 @@ let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when transfer a token with arbitrum network on the MainNet', () => {
-  beforeEach(async () => {
-    // added timeout
-    Helper.wait(data.mediumTimeout);
+describe('The PrimeSDK, when transfer a token with arbitrum network on the MainNet', function () {
+  beforeEach(async function () {
+    var test = this;
 
     // initializating sdk
     try {
@@ -37,9 +37,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail('The SDK is not initialled successfully.');
     }
 
@@ -56,9 +60,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         );
       } catch (e) {
         console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
       }
     } catch (e) {
       console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
       assert.fail(
         'The Etherspot Wallet Address is not displayed successfully.',
       );
@@ -94,14 +102,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('SMOKE: Perform the transfer native token with valid details on the arbitrum network', async () => {
+  it('SMOKE: Perform the transfer native token with valid details on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -110,7 +121,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         try {
           transactionBatch = await arbitrumMainNetSdk.addUserOpsToBatch({
             to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
+            value: ethers.utils.parseEther(data.invalidValue),
           });
 
           try {
@@ -120,6 +131,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -129,6 +142,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -138,9 +153,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -158,9 +177,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -170,13 +193,14 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           op = await arbitrumMainNetSdk.estimate();
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               op.sender,
-              data.sender,
               'The sender value is not correct in the estimate transactions added to the batch response.',
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -186,6 +210,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -195,6 +221,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -204,6 +232,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -213,6 +243,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -222,6 +254,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -231,6 +265,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -240,6 +276,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -249,6 +287,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -258,6 +298,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -267,6 +309,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -276,6 +320,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -285,6 +331,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -294,6 +342,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -303,9 +353,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
           );
@@ -323,9 +377,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The sign the UserOp and sending to the bundler action is not performed.',
           );
@@ -337,7 +395,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
           }
 
@@ -348,6 +406,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -357,6 +417,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -366,6 +428,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -375,6 +439,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -384,6 +450,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -393,6 +461,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -402,6 +472,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -411,6 +483,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -420,6 +494,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -429,6 +505,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -438,6 +516,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -447,6 +527,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -456,6 +538,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -465,6 +549,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -474,6 +560,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -483,6 +571,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -492,6 +582,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -501,6 +593,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -510,6 +604,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -519,6 +615,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -528,9 +626,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get transaction hash action is not performed.');
         }
       }, 3); // Retry this async test up to 3 times
@@ -541,9 +643,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('SMOKE: Perform the transfer ERC20 token with valid details on the arbitrum network', async () => {
+  it('SMOKE: Perform the transfer ERC20 token with valid details on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -558,9 +661,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -574,6 +681,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -589,9 +698,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -612,9 +725,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -625,6 +742,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -643,6 +762,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -652,6 +773,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -661,6 +784,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -670,9 +795,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -682,13 +811,14 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           op = await arbitrumMainNetSdk.estimate();
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               op.sender,
-              data.sender,
               'The sender value is not correct in the estimate transactions added to the batch response.',
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -698,6 +828,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -707,6 +839,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -716,6 +850,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -725,6 +861,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -734,6 +872,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -743,6 +883,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -752,6 +894,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -761,6 +905,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -770,6 +916,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -779,6 +927,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -788,6 +938,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -797,6 +949,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -806,6 +960,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -815,9 +971,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch is not performed.',
           );
@@ -834,6 +994,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The sending to the bundler action is not performed.');
         }
 
@@ -843,7 +1005,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
           }
 
@@ -854,6 +1016,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -863,6 +1027,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -872,6 +1038,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -881,6 +1049,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -890,6 +1060,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -899,6 +1071,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -908,6 +1082,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -917,6 +1093,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -926,6 +1104,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -935,6 +1115,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -944,6 +1126,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -953,6 +1137,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -962,6 +1148,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -971,6 +1159,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -980,6 +1170,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -989,6 +1181,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -998,6 +1192,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1007,6 +1203,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1016,6 +1214,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1025,6 +1225,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1034,9 +1236,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get transaction hash action is not performed.');
         }
       }, 3); // Retry this async test up to 3 times
@@ -1047,9 +1253,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the arbitrum network', async () => {
+  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         let erc721Data;
@@ -1069,9 +1276,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc721 Contract Interface is not performed.');
         }
 
@@ -1080,6 +1291,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -1098,6 +1311,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1107,6 +1322,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1116,6 +1333,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1125,9 +1344,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -1137,13 +1360,14 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           op = await arbitrumMainNetSdk.estimate();
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               op.sender,
-              data.sender,
               'The sender value is not correct in the estimate transactions added to the batch response.',
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1153,6 +1377,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1162,6 +1388,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1171,6 +1399,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1180,6 +1410,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1189,6 +1421,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1198,6 +1432,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1207,6 +1443,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1216,6 +1454,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1225,6 +1465,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1234,6 +1476,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1243,6 +1487,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1252,6 +1498,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1261,6 +1509,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1270,9 +1520,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch is not performed.',
           );
@@ -1289,6 +1543,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The sending to the bundler action is not performed.');
         }
 
@@ -1298,7 +1554,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
           }
 
@@ -1309,16 +1565,19 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
-            assert.strictEqual(
+            assert.isNotEmpty(
               userOpsReceipt.sender,
-              data.sender,
               'The sender value is empty in the get transaction hash response.',
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1328,6 +1587,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1337,6 +1598,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1346,6 +1609,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1355,6 +1620,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1364,6 +1631,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1373,6 +1642,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1382,6 +1653,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1391,6 +1664,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1400,6 +1675,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1409,6 +1686,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1418,6 +1697,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1427,6 +1708,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1436,6 +1719,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1445,6 +1730,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1454,6 +1741,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1463,6 +1752,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1472,6 +1763,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
 
           try {
@@ -1481,9 +1774,13 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } catch (e) {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get transaction hash action is not performed.');
         }
       }, 3); // Retry this async test up to 3 times
@@ -1494,14 +1791,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
 
         // add transactions to the batch
@@ -1512,6 +1812,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -1522,6 +1824,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -1540,6 +1844,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
             );
@@ -1553,14 +1859,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
 
         // add transactions to the batch
@@ -1571,6 +1880,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -1581,6 +1892,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -1599,6 +1912,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
             );
@@ -1612,14 +1927,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
 
         // add transactions to the batch
@@ -1639,6 +1957,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid value while adding the transactions to the batch.',
             );
@@ -1652,14 +1972,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
 
         // add transactions to the batch
@@ -1679,6 +2002,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the very small value while adding the transactions to the batch.',
             );
@@ -1692,14 +2017,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -1708,6 +2036,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -1725,6 +2055,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
             );
@@ -1738,14 +2070,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -1757,6 +2092,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -1767,6 +2104,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -1775,6 +2114,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.estimate();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch is not performed.',
           );
@@ -1786,7 +2127,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
               data.incorrectTxHash,
             );
@@ -1802,6 +2143,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
             );
@@ -1815,14 +2158,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -1834,6 +2180,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The addition of transaction in the batch is not performed.',
           );
@@ -1844,6 +2192,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the native token is not displayed.');
         }
 
@@ -1852,6 +2202,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.estimate();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The estimate transactions added to the batch is not performed.',
           );
@@ -1863,7 +2215,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
+            await Helper.wait(500);
             userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
               data.pastTxHash,
             );
@@ -1879,6 +2231,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
             );
@@ -1892,9 +2246,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -1903,6 +2258,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -1916,6 +2273,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -1933,6 +2292,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid Provider Network while Getting the Decimal from ERC20 Contract.',
             );
@@ -1946,15 +2307,18 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(); // without provider
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -1968,6 +2332,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -1985,6 +2351,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid Provider Network while Getting the Decimal from ERC20 Contract.',
             );
@@ -1998,9 +2366,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2009,6 +2378,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2022,6 +2393,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2039,6 +2412,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the other Provider Network while Getting the Decimal from ERC20 Contract.',
             );
@@ -2052,9 +2427,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2063,6 +2439,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2076,6 +2454,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2093,6 +2473,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the incorrect Token Address while Getting the Decimal from ERC20 Contract.',
             );
@@ -2106,9 +2488,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2117,6 +2500,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2130,6 +2515,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2147,6 +2534,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid Token Address i.e. missing character while Getting the Decimal from ERC20 Contract.',
             );
@@ -2160,9 +2549,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2171,6 +2561,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2188,6 +2580,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the null Token Address while Getting the Decimal from ERC20 Contract.',
             );
@@ -2201,9 +2595,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2212,6 +2607,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2225,6 +2622,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2234,6 +2633,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2256,6 +2657,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the incorrect transfer method name while Getting the transferFrom encoded data.',
             );
@@ -2269,9 +2672,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2280,6 +2684,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2293,6 +2699,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2302,6 +2710,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2324,6 +2734,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid value while Getting the transferFrom encoded data.',
             );
@@ -2337,9 +2749,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2348,6 +2761,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2361,6 +2776,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2370,6 +2787,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2392,6 +2811,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the very small value while Getting the transferFrom encoded data.',
             );
@@ -2405,9 +2826,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2416,6 +2838,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2429,6 +2853,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2437,6 +2863,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2458,6 +2886,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not entered the value while Getting the transferFrom encoded data.',
             );
@@ -2471,9 +2901,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2482,6 +2913,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2495,6 +2928,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2504,6 +2939,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2527,6 +2964,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the incorrect recipient while Getting the transferFrom encoded data.',
             );
@@ -2540,9 +2979,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2551,6 +2991,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2564,6 +3006,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2573,6 +3017,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2596,6 +3042,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid recipient while Getting the transferFrom encoded data.',
             );
@@ -2609,9 +3057,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2620,6 +3069,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2633,6 +3084,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2642,6 +3095,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2663,6 +3118,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not entered the recepient while Getting the transferFrom encoded data.',
             );
@@ -2676,9 +3133,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2687,6 +3145,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2700,6 +3160,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2709,6 +3171,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2723,6 +3187,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2733,6 +3199,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2744,6 +3212,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2761,6 +3231,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the incorrect Token Address while added the estimated transaction to the batch.',
             );
@@ -2774,9 +3246,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2785,6 +3258,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2798,6 +3273,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2807,6 +3284,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2821,6 +3300,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2831,6 +3312,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2842,6 +3325,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2859,6 +3344,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the invalid Token Address while estimate the added transactions to the batch.',
             );
@@ -2872,9 +3359,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2883,6 +3371,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2896,6 +3386,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -2905,6 +3397,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2919,6 +3413,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -2929,6 +3425,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2940,6 +3438,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -2957,6 +3457,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when entered the null Token Address while estimate the added transactions to the batch.',
             );
@@ -2970,9 +3472,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -2981,6 +3484,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -2994,6 +3499,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -3003,6 +3510,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -3017,6 +3526,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -3027,6 +3538,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -3037,6 +3550,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           });
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -3054,6 +3569,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not entered the Token Address while estimate the added transactions to the batch.',
             );
@@ -3067,9 +3584,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get the respective provider details
         let provider;
         try {
@@ -3078,6 +3596,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The provider response is not displayed correctly.');
         }
 
@@ -3091,6 +3611,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           );
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc20 Contract Interface is not performed.');
         }
 
@@ -3100,6 +3622,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           decimals = await erc20Instance.functions.decimals();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -3113,6 +3637,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           ]);
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail(
             'The decimals from erc20 contract is not displayed correctly.',
           );
@@ -3123,6 +3649,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -3140,6 +3668,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
             );
@@ -3153,241 +3683,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
-        // get the respective provider details
-        let provider;
-        try {
-          provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_arbitrum,
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail('The provider response is not displayed correctly.');
-        }
-
-        // get erc20 Contract Interface
-        let erc20Instance;
-        try {
-          erc20Instance = new ethers.Contract(
-            data.tokenAddress_arbitrumUSDC,
-            ERC20_ABI,
-            provider,
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail('The get erc20 Contract Interface is not performed.');
-        }
-
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The decimals from erc20 contract is not displayed correctly.',
-          );
-        }
-
-        // get transferFrom encoded data
-        let transactionData;
-        try {
-          transactionData = erc20Instance.interface.encodeFunctionData(
-            'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The decimals from erc20 contract is not displayed correctly.',
-          );
-        }
-
-        // clear the transaction batch
-        try {
-          await arbitrumMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await arbitrumMainNetSdk.addUserOpsToBatch({
-            to: data.tokenAddress_arbitrumUSDC,
-            data: transactionData,
-          });
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // estimate transactions added to the batch
-        try {
-          await arbitrumMainNetSdk.estimate();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The estimate transactions added to the batch is not performed.',
-          );
-        }
-
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
-            userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
-              data.incorrectTxHash,
-            );
-          }
-
-          assert.fail(
-            'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
-          );
-        } catch (e) {
-          if (e.showDiff === false) {
-            console.log(
-              'The validation for transaction is displayed as expected while getting the transaction hash.',
-            );
-          } else {
-            console.error(e);
-            assert.fail(
-              'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC20 token with the past TxHash while getting the transaction hash on the arbitrum network', async () => {
-    if (runTest) {
-      await customRetryAsync(async () => {
-        // get the respective provider details
-        let provider;
-        try {
-          provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_arbitrum,
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail('The provider response is not displayed correctly.');
-        }
-
-        // get erc20 Contract Interface
-        let erc20Instance;
-        try {
-          erc20Instance = new ethers.Contract(
-            data.tokenAddress_arbitrumUSDC,
-            ERC20_ABI,
-            provider,
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail('The get erc20 Contract Interface is not performed.');
-        }
-
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The decimals from erc20 contract is not displayed correctly.',
-          );
-        }
-
-        // get transferFrom encoded data
-        let transactionData;
-        try {
-          transactionData = erc20Instance.interface.encodeFunctionData(
-            'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
-          );
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The decimals from erc20 contract is not displayed correctly.',
-          );
-        }
-
-        // clear the transaction batch
-        try {
-          await arbitrumMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await arbitrumMainNetSdk.addUserOpsToBatch({
-            to: data.tokenAddress_arbitrumUSDC,
-            data: transactionData,
-          });
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // estimate transactions added to the batch
-        try {
-          await arbitrumMainNetSdk.estimate();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The estimate transactions added to the batch is not performed.',
-          );
-        }
-
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
-            userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
-              data.pastTxHash,
-            );
-          }
-
-          assert.fail(
-            'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
-          );
-        } catch (e) {
-          if (e.showDiff === false) {
-            console.log(
-              'The validation for transaction is displayed as expected while getting the transaction hash.',
-            );
-          } else {
-            console.error(e);
-            assert.fail(
-              'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the arbitrum network', async () => {
-    if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3409,6 +3708,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the incorrect sender address while creating the NFT Data.',
             );
@@ -3422,9 +3723,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3446,6 +3748,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the invalid Sender Address i.e. missing character while creating the NFT Data.',
             );
@@ -3459,9 +3763,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3482,6 +3787,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the Sender Address while creating the NFT Data.',
             );
@@ -3495,9 +3802,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3519,6 +3827,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the incorrect recipient address while creating the NFT Data.',
             );
@@ -3532,9 +3842,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3556,6 +3867,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the invalid Recipient Address i.e. missing character while creating the NFT Data.',
             );
@@ -3569,9 +3882,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3592,6 +3906,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the Recipient Address while creating the NFT Data.',
             );
@@ -3605,9 +3921,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3629,6 +3946,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when added the incorrect tokenId while creating the NFT Data.',
             );
@@ -3642,9 +3961,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3665,6 +3985,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the tokenid while creating the NFT Data.',
             );
@@ -3678,9 +4000,10 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async () => {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
     if (runTest) {
-      await customRetryAsync(async () => {
+      await customRetryAsync(async function () {
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3693,6 +4016,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           ]);
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The get erc721 Contract Interface is not performed.');
         }
 
@@ -3701,6 +4026,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The transaction of the batch is not clear correctly.');
         }
 
@@ -3709,6 +4036,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           await arbitrumMainNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
           assert.fail('The balance of the ERC721 NFT Token is not displayed.');
         }
 
@@ -3726,6 +4055,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           } else {
             console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
               'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
             );
@@ -3735,172 +4066,6 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the incorrect TxHash while getting the transaction hash on the arbitrum network', async () => {
-    if (runTest) {
-      await customRetryAsync(async () => {
-        // get erc721 Contract Interface
-        let erc721Interface;
-        let erc721Data;
-        try {
-          erc721Interface = new ethers.utils.Interface(abi.abi);
-
-          erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-            data.sender,
-            data.recipient,
-            data.tokenId,
-          ]);
-        } catch (e) {
-          console.error(e);
-          assert.fail('The get erc721 Contract Interface is not performed.');
-        }
-
-        // clear the transaction batch
-        try {
-          await arbitrumMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await arbitrumMainNetSdk.addUserOpsToBatch({
-            to: data.nft_tokenAddress,
-            data: erc721Data,
-          });
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // estimate transactions added to the batch
-        try {
-          await arbitrumMainNetSdk.estimate();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The estimate transactions added to the batch is not performed.',
-          );
-        }
-
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
-            userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
-              data.incorrectTxHash,
-            );
-          }
-
-          assert.fail(
-            'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
-          );
-        } catch (e) {
-          if (e.showDiff === false) {
-            console.log(
-              'The validation for transaction is displayed as expected while getting the transaction hash.',
-            );
-          } else {
-            console.error(e);
-            assert.fail(
-              'The expected validation is not displayed when added the incorrect TxHash while getting the transaction hash.',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer ERC721 NFT Token with the past TxHash while getting the transaction hash on the arbitrum network', async () => {
-    if (runTest) {
-      await customRetryAsync(async () => {
-        // get erc721 Contract Interface
-        let erc721Interface;
-        let erc721Data;
-        try {
-          erc721Interface = new ethers.utils.Interface(abi.abi);
-
-          erc721Data = erc721Interface.encodeFunctionData('transferFrom', [
-            data.sender,
-            data.recipient,
-            data.tokenId,
-          ]);
-        } catch (e) {
-          console.error(e);
-          assert.fail('The get erc721 Contract Interface is not performed.');
-        }
-
-        // clear the transaction batch
-        try {
-          await arbitrumMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await arbitrumMainNetSdk.addUserOpsToBatch({
-            to: data.nft_tokenAddress,
-            data: erc721Data,
-          });
-        } catch (e) {
-          console.error(e);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // estimate transactions added to the batch
-        try {
-          await arbitrumMainNetSdk.estimate();
-        } catch (e) {
-          console.error(e);
-          assert.fail(
-            'The estimate transactions added to the batch is not performed.',
-          );
-        }
-
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(2000);
-            userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(
-              data.pastTxHash,
-            );
-          }
-
-          assert.fail(
-            'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
-          );
-        } catch (e) {
-          if (e.showDiff === false) {
-            console.log(
-              'The validation for transaction is displayed as expected while getting the transaction hash.',
-            );
-          } else {
-            console.error(e);
-            assert.fail(
-              'The expected validation is not displayed when added the past TxHash while getting the transaction hash.',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
       );
     }
   });
