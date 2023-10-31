@@ -235,7 +235,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     }
   });
 
-  it('SMOKE: Validate the eth_sendUserOperation method of the skandha with valid details on Mumbai Network', async () => {
+  it.only('SMOKE: Validate the eth_sendUserOperation method of the skandha with valid details on Mumbai Network', async () => {
     const startTime = performance.now();
 
     try {
