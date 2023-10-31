@@ -24,8 +24,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         {
           chainId: Number(process.env.XDAI_CHAINID),
           projectKey: process.env.PROJECT_KEY,
-          rpcProviderUrl: data.providerNetwork_xdai,
-          bundlerRpcUrl: data.providerNetwork_xdai,
         },
       );
 

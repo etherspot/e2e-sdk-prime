@@ -121,7 +121,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
             to: data.recipient,
-            value: ethers.utils.parseEther(data.invalidValue),
+            value: ethers.utils.parseEther(data.value),
           });
 
           try {
@@ -2049,7 +2049,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction') {
+          if (e.message === 'cannot sign empty transaction batch') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -3662,7 +3662,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction') {
+          if (e.message === 'cannot sign empty transaction batch') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -4049,7 +4049,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction') {
+          if (e.message === 'cannot sign empty transaction batch') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );

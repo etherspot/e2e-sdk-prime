@@ -48,7 +48,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', () => {
     }
   });
 
-  it.only('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async () => {
+  it('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async () => {
     const addresses = [data.address];
     const startTime = performance.now();
 
