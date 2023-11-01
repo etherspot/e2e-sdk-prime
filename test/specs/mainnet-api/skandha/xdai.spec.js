@@ -9,7 +9,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+      const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

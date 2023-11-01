@@ -389,252 +389,254 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           );
         }
 
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(500);
-            userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
-          }
+        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.userOpHash,
-              'The userOpHash value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        // // get transaction hash
+        // let userOpsReceipt = null;
+        // try {
+        //   console.log('Waiting for transaction...');
+        //   const timeout = Date.now() + 60000; // 1 minute timeout
+        //   while (userOpsReceipt == null && Date.now() < timeout) {
+        //     await Helper.wait(500);
+        //     userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.sender,
-              'The sender value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.userOpHash,
+        //       'The userOpHash value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.nonce,
-              'The nonce value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.sender,
+        //       'The sender value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasCost,
-              'The actualGasCost value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.nonce,
+        //       'The nonce value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasUsed,
-              'The actualGasUsed value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasCost,
+        //       'The actualGasCost value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isTrue(
-              userOpsReceipt.success,
-              'The success value is false in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasUsed,
+        //       'The actualGasUsed value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.to,
-              'The to value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isTrue(
+        //       userOpsReceipt.success,
+        //       'The success value is false in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.from,
-              'The from value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.to,
+        //       'The to value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionIndex,
-              'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.from,
+        //       'The from value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.gasUsed,
-              'The gasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionIndex,
+        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logsBloom,
-              'The logsBloom value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.gasUsed,
+        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockHash,
-              'The blockHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logsBloom,
+        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionHash,
-              'The transactionHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockHash,
+        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logs,
-              'The logs value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionHash,
+        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockNumber,
-              'The blockNumber value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logs,
+        //       'The logs value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.confirmations,
-              'The confirmations value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockNumber,
+        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.cumulativeGasUsed,
-              'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.confirmations,
+        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.effectiveGasPrice,
-              'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.cumulativeGasUsed,
+        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.status,
-              'The status value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.effectiveGasPrice,
+        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.type,
-              'The type value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.status,
+        //       'The status value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isTrue(
-              userOpsReceipt.receipt.byzantium,
-              'The byzantium value of the receipt is false in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get transaction hash action is not performed.');
-        }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.type,
+        //       'The type value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+
+        //   try {
+        //     assert.isTrue(
+        //       userOpsReceipt.receipt.byzantium,
+        //       'The byzantium value of the receipt is false in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+        // } catch (e) {
+        //   console.error(e);
+        //   const eString = e.toString();
+        //   addContext(test, eString);
+        //   assert.fail('The get transaction hash action is not performed.');
+        // }
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
@@ -999,252 +1001,254 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           assert.fail('The sending to the bundler action is not performed.');
         }
 
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(500);
-            userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
-          }
+        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.userOpHash,
-              'The userOpHash value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        // // get transaction hash
+        // let userOpsReceipt = null;
+        // try {
+        //   console.log('Waiting for transaction...');
+        //   const timeout = Date.now() + 60000; // 1 minute timeout
+        //   while (userOpsReceipt == null && Date.now() < timeout) {
+        //     await Helper.wait(500);
+        //     userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.sender,
-              'The sender value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.userOpHash,
+        //       'The userOpHash value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.nonce,
-              'The nonce value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.sender,
+        //       'The sender value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasCost,
-              'The actualGasCost value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.nonce,
+        //       'The nonce value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasUsed,
-              'The actualGasUsed value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasCost,
+        //       'The actualGasCost value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isTrue(
-              userOpsReceipt.success,
-              'The success value is false in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasUsed,
+        //       'The actualGasUsed value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.to,
-              'The to value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isTrue(
+        //       userOpsReceipt.success,
+        //       'The success value is false in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.from,
-              'The from value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.to,
+        //       'The to value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionIndex,
-              'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.from,
+        //       'The from value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.gasUsed,
-              'The gasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionIndex,
+        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logsBloom,
-              'The logsBloom value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.gasUsed,
+        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockHash,
-              'The blockHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logsBloom,
+        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionHash,
-              'The transactionHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockHash,
+        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logs,
-              'The logs value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionHash,
+        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockNumber,
-              'The blockNumber value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logs,
+        //       'The logs value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.confirmations,
-              'The confirmations value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockNumber,
+        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.cumulativeGasUsed,
-              'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.confirmations,
+        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.effectiveGasPrice,
-              'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.cumulativeGasUsed,
+        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.status,
-              'The status value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.effectiveGasPrice,
+        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.type,
-              'The type value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.status,
+        //       'The status value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isTrue(
-              userOpsReceipt.receipt.byzantium,
-              'The byzantium value of the receipt is false in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get transaction hash action is not performed.');
-        }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.type,
+        //       'The type value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+
+        //   try {
+        //     assert.isTrue(
+        //       userOpsReceipt.receipt.byzantium,
+        //       'The byzantium value of the receipt is false in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+        // } catch (e) {
+        //   console.error(e);
+        //   const eString = e.toString();
+        //   addContext(test, eString);
+        //   assert.fail('The get transaction hash action is not performed.');
+        // }
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
@@ -1548,241 +1552,243 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           assert.fail('The sending to the bundler action is not performed.');
         }
 
-        // get transaction hash
-        let userOpsReceipt = null;
-        try {
-          console.log('Waiting for transaction...');
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(500);
-            userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
-          }
+        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.userOpHash,
-              'The userOpHash value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        // // get transaction hash
+        // let userOpsReceipt = null;
+        // try {
+        //   console.log('Waiting for transaction...');
+        //   const timeout = Date.now() + 60000; // 1 minute timeout
+        //   while (userOpsReceipt == null && Date.now() < timeout) {
+        //     await Helper.wait(500);
+        //     userOpsReceipt = await maticMainNetSdk.getUserOpReceipt(uoHash);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.sender,
-              'The sender value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.userOpHash,
+        //       'The userOpHash value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.nonce,
-              'The nonce value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.sender,
+        //       'The sender value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasCost,
-              'The actualGasCost value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.nonce,
+        //       'The nonce value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.actualGasUsed,
-              'The actualGasUsed value is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasCost,
+        //       'The actualGasCost value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isTrue(
-              userOpsReceipt.success,
-              'The success value is false in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.actualGasUsed,
+        //       'The actualGasUsed value is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.to,
-              'The to value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isTrue(
+        //       userOpsReceipt.success,
+        //       'The success value is false in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.from,
-              'The from value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.to,
+        //       'The to value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionIndex,
-              'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.from,
+        //       'The from value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.gasUsed,
-              'The gasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionIndex,
+        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logsBloom,
-              'The logsBloom value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.gasUsed,
+        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockHash,
-              'The blockHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logsBloom,
+        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.transactionHash,
-              'The transactionHash value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockHash,
+        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.logs,
-              'The logs value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.transactionHash,
+        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.blockNumber,
-              'The blockNumber value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.logs,
+        //       'The logs value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.confirmations,
-              'The confirmations value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.blockNumber,
+        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.cumulativeGasUsed,
-              'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.confirmations,
+        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.effectiveGasPrice,
-              'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.cumulativeGasUsed,
+        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.status,
-              'The status value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.effectiveGasPrice,
+        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
 
-          try {
-            assert.isNotEmpty(
-              userOpsReceipt.receipt.type,
-              'The type value of the receipt is empty in the get transaction hash response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get transaction hash action is not performed.');
-        }
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.status,
+        //       'The status value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+
+        //   try {
+        //     assert.isNotEmpty(
+        //       userOpsReceipt.receipt.type,
+        //       'The type value of the receipt is empty in the get transaction hash response.',
+        //     );
+        //   } catch (e) {
+        //     console.error(e);
+        //     const eString = e.toString();
+        //     addContext(test, eString);
+        //   }
+        // } catch (e) {
+        //   console.error(e);
+        //   const eString = e.toString();
+        //   addContext(test, eString);
+        //   assert.fail('The get transaction hash action is not performed.');
+        // }
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(

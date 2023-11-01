@@ -8,28 +8,28 @@ import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
-let xdaiMainNetSdk;
-let xdaiEtherspotWalletAddress;
-let xdaiNativeAddress = null;
+let goerliTestNetSdk;
+let goerliEtherspotWalletAddress;
+let goerliNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', function () {
+describe('The PrimeSDK, when get the single transaction and multiple transaction details with goerli network on the TestNet', function () {
   beforeEach(async function () {
     var test = this;
 
     // initializating sdk
     try {
-      xdaiMainNetSdk = new PrimeSdk(
+      goerliTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.XDAI_CHAINID),
-          projectKey: process.env.PROJECT_KEY,
+          chainId: Number(process.env.GOERLI_CHAINID),
+          projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          goerliTestNetSdk.state.walletAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -47,12 +47,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     // get EtherspotWallet address
     try {
-      xdaiEtherspotWalletAddress =
-        await xdaiMainNetSdk.getCounterFactualAddress();
+      goerliEtherspotWalletAddress =
+        await goerliTestNetSdk.getCounterFactualAddress();
 
       try {
         assert.strictEqual(
-          xdaiEtherspotWalletAddress,
+          goerliEtherspotWalletAddress,
           data.sender,
           'The Etherspot Wallet Address is not calculated correctly.',
         );
@@ -70,9 +70,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    let output = await goerliTestNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.XDAI_CHAINID),
+      chainId: Number(process.env.GOERLI_CHAINID),
     });
     let native_balance;
     let usdc_balance;
@@ -81,10 +81,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     for (let i = 0; i < output.items.length; i++) {
       let tokenAddress = output.items[i].token;
-      if (tokenAddress === xdaiNativeAddress) {
+      if (tokenAddress === goerliNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
+      } else if (tokenAddress === data.goerliUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
@@ -100,13 +100,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the transaction history of the native token transaction on the xdai network', async function () {
+  it('SMOKE: Validate the transaction history of the native token transaction on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -116,7 +116,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -131,7 +131,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -142,7 +142,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await xdaiMainNetSdk.estimate();
+          op = await goerliTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -155,9 +155,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await xdaiMainNetSdk.send(op);
-
-          console.log('uoHash::::::::::', uoHash);
+          uoHash = await goerliTestNetSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -173,11 +171,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await Helper.wait(5000);
-            userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+            await Helper.wait(500);
+            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
           }
-
-          console.log('userOpsReceipt::::::::::', userOpsReceipt);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -200,11 +196,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // let blockExplorerUrl_singleTransaction;
         try {
           transactionHash = userOpsReceipt.receipt.transactionHash;
-          singleTransaction = await xdaiMainNetSdk.getTransaction({
+          singleTransaction = await goerliTestNetSdk.getTransaction({
             hash: transactionHash,
           });
-
-          console.log('transactionHash::::::::::', transactionHash);
 
           try {
             assert.isNotEmpty(
@@ -478,8 +472,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // let status_transactions;
         // let blockExplorerUrl_transactions;
         // try {
-        //   transactions = await xdaiMainNetSdk.getTransactions({
-        //     chainId: Number(process.env.XDAI_CHAINID),
+        //   transactions = await goerliTestNetSdk.getTransactions({
+        //     chainId: Number(process.env.GOERLI_CHAINID),
         //     account: data.sender,
         //   });
 
@@ -852,19 +846,19 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE goerli NETWORK',
       );
     }
   });
 
-  it('SMOKE: Validate the NFT List on the xdai network', async function () {
+  it('SMOKE: Validate the NFT List on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         let nfts;
         try {
-          nfts = await xdaiMainNetSdk.getNftList({
-            chainId: Number(process.env.XDAI_CHAINID),
+          nfts = await goerliTestNetSdk.getNftList({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.sender,
           });
 
@@ -981,12 +975,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE goerli NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with random hash in xdai network', async function () {
+  xit('REGRESSION: Validate the get transactions history response with random hash in goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1004,8 +998,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_transactions;
 
         try {
-          transactions = await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+          transactions = await goerliTestNetSdk.getTransactions({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.sender,
           });
           randomTransaction =
@@ -1177,7 +1171,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await xdaiMainNetSdk.getTransaction({
+          singleTransaction = await goerliTestNetSdk.getTransaction({
             hash: randomHash, // Add your transaction hash
           });
 
@@ -1549,19 +1543,19 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response with invalid hash on xdai network', async function () {
+  it('REGRESSION: Validate the get transaction history response with invalid hash on goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await xdaiMainNetSdk.getTransaction({
+          transaction = await goerliTestNetSdk.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
           });
 
@@ -1588,19 +1582,19 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on xdai network', async function () {
+  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // Fetching a single transaction
         try {
           try {
-            await xdaiMainNetSdk.getTransaction({
+            await goerliTestNetSdk.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
             });
             assert.fail(
@@ -1633,18 +1627,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE goerli NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async function () {
+  xit('REGRESSION: Validate the get transactions history response with invalid chainid in goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.INVALID_XDAI_CHAINID),
+          await goerliTestNetSdk.getTransactions({
+            chainId: Number(process.env.goerli_CHAINID),
             account: data.sender,
           });
           assert.fail(
@@ -1668,17 +1662,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE goerli NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in xdai network', async function () {
+  xit('REGRESSION: Validate the get transactions history response with incorrect chainid in goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getTransactions({
+          await goerliTestNetSdk.getTransactions({
             chainId: Number(process.env.MATIC_CHAINID),
             account: data.sender,
           });
@@ -1703,18 +1697,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE goerli NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with invalid account in xdai network', async function () {
+  xit('REGRESSION: Validate the get transactions history response with invalid account in goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+          await goerliTestNetSdk.getTransactions({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.invalidSender,
           });
           assert.fail(
@@ -1738,18 +1732,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE goerli NETWORK',
       );
     }
   });
 
-  xit('REGRESSION: Validate the get transactions history response with incorrect account in xdai network', async function () {
+  xit('REGRESSION: Validate the get transactions history response with incorrect account in goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+          await goerliTestNetSdk.getTransactions({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.incorrectSender,
           });
           assert.fail(
@@ -1773,18 +1767,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid chainid on the xdai network', async function () {
+  it('REGRESSION: Validate the NFT List with invalid chainid on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
-            chainId: process.env.INVALID_XDAI_CHAINID,
+          await goerliTestNetSdk.getNftList({
+            chainId: process.env.goerli_CHAINID,
             account: data.sender,
           });
 
@@ -1809,18 +1803,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid account address on the xdai network', async function () {
+  it('REGRESSION: Validate the NFT List with invalid account address on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
-            chainId: Number(process.env.XDAI_CHAINID),
+          await goerliTestNetSdk.getNftList({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.invalidSender,
           });
 
@@ -1845,18 +1839,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Validate the NFT List with incorrect account address on the xdai network', async function () {
+  it('REGRESSION: Validate the NFT List with incorrect account address on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
-            chainId: Number(process.env.XDAI_CHAINID),
+          await goerliTestNetSdk.getNftList({
+            chainId: Number(process.env.GOERLI_CHAINID),
             account: data.incorrectSender,
           });
           assert.fail(
@@ -1880,7 +1874,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE goerli NETWORK',
       );
     }
   });
