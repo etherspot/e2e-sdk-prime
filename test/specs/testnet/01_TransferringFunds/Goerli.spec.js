@@ -10,28 +10,28 @@ import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 
-let xdaiMainNetSdk;
-let xdaiEtherspotWalletAddress;
-let xdaiNativeAddress = null;
+let goerliTestNetSdk;
+let goerliEtherspotWalletAddress;
+let goerliNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when transfer a token with xdai network on the MainNet', function () {
+describe('The PrimeSDK, when transfer a token with goerli network on the TestNet', function () {
   beforeEach(async function () {
     var test = this;
 
     // initializating sdk
     try {
-      xdaiMainNetSdk = new PrimeSdk(
+      goerliTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.XDAI_CHAINID),
-          projectKey: process.env.PROJECT_KEY,
+          chainId: Number(process.env.GOERLI_CHAINID),
+          projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          goerliTestNetSdk.state.walletAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -49,12 +49,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
     // get EtherspotWallet address
     try {
-      xdaiEtherspotWalletAddress =
-        await xdaiMainNetSdk.getCounterFactualAddress();
+      goerliEtherspotWalletAddress =
+        await goerliTestNetSdk.getCounterFactualAddress();
 
       try {
         assert.strictEqual(
-          xdaiEtherspotWalletAddress,
+          goerliEtherspotWalletAddress,
           data.sender,
           'The Etherspot Wallet Address is not calculated correctly.',
         );
@@ -72,9 +72,9 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    let output = await goerliTestNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.XDAI_CHAINID),
+      chainId: Number(process.env.GOERLI_CHAINID),
     });
     let native_balance;
     let usdc_balance;
@@ -83,10 +83,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
     for (let i = 0; i < output.items.length; i++) {
       let tokenAddress = output.items[i].token;
-      if (tokenAddress === xdaiNativeAddress) {
+      if (tokenAddress === goerliNativeAddress) {
         native_balance = output.items[i].balance;
         native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
+      } else if (tokenAddress === data.tokenAddress_goerliUSDC) {
         usdc_balance = output.items[i].balance;
         usdc_final = utils.formatUnits(usdc_balance, 6);
       }
@@ -102,13 +102,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it('SMOKE: Perform the transfer native token with valid details on the xdai network', async function () {
+  it('SMOKE: Perform the transfer native token with valid details on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -119,7 +119,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await xdaiMainNetSdk.addUserOpsToBatch({
+          transactionBatch = await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -168,7 +168,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // get balance of the account address
         let balance;
         try {
-          balance = await xdaiMainNetSdk.getNativeBalance();
+          balance = await goerliTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -190,7 +190,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await xdaiMainNetSdk.estimate();
+          op = await goerliTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -368,7 +368,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await xdaiMainNetSdk.send(op);
+          uoHash = await goerliTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -389,263 +389,261 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           );
         }
 
-        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
+        // get transaction hash
+        let userOpsReceipt = null;
+        try {
+          console.log('Waiting for transaction...');
+          const timeout = Date.now() + 60000; // 1 minute timeout
+          while (userOpsReceipt == null && Date.now() < timeout) {
+            await Helper.wait(500);
+            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
+          }
 
-        // // get transaction hash
-        // let userOpsReceipt = null;
-        // try {
-        //   console.log('Waiting for transaction...');
-        //   const timeout = Date.now() + 60000; // 1 minute timeout
-        //   while (userOpsReceipt == null && Date.now() < timeout) {
-        //     await Helper.wait(500);
-        //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.userOpHash,
+              'The userOpHash value is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.userOpHash,
-        //       'The userOpHash value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.sender,
+              'The sender value is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.sender,
-        //       'The sender value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.nonce,
+              'The nonce value is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.nonce,
-        //       'The nonce value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.actualGasCost,
+              'The actualGasCost value is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasCost,
-        //       'The actualGasCost value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.actualGasUsed,
+              'The actualGasUsed value is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasUsed,
-        //       'The actualGasUsed value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isTrue(
+              userOpsReceipt.success,
+              'The success value is false in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.success,
-        //       'The success value is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.to,
+              'The to value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.to,
-        //       'The to value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.from,
+              'The from value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.from,
-        //       'The from value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.transactionIndex,
+              'The transactionIndex value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionIndex,
-        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.gasUsed,
+              'The gasUsed value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.gasUsed,
-        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.logsBloom,
+              'The logsBloom value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logsBloom,
-        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.blockHash,
+              'The blockHash value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockHash,
-        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.transactionHash,
+              'The transactionHash value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionHash,
-        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.logs,
+              'The logs value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logs,
-        //       'The logs value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.blockNumber,
+              'The blockNumber value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockNumber,
-        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.confirmations,
+              'The confirmations value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.confirmations,
-        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.cumulativeGasUsed,
+              'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.cumulativeGasUsed,
-        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.effectiveGasPrice,
+              'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.effectiveGasPrice,
-        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.status,
+              'The status value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.status,
-        //       'The status value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
+          try {
+            assert.isNotEmpty(
+              userOpsReceipt.receipt.type,
+              'The type value of the receipt is empty in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
 
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.type,
-        //       'The type value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.receipt.byzantium,
-        //       'The byzantium value of the receipt is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-        // } catch (e) {
-        //   console.error(e);
-        //   const eString = e.toString();
-        //   addContext(test, eString);
-        //   assert.fail('The get transaction hash action is not performed.');
-        // }
+          try {
+            assert.isTrue(
+              userOpsReceipt.receipt.byzantium,
+              'The byzantium value of the receipt is false in the get transaction hash response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The get transaction hash action is not performed.');
+        }
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE goerli NETWORK',
       );
     }
   });
 
-  it('SMOKE: Perform the transfer ERC20 token with valid details on the xdai network', async function () {
+  it('SMOKE: Perform the transfer ERC20 token with valid details on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -653,7 +651,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
 
           try {
@@ -677,7 +675,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -741,7 +739,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -752,8 +750,8 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await xdaiMainNetSdk.addUserOpsToBatch({
-            to: data.tokenAddress_xdaiUSDC,
+          userOpsBatch = await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.tokenAddress_goerliUSDC,
             data: transactionData,
           });
 
@@ -810,7 +808,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await xdaiMainNetSdk.estimate();
+          op = await goerliTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -988,7 +986,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await xdaiMainNetSdk.send(op);
+          uoHash = await goerliTestNetSdk.send(op);
 
           assert.isNotEmpty(
             uoHash,
@@ -1010,7 +1008,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         //   const timeout = Date.now() + 60000; // 1 minute timeout
         //   while (userOpsReceipt == null && Date.now() < timeout) {
         //     await Helper.wait(500);
-        //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+        //     userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
         //   }
 
         //   try {
@@ -1252,12 +1250,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE goerli NETWORK',
       );
     }
   });
 
-  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the xdai network', async function () {
+  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1292,7 +1290,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1303,7 +1301,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await xdaiMainNetSdk.addUserOpsToBatch({
+          userOpsBatch = await goerliTestNetSdk.addUserOpsToBatch({
             to: data.nft_tokenAddress,
             data: erc721Data,
           });
@@ -1361,7 +1359,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // estimate transactions added to the batch
         let op;
         try {
-          op = await xdaiMainNetSdk.estimate();
+          op = await goerliTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -1539,7 +1537,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // sending to the bundler
         let uoHash;
         try {
-          uoHash = await xdaiMainNetSdk.send(op);
+          uoHash = await goerliTestNetSdk.send(op);
 
           assert.isNotEmpty(
             uoHash,
@@ -1561,7 +1559,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         //   const timeout = Date.now() + 60000; // 1 minute timeout
         //   while (userOpsReceipt == null && Date.now() < timeout) {
         //     await Helper.wait(500);
-        //     userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+        //     userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
         //   }
 
         //   try {
@@ -1792,18 +1790,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1812,7 +1810,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.incorrectRecipient, // incorrect to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1827,7 +1825,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1837,7 +1835,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
@@ -1860,18 +1858,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1880,7 +1878,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.invalidRecipient, // invalid to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1895,7 +1893,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1905,7 +1903,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
@@ -1928,18 +1926,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1948,7 +1946,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseUnits(data.invalidValue), // invalid value
           });
@@ -1973,18 +1971,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1993,7 +1991,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseUnits(data.smallValue), // very small value
           });
@@ -2018,18 +2016,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2039,7 +2037,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2049,7 +2047,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -2071,18 +2069,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the incorrect TxHash while getting the transaction hash on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2092,7 +2090,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -2107,7 +2105,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2117,7 +2115,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2134,7 +2132,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             await Helper.wait(500);
-            userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
+            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(
               data.incorrectTxHash,
             );
           }
@@ -2159,18 +2157,18 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the past TxHash while getting the transaction hash on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2180,7 +2178,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -2195,7 +2193,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2205,7 +2203,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2222,7 +2220,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             await Helper.wait(500);
-            userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(
+            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(
               data.pastTxHash,
             );
           }
@@ -2247,12 +2245,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2260,7 +2258,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.invalidProviderNetwork_xdai, // invalid provider
+            data.invalidProviderNetwork_goerli, // invalid provider
           );
         } catch (e) {
           console.error(e);
@@ -2273,7 +2271,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2308,12 +2306,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2332,7 +2330,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2367,12 +2365,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2380,7 +2378,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.otherProviderNetwork_xdai, // other provider
+            data.otherProviderNetwork_goerli, // other provider
           );
         } catch (e) {
           console.error(e);
@@ -2393,7 +2391,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2428,12 +2426,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2441,7 +2439,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2454,7 +2452,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.incorrectTokenAddress_xdaiUSDC, // incorrect token address
+            data.incorrectTokenAddress_goerliUSDC, // incorrect token address
             ERC20_ABI,
             provider,
           );
@@ -2489,12 +2487,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2502,7 +2500,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2515,7 +2513,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.invalidTokenAddress_xdaiUSDC, // invalid token address
+            data.invalidTokenAddress_goerliUSDC, // invalid token address
             ERC20_ABI,
             provider,
           );
@@ -2550,12 +2548,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2563,7 +2561,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2596,12 +2594,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2609,7 +2607,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2622,7 +2620,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2673,12 +2671,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2686,7 +2684,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2699,7 +2697,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2750,12 +2748,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2763,7 +2761,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2776,7 +2774,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2827,12 +2825,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2840,7 +2838,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2853,7 +2851,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2902,12 +2900,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2915,7 +2913,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -2928,7 +2926,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -2980,12 +2978,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2993,7 +2991,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3006,7 +3004,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3058,12 +3056,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3071,7 +3069,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3084,7 +3082,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3134,12 +3132,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3147,7 +3145,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3160,7 +3158,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3202,7 +3200,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3212,8 +3210,8 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
-            to: data.incorrectTokenAddress_xdaiUSDC, // Incorrect Token Address
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.incorrectTokenAddress_goerliUSDC, // Incorrect Token Address
             data: transactionData,
           });
         } catch (e) {
@@ -3225,7 +3223,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
           assert.fail(
             'The expected validation is not displayed when entered the incorrect Token Address while added the estimated transaction to the batch.',
           );
@@ -3247,12 +3245,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3260,7 +3258,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3273,7 +3271,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3315,7 +3313,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3325,8 +3323,8 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
-            to: data.invalidTokenAddress_xdaiUSDC, // Invalid Token Address
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.invalidTokenAddress_goerliUSDC, // Invalid Token Address
             data: transactionData,
           });
         } catch (e) {
@@ -3338,7 +3336,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
           assert.fail(
             'The expected validation is not displayed when entered the invalid Token Address while estimate the added transactions to the batch.',
           );
@@ -3360,12 +3358,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3373,7 +3371,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3386,7 +3384,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3428,7 +3426,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3438,7 +3436,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             to: null, // Null Token Address
             data: transactionData,
           });
@@ -3451,7 +3449,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when entered the null Token Address while estimate the added transactions to the batch.',
@@ -3473,12 +3471,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3486,7 +3484,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3499,7 +3497,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3541,7 +3539,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3551,7 +3549,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // add transactions to the batch
         try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
+          await goerliTestNetSdk.addUserOpsToBatch({
             data: transactionData, // without tokenAddress
           });
         } catch (e) {
@@ -3563,7 +3561,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when not entered the Token Address while estimate the added transactions to the batch.',
@@ -3585,12 +3583,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3598,7 +3596,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_xdai,
+            data.providerNetwork_goerli,
           );
         } catch (e) {
           console.error(e);
@@ -3611,7 +3609,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_xdaiUSDC,
+            data.tokenAddress_goerliUSDC,
             ERC20_ABI,
             provider,
           );
@@ -3652,7 +3650,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3662,7 +3660,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -3684,12 +3682,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3724,12 +3722,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3764,12 +3762,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3803,12 +3801,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3843,12 +3841,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3883,12 +3881,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3922,12 +3920,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3962,12 +3960,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4001,12 +3999,12 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4029,7 +4027,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // clear the transaction batch
         try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
+          await goerliTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -4039,7 +4037,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // get balance of the account address
         try {
-          await xdaiMainNetSdk.getNativeBalance();
+          await goerliTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -4049,7 +4047,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
         // estimate transactions added to the batch
         try {
-          await xdaiMainNetSdk.estimate();
+          await goerliTestNetSdk.estimate();
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -4071,7 +4069,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       }, 3); // Retry this async test up to 3 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE xdai NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE goerli NETWORK',
       );
     }
   });
