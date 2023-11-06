@@ -156,8 +156,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let uoHash;
         try {
           uoHash = await xdaiMainNetSdk.send(op);
-
-          console.log('uoHash::::::::::', uoHash);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -176,8 +174,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             await Helper.wait(5000);
             userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
           }
-
-          console.log('userOpsReceipt::::::::::', userOpsReceipt);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -203,8 +199,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           singleTransaction = await xdaiMainNetSdk.getTransaction({
             hash: transactionHash,
           });
-
-          console.log('transactionHash::::::::::', transactionHash);
 
           try {
             assert.isNotEmpty(
