@@ -637,7 +637,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
         //   addContext(test, eString);
         //   assert.fail('The get transaction hash action is not performed.');
         // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE goerli NETWORK',
@@ -1249,7 +1249,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
         //   addContext(test, eString);
         //   assert.fail('The get transaction hash action is not performed.');
         // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE goerli NETWORK',
@@ -1789,7 +1789,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
         //   addContext(test, eString);
         //   assert.fail('The get transaction hash action is not performed.');
         // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE goerli NETWORK',
@@ -1857,7 +1857,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE goerli NETWORK',
@@ -1925,7 +1925,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE goerli NETWORK',
@@ -1970,7 +1970,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE goerli NETWORK',
@@ -2015,7 +2015,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE goerli NETWORK',
@@ -2068,7 +2068,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE goerli NETWORK',
@@ -2156,7 +2156,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE goerli NETWORK',
@@ -2244,7 +2244,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE goerli NETWORK',
@@ -2305,7 +2305,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2364,7 +2364,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2425,7 +2425,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2486,7 +2486,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2547,7 +2547,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2593,7 +2593,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE goerli NETWORK',
@@ -2670,7 +2670,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -2747,7 +2747,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -2824,7 +2824,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -2899,7 +2899,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -2977,7 +2977,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -3055,7 +3055,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -3131,7 +3131,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE goerli NETWORK',
@@ -3244,7 +3244,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
@@ -3357,7 +3357,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
@@ -3470,7 +3470,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
@@ -3582,7 +3582,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE goerli NETWORK',
@@ -3681,7 +3681,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE goerli NETWORK',
@@ -3721,7 +3721,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3761,7 +3761,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3800,7 +3800,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3840,7 +3840,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3880,7 +3880,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3919,7 +3919,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3959,7 +3959,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -3998,7 +3998,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE goerli NETWORK',
@@ -4068,7 +4068,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE goerli NETWORK',

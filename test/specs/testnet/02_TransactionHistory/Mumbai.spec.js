@@ -843,7 +843,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         //     'The history of the transactions of the respective address is not performed correctly.',
         //   );
         // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE mumbai NETWORK',
@@ -972,7 +972,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           addContext(test, eString);
           assert.fail('The get NFT list is not performed correctly.');
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE mumbai NETWORK',
@@ -1540,7 +1540,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'An error is displayed while Fetching single transaction.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE mumbai NETWORK',
@@ -1579,7 +1579,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'Getting the single transaction history with incorrect Hash.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE mumbai NETWORK',
@@ -1624,7 +1624,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'The transaction history is fetched with hash which not having 32 size hex.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE mumbai NETWORK',
@@ -1659,7 +1659,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE mumbai NETWORK',
@@ -1694,7 +1694,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE mumbai NETWORK',
@@ -1729,7 +1729,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE mumbai NETWORK',
@@ -1764,7 +1764,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE mumbai NETWORK',
@@ -1800,7 +1800,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE mumbai NETWORK',
@@ -1836,7 +1836,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE mumbai NETWORK',
@@ -1871,7 +1871,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE mumbai NETWORK',

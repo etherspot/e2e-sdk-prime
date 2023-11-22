@@ -99,6 +99,246 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
+  it('SMOKE: Validate the Exchange offers response with ERC20 to ERC20 and valid details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        let offers;
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          offers = await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+
+          if (offers.length > 0) {
+            for (let i = 0; i < offers.length; i++) {
+              try {
+                assert.isNotEmpty(
+                  offers[i].provider,
+                  'The provider value is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].receiveAmount._hex,
+                  'The receiveAmount value of the transaction is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNumber(
+                  offers[i].exchangeRate,
+                  'The exchangeRate value of the transaction is not number in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].transactions,
+                  'The transactions value of the transaction is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].__typename,
+                  'The __typename value of the transaction is not correct in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+            }
+          } else {
+            addContext(
+              test,
+              'The Offers are not available in the getExchangeOffers response.',
+            );
+            assert.fail(
+              'The Offers are not available in the getExchangeOffers response.',
+            );
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The offers are not display in the Exchange offers response',
+          );
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the Exchange offers response with ERC20 to Native Token and valid details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        let offers;
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = constants.AddressZero;
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          offers = await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+
+          if (offers.length > 0) {
+            for (let i = 0; i < offers.length; i++) {
+              try {
+                assert.isNotEmpty(
+                  offers[i].provider,
+                  'The provider value is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].receiveAmount._hex,
+                  'The receiveAmount value of the transaction is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNumber(
+                  offers[i].exchangeRate,
+                  'The exchangeRate value of the transaction is not number in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].transactions,
+                  'The transactions value of the transaction is empty in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  offers[i].__typename,
+                  'The __typename value of the transaction is not correct in the getExchangeOffers response.',
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+            }
+          } else {
+            addContext(
+              test,
+              'The Offers are not available in the getExchangeOffers response.',
+            );
+            assert.fail(
+              'The Offers are not available in the getExchangeOffers response.',
+            );
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The offers are not display in the Exchange offers response',
+          );
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
   it('SMOKE: Validate the getCrossChainQuotes response with valid details on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
@@ -194,7 +434,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             'The quotes are not display in the getCrossChainQuotes response',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE ON THE ARBITRUM NETWORK',
@@ -374,10 +614,491 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         } catch (e) {
           assert.fail('The quotes are not display in the quote list');
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE ON THE ARBITRUM NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response with invalid fromTokenAddress details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.invalidTokenAddress_arbitrumUSDC; // Invalid fromTokenAddress
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          const errorResponse = JSON.parse(e.message);
+          if (
+            errorResponse[0].constraints.isAddress ===
+            'fromTokenAddress must be an address'
+          ) {
+            console.log(
+              'The correct validation is displayed when invalid fromTokenAddress detail added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid fromTokenAddress detail added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response without fromTokenAddress details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            // without fromTokenAddress
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          const errorResponse = JSON.parse(e.message);
+          if (
+            errorResponse[0].constraints.isAddress ===
+            'fromTokenAddress must be an address'
+          ) {
+            console.log(
+              'The correct validation is displayed when fromTokenAddress detail not added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when fromTokenAddress detail not added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response with invalid toTokenAddress details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.invalidTokenAddress_arbitrumUSDT; // Invalid toTokenAddress
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          const errorResponse = JSON.parse(e.message);
+          if (
+            errorResponse[0].constraints.isAddress ===
+            'toTokenAddress must be an address'
+          ) {
+            console.log(
+              'The correct validation is displayed when invalid toTokenAddress detail added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid toTokenAddress detail added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response without toTokenAddress details on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let fromAmount = data.exchange_offer_value;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            // without toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          const errorResponse = JSON.parse(e.message);
+          if (
+            errorResponse[0].constraints.isAddress ===
+            'toTokenAddress must be an address'
+          ) {
+            console.log(
+              'The correct validation is displayed when toTokenAddress detail not added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when toTokenAddress detail not added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response with invalid fromAmount on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.invalidValue; // invalid fromAmount
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          if (e.reason === 'invalid BigNumber string') {
+            console.log(
+              'The correct validation is displayed when invalid fromAmount detail added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid fromAmount detail added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response with decimal fromAmount on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          if (e.reason === 'invalid BigNumber string') {
+            console.log(
+              'The correct validation is displayed when decimal fromAmount detail added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when decimal fromAmount detail added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response with big fromAmount on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromAmount = data.exchange_offer_big_value; // big fromAmount
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            fromAmount: BigNumber.from(fromAmount),
+          });
+        } catch (e) {
+          if (e.reason === 'invalid BigNumber string') {
+            console.log(
+              'The correct validation is displayed when big fromAmount detail added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when big fromAmount detail added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the Exchange offers response without fromAmount on the arbitrum network', async function () {
+    var test = this;
+    let exchangeSupportedAssets;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        exchangeSupportedAssets =
+          await arbitrumMainNetSdk.getExchangeSupportedAssets({
+            page: 1,
+            limit: 100,
+          });
+
+        try {
+          if (exchangeSupportedAssets.items.length > 0) {
+            console.log('Found exchange supported assets.');
+          } else {
+            addContext(test, 'The exchange supported assets is not displayed.');
+            console.error('The exchange supported assets is not displayed.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
+          let toTokenAddress = data.tokenAddress_arbitrumUSDT;
+          let fromChainId = process.env.ARBITRUM_CHAINID;
+
+          await arbitrumMainNetSdk.getExchangeOffers({
+            fromChainId,
+            fromTokenAddress,
+            toTokenAddress,
+            // without fromAmount
+          });
+        } catch (e) {
+          const errorResponse = JSON.parse(e.message);
+          if (
+            errorResponse[0].constraints.IsBigNumberish ===
+            'fromAmount must be positive big numberish'
+          ) {
+            console.log(
+              'The correct validation is displayed when fromAmount detail not added in the getExchangeOffers request',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when fromAmount detail not added in the getExchangeOffers request',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE arbitrum NETWORK',
       );
     }
   });
@@ -416,7 +1137,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMCHAINID DETAIL ON THE ARBITRUM NETWORK',
@@ -458,7 +1179,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOCHAINID DETAIL ON THE ARBITRUM NETWORK',
@@ -501,7 +1222,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -544,7 +1265,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -586,7 +1307,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -604,7 +1325,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromChainId: data.arbitrum_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_arbitrumUSDC,
-            toTokenAddress: data.invalidTokenAddress_maticUSDC,
+            toTokenAddress: arbitruminvalidTokenAddress_maticUSDC,
             fromAddress: data.sender,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
@@ -629,7 +1350,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -672,7 +1393,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -714,7 +1435,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -757,7 +1478,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -800,7 +1521,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -842,7 +1563,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -883,7 +1604,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMCHAINID DETAIL ON THE ARBITRUM NETWORK',
@@ -924,7 +1645,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOCHAINID DETAIL ON THE ARBITRUM NETWORK',
@@ -966,7 +1687,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1008,7 +1729,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1049,7 +1770,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1091,7 +1812,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1133,7 +1854,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1174,7 +1895,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE ARBITRUM NETWORK',
@@ -1215,7 +1936,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMADDRESS DETAIL ON THE ARBITRUM NETWORK',

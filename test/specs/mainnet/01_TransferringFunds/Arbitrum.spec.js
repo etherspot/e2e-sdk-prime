@@ -388,256 +388,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             'The sign the UserOp and sending to the bundler action is not performed.',
           );
         }
-
-        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
-
-        // // get transaction hash
-        // let userOpsReceipt = null;
-        // try {
-        //   console.log('Waiting for transaction...');
-        //   const timeout = Date.now() + 60000; // 1 minute timeout
-        //   while (userOpsReceipt == null && Date.now() < timeout) {
-        //     await Helper.wait(500);
-        //     userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.userOpHash,
-        //       'The userOpHash value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.sender,
-        //       'The sender value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.nonce,
-        //       'The nonce value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasCost,
-        //       'The actualGasCost value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasUsed,
-        //       'The actualGasUsed value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.success,
-        //       'The success value is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.to,
-        //       'The to value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.from,
-        //       'The from value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionIndex,
-        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.gasUsed,
-        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logsBloom,
-        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockHash,
-        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionHash,
-        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logs,
-        //       'The logs value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockNumber,
-        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.confirmations,
-        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.cumulativeGasUsed,
-        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.effectiveGasPrice,
-        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.status,
-        //       'The status value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.type,
-        //       'The type value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.receipt.byzantium,
-        //       'The byzantium value of the receipt is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-        // } catch (e) {
-        //   console.error(e);
-        //   const eString = e.toString();
-        //   addContext(test, eString);
-        //   assert.fail('The get transaction hash action is not performed.');
-        // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE ARBITRUM NETWORK',
@@ -1000,256 +751,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           addContext(test, eString);
           assert.fail('The sending to the bundler action is not performed.');
         }
-
-        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
-
-        // // get transaction hash
-        // let userOpsReceipt = null;
-        // try {
-        //   console.log('Waiting for transaction...');
-        //   const timeout = Date.now() + 60000; // 1 minute timeout
-        //   while (userOpsReceipt == null && Date.now() < timeout) {
-        //     await Helper.wait(500);
-        //     userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.userOpHash,
-        //       'The userOpHash value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.sender,
-        //       'The sender value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.nonce,
-        //       'The nonce value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasCost,
-        //       'The actualGasCost value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasUsed,
-        //       'The actualGasUsed value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.success,
-        //       'The success value is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.to,
-        //       'The to value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.from,
-        //       'The from value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionIndex,
-        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.gasUsed,
-        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logsBloom,
-        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockHash,
-        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionHash,
-        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logs,
-        //       'The logs value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockNumber,
-        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.confirmations,
-        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.cumulativeGasUsed,
-        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.effectiveGasPrice,
-        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.status,
-        //       'The status value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.type,
-        //       'The type value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.receipt.byzantium,
-        //       'The byzantium value of the receipt is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-        // } catch (e) {
-        //   console.error(e);
-        //   const eString = e.toString();
-        //   addContext(test, eString);
-        //   assert.fail('The get transaction hash action is not performed.');
-        // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN ON THE ARBITRUM NETWORK',
@@ -1551,245 +1053,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           addContext(test, eString);
           assert.fail('The sending to the bundler action is not performed.');
         }
-
-        // COMMENT THE BELOW CODE FOR IMPROVE THE EXECUTION TIMING
-
-        // // get transaction hash
-        // let userOpsReceipt = null;
-        // try {
-        //   console.log('Waiting for transaction...');
-        //   const timeout = Date.now() + 60000; // 1 minute timeout
-        //   while (userOpsReceipt == null && Date.now() < timeout) {
-        //     await Helper.wait(500);
-        //     userOpsReceipt = await arbitrumMainNetSdk.getUserOpReceipt(uoHash);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.userOpHash,
-        //       'The userOpHash value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.sender,
-        //       'The sender value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.nonce,
-        //       'The nonce value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasCost,
-        //       'The actualGasCost value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.actualGasUsed,
-        //       'The actualGasUsed value is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isTrue(
-        //       userOpsReceipt.success,
-        //       'The success value is false in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.to,
-        //       'The to value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.from,
-        //       'The from value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionIndex,
-        //       'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.gasUsed,
-        //       'The gasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logsBloom,
-        //       'The logsBloom value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockHash,
-        //       'The blockHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.transactionHash,
-        //       'The transactionHash value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.logs,
-        //       'The logs value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.blockNumber,
-        //       'The blockNumber value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.confirmations,
-        //       'The confirmations value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.cumulativeGasUsed,
-        //       'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.effectiveGasPrice,
-        //       'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.status,
-        //       'The status value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-
-        //   try {
-        //     assert.isNotEmpty(
-        //       userOpsReceipt.receipt.type,
-        //       'The type value of the receipt is empty in the get transaction hash response.',
-        //     );
-        //   } catch (e) {
-        //     console.error(e);
-        //     const eString = e.toString();
-        //     addContext(test, eString);
-        //   }
-        // } catch (e) {
-        //   console.error(e);
-        //   const eString = e.toString();
-        //   addContext(test, eString);
-        //   assert.fail('The get transaction hash action is not performed.');
-        // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN ON THE ARBITRUM NETWORK',
@@ -1857,7 +1121,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INCORRECT TO ADDRESS ON THE ARBITRUM NETWORK',
@@ -1925,7 +1189,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID TO ADDRESS ON THE ARBITRUM NETWORK',
@@ -1970,7 +1234,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH INVALID VALUE ON THE ARBITRUM NETWORK',
@@ -2015,7 +1279,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH VERY SMALL VALUE ON THE ARBITRUM NETWORK',
@@ -2068,7 +1332,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITHOUT ADDED THE TRANSACTION TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -2156,7 +1420,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE INCORRECT TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
@@ -2244,7 +1508,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH THE PAST TXHASH WHILE GETTING THE TRANSACTION HASH ON THE ARBITRUM NETWORK',
@@ -2305,7 +1569,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2364,7 +1628,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2425,7 +1689,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH OTHER PROVIDER NETWORK WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2486,7 +1750,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2547,7 +1811,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2593,7 +1857,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE GETTING THE DECIMAL FROM ERC20 CONTRACT ON THE ARBITRUM NETWORK',
@@ -2670,7 +1934,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TRANSFER METHOD NAME WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -2747,7 +2011,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -2824,7 +2088,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH VERY SMALL VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -2899,7 +2163,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT VALUE WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -2977,7 +2241,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -3055,7 +2319,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -3131,7 +2395,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT RECEPIENT WHILE GETTING THE TRANSFERFROM ENCODED DATA ON THE ARBITRUM NETWORK',
@@ -3244,7 +2508,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INCORRECT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -3357,7 +2621,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH INVALID TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -3470,7 +2734,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITH NULL TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -3582,7 +2846,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT TOKEN ADDRESS WHILE ADDED THE ESTIMATED TRANSACTION TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -3681,7 +2945,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC20 TOKEN WITHOUT ADDING TRANSACTION TO THE BATCH WHILE ESTIMATE THE ADDED TRANSACTIONS TO THE BATCH ON THE ARBITRUM NETWORK',
@@ -3721,7 +2985,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3761,7 +3025,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3800,7 +3064,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT SENDER ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3840,7 +3104,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3880,7 +3144,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INVALID RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3919,7 +3183,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT RECEPIENT ADDRESS WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3959,7 +3223,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH INCORRECT TOKENID WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -3998,7 +3262,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITHOUT TOKENID WHILE CREATING THE NFT DATA ON THE ARBITRUM NETWORK',
@@ -4068,7 +3332,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE ARBITRUM NETWORK',
