@@ -13,6 +13,7 @@ let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
 let runTest;
 
+/* eslint-disable prettier/prettier */
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with xdai network on the MainNet.', function () {
   beforeEach(async function () {
     var test = this;
@@ -100,7 +101,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('SMOKE: Perform the transfer native token on arka paymaster on the xdai network', async function () {
+  it('SMOKE: Perform the transfer native token on arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -399,7 +400,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
+  it('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -453,7 +454,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: 'USDC' }],
+                params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
             },
           ).then((res) => {
@@ -461,6 +462,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           });
 
           paymasterAddress = returnedValue.message;
+
+          console.log('returnedValue:::::::::', returnedValue);
 
           try {
             assert.isNotEmpty(
@@ -760,7 +763,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             op = await xdaiMainNetSdk.estimate({
-              url: `${data.paymaster_arka}${queryString}`,
+              url: `${arka_url}${queryString}`,
               context: { token: data.usdc_token, mode: 'erc20' },
             });
 
@@ -916,9 +919,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         } else {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
+          addContext(test, 'Unable to fetch the paymaster address.');
           assert.fail('Unable to fetch the paymaster address.');
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -929,7 +930,289 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the xdai network', async function () {
+  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the XDAI network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.XDAI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        let balance;
+        let transactionBatch;
+        let op;
+        let uoHash;
+
+        // get balance of the account address
+        try {
+          balance = await xdaiMainNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance is empty in the get native balance response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          transactionBatch = await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.to,
+              'The to value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.data,
+              'The data value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          balance = await xdaiMainNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance value is empty in the get balance of the account address response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          op = await xdaiMainNetSdk.estimate({
+            url: `${arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+
+          try {
+            assert.isNotEmpty(
+              op.sender,
+              'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.nonce._hex,
+              'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.initCode,
+              'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callData,
+              'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callGasLimit._hex,
+              'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.verificationGasLimit._hex,
+              'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxFeePerGas,
+              'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxPriorityFeePerGas,
+              'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.paymasterAndData,
+              'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.preVerificationGas._hex,
+              'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.signature,
+              'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // sign the UserOp and sending to the bundler...
+        try {
+          uoHash = await xdaiMainNetSdk.send(op);
+
+          try {
+            assert.isNotEmpty(
+              uoHash,
+              'The uoHash value is empty in the sending bundler response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -997,7 +1280,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token without arka paymaster url on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token without arka paymaster url on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1065,7 +1348,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1133,7 +1416,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1201,7 +1484,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1269,145 +1552,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token with invalid context of arka paymaster on the xdai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await xdaiMainNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await xdaiMainNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsorsponso' },
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Cannot read properties of undefined')) {
-            console.log(
-              'The correct validation is displayed when invalid context detail added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid context detail added while estimation',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE XDAI NETWORK',
-      );
-    }
-  });
-
-  xit('REGRESSION: Perform the transfer native token without context of arka paymaster on the xdai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await xdaiMainNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await xdaiMainNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await xdaiMainNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await xdaiMainNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            // without context
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Invalid data provided')) {
-            console.log(
-              'The correct validation is displayed when context detail not added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when context detail not added while estimation',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE XDAI NETWORK',
-      );
-    }
-  });
-
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1466,7 +1611,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
@@ -1522,7 +1667,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?chainId=${Number(process.env.XDAI_CHAINID)}`; // without API Key in queryString
@@ -1576,7 +1721,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1632,7 +1777,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -1686,7 +1831,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1746,7 +1891,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1803,7 +1948,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1857,7 +2002,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1944,7 +2089,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2031,7 +2176,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2115,7 +2260,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2199,7 +2344,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2336,7 +2481,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
@@ -2489,7 +2634,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2644,7 +2789,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2797,7 +2942,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2952,7 +3097,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3101,6 +3246,480 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE xdai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the XDAI network', async function () {
+    var test = this;
+    let invalid_arka_url = data.invalid_paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.XDAI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await xdaiMainNetSdk.estimate({
+            url: `${invalid_arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Not Found')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the XDAI network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${
+      process.env.INVALID_API_KEY
+    }&chainId=${Number(process.env.XDAI_CHAINID)}`; // invalid API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await xdaiMainNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the XDAI network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?chainId=${Number(process.env.XDAI_CHAINID)}`; // without API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await xdaiMainNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the XDAI network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.INVALID_XDAI_CHAINID,
+    )}`; // invalid ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await xdaiMainNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Unsupported network')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the XDAI network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await xdaiMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await xdaiMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await xdaiMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await xdaiMainNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE XDAI NETWORK',
       );
     }
   });

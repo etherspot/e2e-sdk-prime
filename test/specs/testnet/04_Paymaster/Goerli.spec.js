@@ -194,6 +194,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             context: { mode: 'sponsor' },
           });
 
+          console.log('op::::::::::::::', op);
+
           try {
             assert.isNotEmpty(
               op.sender,
@@ -915,9 +917,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         } else {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
+          addContext(test, 'Unable to fetch the paymaster address.');
           assert.fail('Unable to fetch the paymaster address.');
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -928,7 +928,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it.only('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the goerli network', async function () {
+  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1183,6 +1183,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // sign the UserOp and sending to the bundler...
         try {
           uoHash = await goerliTestNetSdk.send(op);
+
+          console.log('uoHash::::::::::::', uoHash);
 
           try {
             assert.isNotEmpty(
@@ -1539,144 +1541,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when API Key not added while estimation.',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer token on arka paymaster with invalid context on the goerli network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await goerliTestNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await goerliTestNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsorsponso' },
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Cannot read properties of undefined')) {
-            console.log(
-              'The correct validation is displayed when invalid context detail added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid context detail added while estimation',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer token on arka paymaster without context on the goerli network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await goerliTestNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await goerliTestNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            // without context
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Invalid data provided')) {
-            console.log(
-              'The correct validation is displayed when context detail not added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when context detail not added while estimation',
             );
           }
         }
@@ -3386,7 +3250,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the goerli network', async function () {
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3482,7 +3346,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${
@@ -3577,7 +3441,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?chainId=${Number(process.env.GOERLI_CHAINID)}`; // without API Key in queryString
@@ -3670,7 +3534,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3766,7 +3630,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString

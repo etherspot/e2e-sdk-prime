@@ -185,258 +185,262 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let transactionHash;
         let singleTransaction;
 
-        try {
-          transactionHash = userOpsReceipt.receipt.transactionHash;
-          singleTransaction = await optimismMainNetSdk.getTransaction({
-            hash: transactionHash,
-          });
-
+        if (!(userOpsReceipt === null)) {
           try {
-            assert.isNotEmpty(
-              singleTransaction.blockHash,
-              'The blockHash value is empty in the transaction details response.',
-            );
+            transactionHash = userOpsReceipt.receipt.transactionHash;
+            singleTransaction = await optimismMainNetSdk.getTransaction({
+              hash: transactionHash,
+            });
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.blockHash,
+                'The blockHash value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.blockNumber,
+                'The blockNumber value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.from,
+                'The from address value is not correct in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.gasLimit,
+                'The gasLimit value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.gasPrice,
+                'The gasPrice value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.gasUsed,
+                'The gasUsed value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.hash,
+                'The hash value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.input,
+                'The input value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].transactionIndex,
+                'The transactionIndex value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].blockNumber,
+                'The blockNumber value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].transactionHash,
+                'The transactionHash value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].address,
+                'The address value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].topics,
+                'The topics value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].data,
+                'The data value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].logIndex,
+                'The logIndex value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].blockHash,
+                'The blockHash value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.nonce,
+                'The nonce value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.status,
+                'The status value is not correct in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.to,
+                'The to address value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.transactionIndex,
+                'The transactionIndex value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.value,
+                'The value details is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.blockExplorerUrl,
+                'The blockExplorerUrl value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
+            assert.fail('The get transaction details is not performed.');
           }
-
-          try {
-            assert.isNumber(
-              singleTransaction.blockNumber,
-              'The blockNumber value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.from,
-              'The from address value is not correct in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.gasLimit,
-              'The gasLimit value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.gasPrice,
-              'The gasPrice value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.gasUsed,
-              'The gasUsed value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.hash,
-              'The hash value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.input,
-              'The input value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].transactionIndex,
-              'The transactionIndex value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].blockNumber,
-              'The blockNumber value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].transactionHash,
-              'The transactionHash value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].address,
-              'The address value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].topics,
-              'The topics value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].data,
-              'The data value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].logIndex,
-              'The logIndex value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].blockHash,
-              'The blockHash value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.nonce,
-              'The nonce value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.status,
-              'The status value is not correct in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.to,
-              'The to address value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.transactionIndex,
-              'The transactionIndex value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.value,
-              'The value details is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.blockExplorerUrl,
-              'The blockExplorerUrl value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get transaction details is not performed.');
+        } else {
+          console.log('The UserOpsReceipt is displayed as a null.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {

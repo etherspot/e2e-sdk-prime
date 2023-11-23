@@ -915,10 +915,290 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
         } else {
+          addContext(test, 'Unable to fetch the paymaster address.');
+          assert.fail('Unable to fetch the paymaster address.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the mumbai network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.MUMBAI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        let balance;
+        let transactionBatch;
+        let op;
+        let uoHash;
+
+        // get balance of the account address
+        try {
+          balance = await mumbaiTestNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance is empty in the get native balance response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('Unable to fetch the paymaster address.');
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.to,
+              'The to value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.data,
+              'The data value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          balance = await mumbaiTestNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance value is empty in the get balance of the account address response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          op = await mumbaiTestNetSdk.estimate({
+            url: `${arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+
+          try {
+            assert.isNotEmpty(
+              op.sender,
+              'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.nonce._hex,
+              'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.initCode,
+              'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callData,
+              'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callGasLimit._hex,
+              'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.verificationGasLimit._hex,
+              'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxFeePerGas,
+              'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxPriorityFeePerGas,
+              'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.paymasterAndData,
+              'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.preVerificationGas._hex,
+              'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.signature,
+              'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // sign the UserOp and sending to the bundler...
+        try {
+          uoHash = await mumbaiTestNetSdk.send(op);
+
+          try {
+            assert.isNotEmpty(
+              uoHash,
+              'The uoHash value is empty in the sending bundler response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1257,144 +1537,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             addContext(test, eString);
             assert.fail(
               'The respective validate is not displayed when API Key not added while estimation.',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE mumbai NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer native token with invalid context on the mumbai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await mumbaiTestNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await mumbaiTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsorsponso' },
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Cannot read properties of undefined')) {
-            console.log(
-              'The correct validation is displayed when invalid context detail added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid context detail added while estimation',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE mumbai NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer native token without context on the mumbai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await mumbaiTestNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await mumbaiTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            // without context
-          });
-        } catch (e) {
-          let error = e.message;
-          if (error.includes('Invalid data provided')) {
-            console.log(
-              'The correct validation is displayed when context detail not added while estimation',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when context detail not added while estimation',
             );
           }
         }
@@ -3095,6 +3237,480 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             'The paymaster address is fetched without parameters.',
           );
           assert.fail('The paymaster address is fetched without parameters.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the mumbai network', async function () {
+    var test = this;
+    let invalid_arka_url = data.invalid_paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.MUMBAI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await mumbaiTestNetSdk.estimate({
+            url: `${invalid_arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Not Found')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the mumbai network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${
+      process.env.INVALID_API_KEY
+    }&chainId=${Number(process.env.MUMBAI_CHAINID)}`; // invalid API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await mumbaiTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the mumbai network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?chainId=${Number(process.env.MUMBAI_CHAINID)}`; // without API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await mumbaiTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the mumbai network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.INVALID_MUMBAI_CHAINID,
+    )}`; // invalid ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await mumbaiTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Unsupported network')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the mumbai network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await mumbaiTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await mumbaiTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await mumbaiTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
+            );
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
