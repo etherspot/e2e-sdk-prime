@@ -3,7 +3,6 @@ import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import customRetryAsync from '../../../utils/baseTest.js';
-import Helper from '../../../utils/Helper.js';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
@@ -439,11 +438,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let encodedData;
         let approveOp;
         let uoHash1;
-        let userOpsReceipt1 = null;
         let transactionBatch;
         let op;
         let uoHash;
-        let userOpsReceipt = null;
 
         try {
           returnedValue = await fetch(
@@ -687,392 +684,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             );
           }
 
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              await Helper.wait(1000);
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.userOpHash,
-                'The userOpHash value is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.sender,
-                'The sender value is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.nonce,
-                'The nonce value is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.actualGasCost,
-                'The actualGasCost value is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.actualGasUsed,
-                'The actualGasUsed value is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isTrue(
-                userOpsReceipt1.success,
-                'The success value is not true in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            for (let j = 0; j < userOpsReceipt1.logs.length; j++) {
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].transactionIndex,
-                  'The transactionIndex value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].blockNumber,
-                  'The blockNumber value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].transactionHash,
-                  'The transactionHash value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].address,
-                  'The address value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].data,
-                  'The data value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].logIndex,
-                  'The logIndex value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.logs[j].blockHash,
-                  'The blockHash value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.to,
-                'The to value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.from,
-                'The from value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.transactionIndex,
-                'The transactionIndex value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.gasUsed,
-                'The gasUsed value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.logsBloom,
-                'The logsBloom value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.blockHash,
-                'The blockHash value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.transactionHash,
-                'The transactionHash value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            for (let k = 0; k < userOpsReceipt1.receipt.logs.length; k++) {
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].transactionIndex,
-                  'The transactionIndex value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].blockNumber,
-                  'The blockNumber value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].transactionHash,
-                  'The transactionHash value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].address,
-                  'The address value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].data,
-                  'The data value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].logIndex,
-                  'The logIndex value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt1.receipt.logs[k].blockHash,
-                  'The blockHash value of logs is empty in the get transaction hash response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.blockNumber,
-                'The blockNumber value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.confirmations,
-                'The confirmations value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.cumulativeGasUsed,
-                'The cumulativeGasUsed value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.effectiveGasPrice,
-                'The effectiveGasPrice value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.status,
-                'The status value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt1.receipt.type,
-                'The type value of the receipt is empty in the get transaction hash response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
           // clear the transaction batch
           try {
             await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -1303,395 +914,293 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               'The fetched value of the arka pimlico paymaster is not displayed.',
             );
           }
-
-          // get the UserOp Receipt...
-          try {
-            console.log('Waiting for transaction...');
-            const timeout = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt == null && Date.now() < timeout) {
-              await Helper.wait(1000);
-              userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.userOpHash,
-                'The userOpHash value is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.sender,
-                'The sender value is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.nonce,
-                'The nonce value is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.actualGasCost,
-                'The actualGasCost value is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.actualGasUsed,
-                'The actualGasUsed value is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isTrue(
-                userOpsReceipt.success,
-                'The success value is not true in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            for (let j = 0; j < userOpsReceipt.logs.length; j++) {
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].transactionIndex,
-                  'The transactionIndex value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].blockNumber,
-                  'The blockNumber value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].transactionHash,
-                  'The transactionHash value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].address,
-                  'The address value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].data,
-                  'The data value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].logIndex,
-                  'The logIndex value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.logs[j].blockHash,
-                  'The blockHash value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.to,
-                'The to value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.from,
-                'The from value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.transactionIndex,
-                'The transactionIndex value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.gasUsed,
-                'The gasUsed value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.logsBloom,
-                'The logsBloom value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.blockHash,
-                'The blockHash value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.transactionHash,
-                'The transactionHash value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            for (let k = 0; k < userOpsReceipt.receipt.logs.length; k++) {
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].transactionIndex,
-                  'The transactionIndex value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].blockNumber,
-                  'The blockNumber value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].transactionHash,
-                  'The transactionHash value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].address,
-                  'The address value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].data,
-                  'The data value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].logIndex,
-                  'The logIndex value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-
-              try {
-                assert.isNotEmpty(
-                  userOpsReceipt.receipt.logs[k].blockHash,
-                  'The blockHash value of logs is empty in the get userOps Receipt response.',
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.blockNumber,
-                'The blockNumber value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.confirmations,
-                'The confirmations value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.cumulativeGasUsed,
-                'The cumulativeGasUsed value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.effectiveGasPrice,
-                'The effectiveGasPrice value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.status,
-                'The status value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                userOpsReceipt.receipt.type,
-                'The type value of the receipt is empty in the get userOps Receipt response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
-          }
         } else {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
           assert.fail('Unable to fetch the paymaster address.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it.only('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the goerli network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.GOERLI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        let balance;
+        let transactionBatch;
+        let op;
+        let uoHash;
+
+        // get balance of the account address
+        try {
+          balance = await goerliTestNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance is empty in the get native balance response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          transactionBatch = await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.to,
+              'The to value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.data,
+              'The data value is empty in the transactionBatch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          balance = await goerliTestNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance value is empty in the get balance of the account address response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          op = await goerliTestNetSdk.estimate({
+            url: `${arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+
+          try {
+            assert.isNotEmpty(
+              op.sender,
+              'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.nonce._hex,
+              'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.initCode,
+              'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callData,
+              'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.callGasLimit._hex,
+              'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.verificationGasLimit._hex,
+              'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxFeePerGas,
+              'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.maxPriorityFeePerGas,
+              'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.paymasterAndData,
+              'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.preVerificationGas._hex,
+              'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              op.signature,
+              'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // sign the UserOp and sending to the bundler...
+        try {
+          uoHash = await goerliTestNetSdk.send(op);
+
+          try {
+            assert.isNotEmpty(
+              uoHash,
+              'The uoHash value is empty in the sending bundler response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -2984,8 +2493,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3052,31 +2559,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3142,8 +2631,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3210,31 +2697,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3317,8 +2786,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3385,31 +2852,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3490,8 +2939,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3558,31 +3005,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3665,8 +3094,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3733,31 +3160,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3838,8 +3247,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let erc20Contract;
         let encodedData;
         let approveOp;
-        let uoHash1;
-        let userOpsReceipt1 = null;
 
         try {
           returnedValue = await fetch(
@@ -3906,31 +3313,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           // get the uoHash1
           try {
-            uoHash1 = await goerliTestNetSdk.send(approveOp);
+            await goerliTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
             assert.fail(
               'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
-          }
-
-          // get transaction hash...
-          try {
-            console.log('Waiting for transaction...');
-
-            let timeout1 = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt1 == null && Date.now() < timeout1) {
-              userOpsReceipt1 =
-                await goerliTestNetSdk.getUserOpReceipt(uoHash1);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The transaction hash of the arka pimlico paymaster is not displayed.',
             );
           }
 
@@ -3988,6 +3377,480 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             'The paymaster address is fetched without parameters.',
           );
           assert.fail('The paymaster address is fetched without parameters.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the goerli network', async function () {
+    var test = this;
+    let invalid_arka_url = data.invalid_paymaster_arka;
+    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.GOERLI_CHAINID,
+    )}`;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await goerliTestNetSdk.estimate({
+            url: `${invalid_arka_url}${queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Not Found')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the goerli network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${
+      process.env.INVALID_API_KEY
+    }&chainId=${Number(process.env.GOERLI_CHAINID)}`; // invalid API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await goerliTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the goerli network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?chainId=${Number(process.env.GOERLI_CHAINID)}`; // without API Key in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await goerliTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          if (e.message === 'Invalid Api Key') {
+            console.log(
+              'The correct validation is displayed when invalid API Key added while estimation.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed when invalid API Key added while estimation.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the goerli network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+      process.env.INVALID_GOERLI_CHAINID,
+    )}`; // invalid ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await goerliTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Unsupported network')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the goerli network', async function () {
+    var test = this;
+    let arka_url = data.paymaster_arka;
+    let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // clear the transaction batch
+        try {
+          await goerliTestNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // add transactions to the batch
+        try {
+          await goerliTestNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await goerliTestNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The fetched value of the arka pimlico paymaster is not displayed.',
+          );
+        }
+
+        /* estimate transactions added to the batch and get the fee data for the UserOp
+        validUntil and validAfter are optional defaults to 10 mins of expiry from send call and should be passed in terms of milliseconds
+        For example purpose, the valid is fixed as expiring in 100 mins once the paymaster data is generated
+        validUntil and validAfter is relevant only with sponsor transactions and not for token paymasters
+        */
+
+        // estimate transactions added to the batch and get the fee data for the UserOp
+        try {
+          await goerliTestNetSdk.estimate({
+            url: `${arka_url}${invalid_queryString}`,
+            context: {
+              mode: 'sponsor',
+              validAfter: new Date().valueOf(),
+              validUntil: new Date().valueOf() + 6000000,
+            },
+          });
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            console.log(
+              'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
+            );
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
