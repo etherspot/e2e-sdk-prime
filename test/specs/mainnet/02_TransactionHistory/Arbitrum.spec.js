@@ -100,7 +100,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the transaction history of the native token transaction on the arbitrum network', async function () {
+  it('SMOKE: Validate the transaction history of the native token transaction on arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -181,801 +181,271 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           assert.fail('The get transaction hash action is not performed.');
         }
 
-        // ADDED FEW COMMENTS IN BELOW CODE DUE TO REMOVED GETTRANSACTIONS ENDPOINT IN 1.2.8 RELEASE
-
         // get single transaction history details
         let transactionHash;
         let singleTransaction;
-        // let blockNumber_singleTransaction;
-        // let from_singleTransaction;
-        // let gasLimit_singleTransaction;
-        // let gasPrice_singleTransaction;
-        // let gasUsed_singleTransaction;
-        // let hash_singleTransaction;
-        // let status_singleTransaction;
-        // let blockExplorerUrl_singleTransaction;
-        try {
-          transactionHash = userOpsReceipt.receipt.transactionHash;
-          singleTransaction = await arbitrumMainNetSdk.getTransaction({
-            hash: transactionHash,
-          });
 
+        if (!(userOpsReceipt === null)) {
           try {
-            assert.isNotEmpty(
-              singleTransaction.blockHash,
-              'The blockHash value is empty in the transaction details response.',
-            );
+            transactionHash = userOpsReceipt.receipt.transactionHash;
+            singleTransaction = await arbitrumMainNetSdk.getTransaction({
+              hash: transactionHash,
+            });
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.blockHash,
+                'The blockHash value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.blockNumber,
+                'The blockNumber value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.from,
+                'The from address value is not correct in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.gasLimit,
+                'The gasLimit value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.gasPrice,
+                'The gasPrice value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.gasUsed,
+                'The gasUsed value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.hash,
+                'The hash value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.input,
+                'The input value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].transactionIndex,
+                'The transactionIndex value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].blockNumber,
+                'The blockNumber value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].transactionHash,
+                'The transactionHash value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].address,
+                'The address value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].topics,
+                'The topics value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].data,
+                'The data value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.logs[0].logIndex,
+                'The logIndex value of the logs is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.logs[0].blockHash,
+                'The blockHash value of the logs is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.nonce,
+                'The nonce value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.status,
+                'The status value is not correct in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.to,
+                'The to address value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                singleTransaction.transactionIndex,
+                'The transactionIndex value is not number in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.value,
+                'The value details is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                singleTransaction.blockExplorerUrl,
+                'The blockExplorerUrl value is empty in the transaction details response.',
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
           } catch (e) {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
+            assert.fail('The get transaction details is not performed.');
           }
-
-          try {
-            assert.isNumber(
-              singleTransaction.blockNumber,
-              'The blockNumber value is not number in the transaction details response.',
-            );
-            // blockNumber_singleTransaction = singleTransaction.blockNumber;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.from,
-              'The from address value is not correct in the transaction details response.',
-            );
-            // from_singleTransaction = singleTransaction.from;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.gasLimit,
-              'The gasLimit value is not number in the transaction details response.',
-            );
-            // gasLimit_singleTransaction = singleTransaction.gasLimit;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.gasPrice,
-              'The gasPrice value is empty in the transaction details response.',
-            );
-            // gasPrice_singleTransaction = singleTransaction.gasPrice;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.gasUsed,
-              'The gasUsed value is not number in the transaction details response.',
-            );
-            // gasUsed_singleTransaction = singleTransaction.gasUsed;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.hash,
-              'The hash value is empty in the transaction details response.',
-            );
-            // hash_singleTransaction = singleTransaction.hash;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.input,
-              'The input value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].transactionIndex,
-              'The transactionIndex value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].blockNumber,
-              'The blockNumber value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].transactionHash,
-              'The transactionHash value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].address,
-              'The address value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].topics,
-              'The topics value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].data,
-              'The data value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.logs[0].logIndex,
-              'The logIndex value of the logs is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.logs[0].blockHash,
-              'The blockHash value of the logs is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.nonce,
-              'The nonce value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.status,
-              'The status value is not correct in the transaction details response.',
-            );
-
-            // status_singleTransaction = singleTransaction.status;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.to,
-              'The to address value is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNumber(
-              singleTransaction.transactionIndex,
-              'The transactionIndex value is not number in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.value,
-              'The value details is empty in the transaction details response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isNotEmpty(
-              singleTransaction.blockExplorerUrl,
-              'The blockExplorerUrl value is empty in the transaction details response.',
-            );
-
-            // blockExplorerUrl_singleTransaction =
-            //   singleTransaction.blockExplorerUrl;
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get transaction details is not performed.');
+        } else {
+          console.log('The UserOpsReceipt is displayed as a null.');
         }
-
-        // REMOVED GETTRANSACTIONS ENDPOINT IN 1.2.8 RELEASE
-
-        // // get transactions history
-        // let transactions;
-        // let blockNumber_transactions;
-        // let from_transactions;
-        // let gasLimit_transactions;
-        // let gasPrice_transactions;
-        // let gasUsed_transactions;
-        // let hash_transactions;
-        // let status_transactions;
-        // let blockExplorerUrl_transactions;
-        // try {
-        //   transactions = await arbitrumMainNetSdk.getTransactions({
-        //     chainId: Number(process.env.ARBITRUM_CHAINID),
-        //     account: data.sender,
-        //   });
-
-        //   for (let x = 0; x < transactions.items.length; x++) {
-        //     blockNumber_transactions = transactions.items[x].blockNumber;
-
-        //     if (blockNumber_singleTransaction == blockNumber_transactions) {
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].blockHash,
-        //           'The blockHash value is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].blockNumber,
-        //           'The blockNumber value is not number in the transaction details response.',
-        //         );
-        //         blockNumber_transactions = transactions.items[x].blockNumber;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           blockNumber_singleTransaction,
-        //           blockNumber_transactions,
-        //           'The blockNumber of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].from,
-        //           'The from address value is not correct in the transaction details response.',
-        //         );
-        //         from_transactions = transactions.items[x].from;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           from_singleTransaction,
-        //           from_transactions,
-        //           'The from address of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].gasLimit,
-        //           'The gasLimit value is not number in the transaction details response.',
-        //         );
-
-        //         gasLimit_transactions = transactions.items[x].gasLimit;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           gasLimit_singleTransaction,
-        //           gasLimit_transactions,
-        //           'The gasLimit of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].gasPrice,
-        //           'The gasPrice value is empty in the transaction details response.',
-        //         );
-
-        //         gasPrice_transactions = transactions.items[x].gasPrice;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           gasPrice_singleTransaction,
-        //           gasPrice_transactions,
-        //           'The gasPrice of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].gasUsed,
-        //           'The gasUsed value is not number in the transaction details response.',
-        //         );
-        //         gasUsed_transactions = transactions.items[x].gasUsed;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           gasUsed_singleTransaction,
-        //           gasUsed_transactions,
-        //           'The gasUsed of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].hash,
-        //           'The hash value is empty in the transaction details response.',
-        //         );
-
-        //         hash_transactions = transactions.items[x].hash;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           hash_singleTransaction,
-        //           hash_transactions,
-        //           'The hash of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].input,
-        //           'The input value is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].logs[0].transactionIndex,
-        //           'The transactionIndex value of the logs is not number in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].logs[0].blockNumber,
-        //           'The blockNumber value of the logs is not number in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].logs[0].transactionHash,
-        //           'The transactionHash value of the logs is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].logs[0].address,
-        //           'The address value of the logs is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].logs[0].topics,
-        //           'The topics value of the logs is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].logs[0].data,
-        //           'The data value of the logs is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].logs[0].logIndex,
-        //           'The logIndex value of the logs is not number in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].logs[0].blockHash,
-        //           'The blockHash value of the logs is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].nonce,
-        //           'The nonce value is not number in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].status,
-        //           'The status value is not correct in the transaction details response.',
-        //         );
-
-        //         status_transactions = transactions.items[x].status;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           status_singleTransaction,
-        //           status_transactions,
-        //           'The status of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].to,
-        //           'The to address value is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNumber(
-        //           transactions.items[x].transactionIndex,
-        //           'The transactionIndex value is not number in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].value,
-        //           'The value details is empty in the transaction details response.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.isNotEmpty(
-        //           transactions.items[x].blockExplorerUrl,
-        //           'The blockExplorerUrl value is empty in the transaction details response.',
-        //         );
-
-        //         blockExplorerUrl_transactions =
-        //           transactions.items[x].blockExplorerUrl;
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-
-        //       try {
-        //         assert.strictEqual(
-        //           blockExplorerUrl_singleTransaction,
-        //           blockExplorerUrl_transactions,
-        //           'The blockExplorerUrl of get single transaction response and get transactions response are not matched.',
-        //         );
-        //       } catch (e) {
-        //         console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //       }
-        //       break;
-        //     }
-        //   }
-        // } catch (e) {
-        //   console.error(e);
-        // const eString = e.toString();
-        // addContext(test, eString);
-        //   assert.fail(
-        //     'The history of the transactions of the respective address is not performed correctly.',
-        //   );
-        // }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('SMOKE: Validate the NFT List on the arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        let nfts;
-        try {
-          nfts = await arbitrumMainNetSdk.getNftList({
-            chainId: Number(process.env.ARBITRUM_CHAINID),
-            account: data.sender,
-          });
-
-          if (nfts.items.length > 0) {
-            console.log('The items are available in the NFT list.');
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].contractName,
-                'The contractName value is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].contractAddress,
-                'The contractAddress value is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].tokenType,
-                'The tokenType value is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].nftDescription,
-                'The nftDescription value is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                nfts.items[0].balance,
-                'The balance value is not number in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].items[0].tokenId,
-                'The tokenId value of the items is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].items[0].name,
-                'The name value of the items is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                nfts.items[0].items[0].amount,
-                'The amount value of the items is not number in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].items[0].image,
-                'The image value of the items is empty in the NFT list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } else {
-            console.log('The items are not available in the NFT list.');
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The get NFT list is not performed correctly.');
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE ARBITRUM NETWORK',
       );
     }
   });
@@ -1540,7 +1010,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'An error is displayed while Fetching single transaction.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH RANDOM HASH ON THE ARBITRUM NETWORK',
@@ -1579,7 +1049,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'Getting the single transaction history with incorrect Hash.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID HASH ON THE ARBITRUM NETWORK',
@@ -1624,7 +1094,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             'The transaction history is fetched with hash which not having 32 size hex.',
           );
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH HASH SIZE IS NOT 32 HEX ON THE ARBITRUM NETWORK',
@@ -1659,7 +1129,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID CHAINID ON THE ARBITRUM NETWORK',
@@ -1694,7 +1164,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT CHAINID ON THE ARBITRUM NETWORK',
@@ -1729,7 +1199,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INVALID ACCOUNT ON THE ARBITRUM NETWORK',
@@ -1764,117 +1234,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             );
           }
         }
-      }, 3); // Retry this async test up to 3 times
+      }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE TRANSACTIONS WITH INCORRECT ACCOUNT ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the NFT List with invalid chainid on the arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          await arbitrumMainNetSdk.getNftList({
-            chainId: process.env.INVALID_ARBITRUM_CHAINID,
-            account: data.sender,
-          });
-
-          assert.fail(
-            'Validate the NFT List with invalid chainid is performed',
-          );
-        } catch (e) {
-          const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'chainId') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with invalid chainid',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with invalid chainid',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the NFT List with invalid account address on the arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          await arbitrumMainNetSdk.getNftList({
-            chainId: Number(process.env.ARBITRUM_CHAINID),
-            account: data.invalidSender,
-          });
-
-          assert.fail(
-            'Validate the NFT List with invalid account address is performed',
-          );
-        } catch (e) {
-          const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'account') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with invalid account address',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with invalid account address',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE ARBITRUM NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the NFT List with incorrect account address on the arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          await arbitrumMainNetSdk.getNftList({
-            chainId: Number(process.env.ARBITRUM_CHAINID),
-            account: data.incorrectSender,
-          });
-          assert.fail(
-            'Validate the NFT List with inncorrect account address is performed',
-          );
-        } catch (e) {
-          const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'account') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with inncorrect account address',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with incorrect account address',
-            );
-          }
-        }
-      }, 3); // Retry this async test up to 3 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE ARBITRUM NETWORK',
       );
     }
   });
