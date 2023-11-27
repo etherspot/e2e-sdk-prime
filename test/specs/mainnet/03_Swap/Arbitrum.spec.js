@@ -128,7 +128,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           offers = await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -248,7 +248,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           offers = await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -650,7 +650,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.invalidTokenAddress_arbitrumUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -711,7 +711,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -773,7 +773,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.invalidTokenAddress_arbitrumUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -834,7 +834,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -896,7 +896,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -954,7 +954,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1012,7 +1012,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1069,7 +1069,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_arbitrumUSDC;
           let toTokenAddress = data.tokenAddress_arbitrumUSDT;
-          let fromChainId = process.env.ARBITRUM_CHAINID;
+          let fromChainId = data.arbitrum_chainid;
 
           await arbitrumMainNetSdk.getExchangeOffers({
             fromChainId,

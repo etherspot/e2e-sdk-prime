@@ -128,7 +128,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           offers = await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -248,7 +248,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           offers = await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -650,7 +650,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.invalidTokenAddress_optimismUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -711,7 +711,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -773,7 +773,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.invalidTokenAddress_optimismUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -834,7 +834,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -896,7 +896,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -954,7 +954,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1012,7 +1012,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1069,7 +1069,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
-          let fromChainId = process.env.OPTIMISM_CHAINID;
+          let fromChainId = data.optimism_chainid;
 
           await optimismMainNetSdk.getExchangeOffers({
             fromChainId,

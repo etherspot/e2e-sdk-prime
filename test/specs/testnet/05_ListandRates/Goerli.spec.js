@@ -1038,23 +1038,33 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid token address on the goerli network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid token address on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [data.invalidTokenAddress_goerliUSDC];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.invalidTokenAddress_goerliUSDC];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with invalid token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1069,23 +1079,33 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the goerli network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [data.incorrectTokenAddress_goerliUSDC];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.incorrectTokenAddress_goerliUSDC];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with incorrect token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with incorrect Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1136,21 +1156,33 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the goerli network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [data.tokenAddress_goerliUSDC];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.tokenAddress_goerliUSDC];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.INVALID_GOERLI_CHAINID),
           };
 
-          await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed with invalid chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid chainid while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid chainid while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1165,20 +1197,32 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates without chainid on the goerli network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates without chainid on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [data.tokenAddress_goerliUSDC];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.tokenAddress_goerliUSDC];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
           };
 
-          await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed without chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed without chainid while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed without chainid while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();

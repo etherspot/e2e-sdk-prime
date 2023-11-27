@@ -128,7 +128,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           offers = await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -248,7 +248,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           offers = await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -650,7 +650,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.invalidTokenAddress_maticUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -711,7 +711,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -773,7 +773,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.invalidTokenAddress_maticUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -834,7 +834,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -896,7 +896,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -954,7 +954,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1012,7 +1012,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.tokenAddress_maticUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1069,7 +1069,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_maticUSDC;
           let toTokenAddress = data.tokenAddress_maticUSDT;
-          let fromChainId = process.env.MATIC_CHAINID;
+          let fromChainId = data.matic_chainid;
 
           await maticMainNetSdk.getExchangeOffers({
             fromChainId,
