@@ -13,7 +13,7 @@ let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
 let runTest;
 
-describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with arbitrum network on the MainNet.', function () {
+describe('The PrimeSDK, when transaction with arka and pimlico paymasters with arbitrum network on the MainNet.', function () {
   beforeEach(async function () {
     var test = this;
 
