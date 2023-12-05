@@ -128,7 +128,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           offers = await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -248,7 +248,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           offers = await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -656,7 +656,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.invalidTokenAddress_xdaiUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -717,7 +717,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -779,7 +779,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.invalidTokenAddress_xdaiUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -840,7 +840,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -902,7 +902,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -960,7 +960,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1018,7 +1018,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,
@@ -1075,7 +1075,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         try {
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
-          let fromChainId = process.env.XDAI_CHAINID;
+          let fromChainId = data.xdai_chainid;
 
           await xdaiMainNetSdk.getExchangeOffers({
             fromChainId,

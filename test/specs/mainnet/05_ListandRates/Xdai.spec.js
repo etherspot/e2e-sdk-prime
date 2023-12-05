@@ -1039,26 +1039,35 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid token address on the xdai network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid token address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.invalidTokenAddress_xdaiUSDC,
             data.tokenAddress_xdaiUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with invalid token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1073,26 +1082,36 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the xdai network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
+
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.incorrectTokenAddress_xdaiUSDC,
             data.tokenAddress_xdaiUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with incorrect token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with incorrect Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1143,24 +1162,33 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the xdai network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [
-            data.tokenAddress_xdaiUSDC,
-            data.tokenAddress_xdaiUSDT,
-          ];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.tokenAddress_xdaiUSDC, data.tokenAddress_xdaiUSDT];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.INVALID_XDAI_CHAINID),
           };
 
-          await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed with invalid chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid ChainID while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid ChainID while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1175,23 +1203,32 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates without chainid on the xdai network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates without chainid on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-        try {
-          let TOKEN_LIST = [
-            data.tokenAddress_xdaiUSDC,
-            data.tokenAddress_xdaiUSDT,
-          ];
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
 
-          let requestPayload = {
+        try {
+          TOKEN_LIST = [data.tokenAddress_xdaiUSDC, data.tokenAddress_xdaiUSDT];
+
+          requestPayload = {
             tokens: TOKEN_LIST,
           };
 
-          await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed without chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed without ChainID while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed without ChainID while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();

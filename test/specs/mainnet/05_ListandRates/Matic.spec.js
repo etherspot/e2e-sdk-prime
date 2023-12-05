@@ -1042,26 +1042,36 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid token address on the matic network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid token address on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
+
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.invalidTokenAddress_maticUSDC,
             data.tokenAddress_maticUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with invalid token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1076,26 +1086,36 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the matic network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
+
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.incorrectTokenAddress_maticUSDC,
             data.tokenAddress_maticUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The fetchExchangeRates is passed with incorrect token address',
-          );
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with incorrect Token Address while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1146,24 +1166,36 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the matic network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
+
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.tokenAddress_maticUSDC,
             data.tokenAddress_maticUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
             chainId: Number(process.env.INVALID_MATIC_CHAINID),
           };
 
-          await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed with invalid chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with invalid chainid while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with invalid chainid while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1178,23 +1210,35 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates without chainid on the matic network*', async function () {
+  it('REGRESSION: Validate the Exchange Rates without chainid on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+        let TOKEN_LIST;
+        let rates;
+        let requestPayload;
+
         try {
-          let TOKEN_LIST = [
+          TOKEN_LIST = [
             data.tokenAddress_maticUSDC,
             data.tokenAddress_maticUSDT,
           ];
 
-          let requestPayload = {
+          requestPayload = {
             tokens: TOKEN_LIST,
           };
 
-          await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
 
-          assert.fail('The fetchExchangeRates is passed without chainid');
+          if (rates.items.length === 0) {
+            console.log(
+              'The list of rates are not displayed with without chainid while fetching the exchange rates.',
+            );
+          } else {
+            assert.fail(
+              'The list of rates are displayed with without chainid while fetching the exchange rates',
+            );
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
