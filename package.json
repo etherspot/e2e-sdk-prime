@@ -63,7 +63,8 @@
     "test-skandha-goerli": "mocha --timeout 600000 --spec test/specs/mainnet-api/skandha/Goerli.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-skandha": "mocha --timeout 600000 --spec test/specs/mainnet-api/skandha/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-loadtest-arka": "mocha --timeout 600000 --spec test/specs/mainnet-api/arka/LoadTesting.spec.js",
-    "test-loadtest-skandha": "mocha --timeout 600000 --spec test/specs/mainnet-api/skandha/LoadTesting.spec.js"
+    "test-loadtest-skandha": "mocha --timeout 600000 --spec test/specs/mainnet-api/skandha/LoadTesting.spec.js",
+    "test-loadtest": "mocha --timeout 600000 --spec test/specs/mainnet-api/*/LoadTesting.spec.js"
   },
   "author": "",
   "license": "ISC",

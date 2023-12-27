@@ -287,8 +287,9 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
     }
   });
 
-  it.only('SMOKE: Validate the transfer native token with valid details on the Goerli Network', async function () {
+  it('SMOKE: Validate the transfer native token with skandha and invalid signature length on the Goerli Network', async function () {
     var test = this;
+    const startTime = performance.now();
 
     await customRetryAsync(async function () {
       // initializating sdk
@@ -346,34 +347,34 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
 
       // estimate transactions added to the batch and get the fee data for the UserOp
       let op;
-      let Sender;
-      let Nonce;
-      let InitCode;
-      let CallData;
-      let CallGasLimit;
-      let VerificationGasLimit;
-      let MaxFeePerGas;
-      let MaxPriorityFeePerGas;
-      let PaymasterAndData;
-      let PreVerificationGas;
-      let Signature;
+      // let Sender;
+      // let Nonce;
+      // let InitCode;
+      // let CallData;
+      // let CallGasLimit;
+      // let VerificationGasLimit;
+      // let MaxFeePerGas;
+      // let MaxPriorityFeePerGas;
+      // let PaymasterAndData;
+      // let PreVerificationGas;
+      // let Signature;
 
       try {
         op = await goerliTestNetSdk.estimate();
 
-        console.log('op:::::::::::', op);
+        // console.log('op:::::::::::', op);
 
-        Sender = op.sender;
-        Nonce = op.nonce;
-        InitCode = op.initCode;
-        CallData = op.callData;
-        CallGasLimit = op.callGasLimit;
-        VerificationGasLimit = op.verificationGasLimit;
-        MaxFeePerGas = op.maxFeePerGas;
-        MaxPriorityFeePerGas = op.maxPriorityFeePerGas;
-        PaymasterAndData = op.paymasterAndData;
-        PreVerificationGas = op.preVerificationGas;
-        Signature = op.signature;
+        // Sender = op.sender;
+        // Nonce = op.nonce;
+        // InitCode = op.initCode;
+        // CallData = op.callData;
+        // CallGasLimit = op.callGasLimit;
+        // VerificationGasLimit = op.verificationGasLimit;
+        // MaxFeePerGas = op.maxFeePerGas;
+        // MaxPriorityFeePerGas = op.maxPriorityFeePerGas;
+        // PaymasterAndData = op.paymasterAndData;
+        // PreVerificationGas = op.preVerificationGas;
+        // Signature = op.signature;
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -392,23 +393,8 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
           body: JSON.stringify({
             jsonrpc: '2.0',
             id: 1,
-            method: 'eth_sendUserOperation',
-            params: [
-              {
-                Sender,
-                Nonce,
-                InitCode,
-                CallData,
-                CallGasLimit,
-                VerificationGasLimit,
-                PreVerificationGas,
-                MaxFeePerGas,
-                MaxPriorityFeePerGas,
-                PaymasterAndData,
-                Signature,
-              },
-              data.entryPointAddress,
-            ],
+            method: 'skandha_validateUserOperation',
+            params: [op, data.entryPointAddress],
           }),
         });
         if (!response.ok) {
@@ -421,11 +407,20 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
         } else {
           console.log('Response status:', response.status);
           addContext(test, 'Response status: ' + response.status);
+          const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
+          const ttfb_s = (ttfb_ms / 1000).toFixed(2);
+          console.log('Time to First Byte (TTFB):', ttfb_s + ' second');
+          addContext(test, 'Time to First Byte (TTFB): ' + ttfb_s + ' second');
 
           const returnedValue = await response.json();
-          console.log('Value returned:', returnedValue);
-          const returnedValueString = JSON.stringify(returnedValue);
-          addContext(test, 'Value returned: ' + returnedValueString);
+          const errorMessage = returnedValue.error.message;
+          if (errorMessage.includes('invalid signature length')) {
+            console.log('Value returned:', returnedValue);
+            const returnedValueString = JSON.stringify(returnedValue);
+            addContext(test, 'Value returned: ' + returnedValueString);
+          } else {
+            assert.fail('The response is not getting correct.');
+          }
         }
       } catch (e) {
         console.error('Fetch error:', e);
@@ -433,34 +428,10 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
         addContext(test, eString);
         assert.fail('Getting an error');
       }
-
-      /* new line */
-
-      // // sign the UserOp and sending to the bundler
-      // let uoHash;
-      // try {
-      //   uoHash = await goerliTestNetSdk.send(op);
-      // } catch (e) {
-      //   console.error(e);
-      //   const eString = e.toString();
-      //   addContext(test, eString);
-      //   assert.fail(
-      //     'The sign the UserOp and sending to the bundler action is not performed.',
-      //   );
-      // }
-
-      // // get transaction hash...
-      // console.log('Waiting for transaction...');
-      // let userOpsReceipt = null;
-      // const timeout = Date.now() + 60000; // 1 minute timeout
-      // while (userOpsReceipt == null && Date.now() < timeout) {
-      //   await Helper.wait(2000);
-      //   userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
-      // }
     }, data1.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Validate the eth_supportedEntryPoints method of the skandha with valid details on Goerli Network', async function () {
+  it('SMOKE: Validate the Batch RPC calls of the skandha with valid details on Goerli Network', async function () {
     var test = this;
     const startTime = performance.now();
 
@@ -468,32 +439,18 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
       const response = await fetch('https://goerli-bundler.etherspot.io/', {
         method: 'POST',
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          method: 'skandha_validateUserOperation',
-          params: [
-            {
-              sender: data.sender,
-              nonce: '0x0',
-              initCode:
-                '0x9406cc6185a346906296840746125a0e449764545fbfb9cf00000000000000000000000005449b55b91e9ebdd099ed584cb6357234f2ab3b0000000000000000000000000000000000000000000000000000000000000000',
-              callData:
-                '0xb61d27f60000000000000000000000007743d0ec8f1f848dc76e21a18dc5b478f7d87b6e0000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000',
-              callGasLimit: '0x879d7',
-              verificationGasLimit: '0x5dfa8',
-              preVerificationGas: '0xadbc',
-              maxFeePerGas: '0xbebc200',
-              maxPriorityFeePerGas: '0x0',
-              paymasterAndData: '0x',
-              signature:
-                '0xa5dc9910e3af2c4e00e311c22dce5905ee91efa093d4707f25e86fefb6c9985713b7720078851ca78d4de3fd35a9641de5ae19e8fa940d492f0beea4df463de11c',
-            },
-            '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
-          ],
-          id: 46,
-          jsonrpc: '2.0',
-        }),
+        body: JSON.stringify([
+          { method: 'skandha_config' },
+          { method: 'eth_chainId' },
+          { method: 'eth_supportedEntryPoints' },
+          {
+            method: 'skandha_feeHistory',
+            params: [data.entryPointAddress, data.blockCount, 'latest'],
+          },
+        ]),
       });
       if (!response.ok) {
         console.error('Response status:', response.status);
@@ -514,6 +471,54 @@ describe('Performance testing of Skandha Endpoints with Goerli Network', functio
         console.log('Value returned:', returnedValue);
         const returnedValueString = JSON.stringify(returnedValue);
         addContext(test, 'Value returned: ' + returnedValueString);
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[0].result,
+            'The first result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The first result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[1].result,
+            'The second result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The second result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[2].result,
+            'The third result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The third result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[3].result,
+            'The fourth result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The fourth result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
       }
     } catch (e) {
       console.error('Fetch error:', e);

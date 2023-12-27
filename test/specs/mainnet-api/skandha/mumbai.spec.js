@@ -286,7 +286,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
     }
   });
 
-  it('SMOKE: Validate the transfer native token with valid details on the mumbai Network', async function () {
+  it('SMOKE: Validate the transfer native token with skandha and invalid signature length on the mumbai Network', async function () {
     var test = this;
     const startTime = performance.now();
 
@@ -335,20 +335,6 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
           to: data1.recipient,
           value: ethers.utils.parseEther(data1.value),
         });
-
-        const ttfb1_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
-        const ttfb1_s = (ttfb1_ms / 1000).toFixed(2);
-
-        console.log(
-          'Time to First Byte (TTFB) for adding transactions to the batch:',
-          ttfb1_s + ' second',
-        );
-        addContext(
-          test,
-          'Time to First Byte (TTFB) for adding transactions to the batch: ' +
-            ttfb1_s +
-            ' second',
-        );
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -362,19 +348,6 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
       let op;
       try {
         op = await mumbaiTestNetSdk.estimate();
-
-        const ttfb2_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
-        const ttfb2_s = (ttfb2_ms / 1000).toFixed(2);
-        console.log(
-          'Time to First Byte (TTFB) for estimate transactions and get the fee data for the UserOp: ',
-          ttfb2_s + ' second',
-        );
-        addContext(
-          test,
-          'Time to First Byte (TTFB) for estimate transactions and get the fee data for the UserOp: ' +
-            ttfb2_s +
-            ' second',
-        );
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -384,30 +357,147 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         );
       }
 
-      // sign the UserOp and sending to the bundler
       try {
-        await mumbaiTestNetSdk.send(op);
+        const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'skandha_validateUserOperation',
+            params: [op, data.entryPointAddress],
+          }),
+        });
+        if (!response.ok) {
+          console.error('Response status:', response.status);
+          addContext(test, 'Response status: ' + response.status);
+          const errorResponse = await response.text();
+          console.error('Error response:', errorResponse);
+          addContext(test, 'Error response:' + errorResponse);
+          assert.fail('Getting an error');
+        } else {
+          console.log('Response status:', response.status);
+          addContext(test, 'Response status: ' + response.status);
+          const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
+          const ttfb_s = (ttfb_ms / 1000).toFixed(2);
+          console.log('Time to First Byte (TTFB):', ttfb_s + ' second');
+          addContext(test, 'Time to First Byte (TTFB): ' + ttfb_s + ' second');
 
-        const ttfb3_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
-        const ttfb3_s = (ttfb3_ms / 1000).toFixed(2);
-        console.log(
-          'Time to First Byte (TTFB) for sign the UserOp and sending to the bundler: ',
-          ttfb3_s + ' second',
-        );
-        addContext(
-          test,
-          'Time to First Byte (TTFB) for sign the UserOp and sending to the bundler: ' +
-            ttfb3_s +
-            ' second',
-        );
+          const returnedValue = await response.json();
+          const errorMessage = returnedValue.error.message;
+          if (errorMessage.includes('invalid signature length')) {
+            console.log('Value returned:', returnedValue);
+            const returnedValueString = JSON.stringify(returnedValue);
+            addContext(test, 'Value returned: ' + returnedValueString);
+          } else {
+            assert.fail('The response is not getting correct.');
+          }
+        }
       } catch (e) {
-        console.error(e);
+        console.error('Fetch error:', e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail(
-          'The sign the UserOp and sending to the bundler action is not performed.',
-        );
+        assert.fail('Getting an error');
       }
     }, data1.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the Batch RPC calls of the skandha with valid details on mumbai Network', async function () {
+    var test = this;
+    const startTime = performance.now();
+
+    try {
+      const response = await fetch('https://mumbai-bundler.etherspot.io/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([
+          { method: 'skandha_config' },
+          { method: 'eth_chainId' },
+          { method: 'eth_supportedEntryPoints' },
+          {
+            method: 'skandha_feeHistory',
+            params: [data.entryPointAddress, data.blockCount, 'latest'],
+          },
+        ]),
+      });
+      if (!response.ok) {
+        console.error('Response status:', response.status);
+        addContext(test, 'Response status: ' + response.status);
+        const errorResponse = await response.text();
+        console.error('Error response:', errorResponse);
+        addContext(test, 'Error response:' + errorResponse);
+        assert.fail('Getting an error');
+      } else {
+        console.log('Response status:', response.status);
+        addContext(test, 'Response status: ' + response.status);
+        const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
+        const ttfb_s = (ttfb_ms / 1000).toFixed(2);
+        console.log('Time to First Byte (TTFB):', ttfb_s + ' second');
+        addContext(test, 'Time to First Byte (TTFB): ' + ttfb_s + ' second');
+
+        const returnedValue = await response.json();
+        console.log('Value returned:', returnedValue);
+        const returnedValueString = JSON.stringify(returnedValue);
+        addContext(test, 'Value returned: ' + returnedValueString);
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[0].result,
+            'The first result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The first result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[1].result,
+            'The second result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The second result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[2].result,
+            'The third result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The third result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+
+        try {
+          assert.isNotEmpty(
+            returnedValue[3].result,
+            'The fourth result value is empty in the Batch RPC calls response.',
+          );
+        } catch (e) {
+          console.error(e);
+          assert.fail(
+            'The fourth result value is not displayed correctly in the Batch RPC calls response.',
+          );
+        }
+      }
+    } catch (e) {
+      console.error('Fetch error:', e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Getting an error');
+    }
   });
 });
