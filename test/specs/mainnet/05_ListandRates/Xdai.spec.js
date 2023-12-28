@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
+let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with xdai network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    xdaiDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),
     });
@@ -105,7 +112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         let nfts;
         try {
-          nfts = await xdaiMainNetSdk.getNftList({
+          nfts = await xdaiDataService.getNftList({
             chainId: Number(process.env.XDAI_CHAINID),
             account: data.sender,
           });
@@ -214,7 +221,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenListTokens;
         let name;
         try {
-          tokenLists = await xdaiMainNetSdk.getTokenLists();
+          tokenLists = await xdaiDataService.getTokenLists();
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
@@ -257,7 +264,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await xdaiMainNetSdk.getTokenListTokens();
+          tokenListTokens = await xdaiDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -348,7 +355,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await xdaiMainNetSdk.getTokenListTokens({
+          tokenListTokens = await xdaiDataService.getTokenListTokens({
             name,
           });
 
@@ -471,7 +478,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -572,7 +579,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
+          await xdaiDataService.getNftList({
             chainId: process.env.INVALID_XDAI_CHAINID,
             account: data.sender,
           });
@@ -608,7 +615,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
+          await xdaiDataService.getNftList({
             chainId: Number(process.env.XDAI_CHAINID),
             account: data.invalidSender,
           });
@@ -644,7 +651,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await xdaiMainNetSdk.getNftList({
+          await xdaiDataService.getNftList({
             chainId: Number(process.env.XDAI_CHAINID),
             account: data.incorrectSender,
           });
@@ -683,7 +690,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         // let name;
         let endpoint;
         try {
-          tokenLists = await xdaiMainNetSdk.getTokenLists();
+          tokenLists = await xdaiDataService.getTokenLists();
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
@@ -726,7 +733,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await xdaiMainNetSdk.getTokenListTokens();
+          tokenListTokens = await xdaiDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -817,7 +824,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await xdaiMainNetSdk.getTokenListTokens({
+          tokenListTokens = await xdaiDataService.getTokenListTokens({
             endpoint,
           });
 
@@ -943,7 +950,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -1057,7 +1064,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1101,7 +1108,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1138,7 +1145,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.XDAI_CHAINID),
           };
 
-          await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          await xdaiDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           let error = e.message;
           if (error.includes('Cannot set properties of undefined')) {
@@ -1178,7 +1185,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.INVALID_XDAI_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1218,7 +1225,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             tokens: TOKEN_LIST,
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(

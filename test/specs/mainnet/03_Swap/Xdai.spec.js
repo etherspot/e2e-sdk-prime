@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { BigNumber, constants, utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
+let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with xdai network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    xdaiDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),
     });
@@ -105,9 +112,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -125,12 +134,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         let offers;
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          offers = await xdaiMainNetSdk.getExchangeOffers({
+          offers = await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -225,9 +236,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -245,12 +258,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         let offers;
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          offers = await xdaiMainNetSdk.getExchangeOffers({
+          offers = await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -356,7 +371,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           };
 
           quotes =
-            await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+            await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           if (quotes.items.length > 0) {
             try {
@@ -453,6 +468,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quotes;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
@@ -461,12 +477,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           };
 
           quotes =
-            await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+            await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           if (quotes.items.length > 0) {
             const quote = quotes.items[0]; // Selected the first route
-            await xdaiMainNetSdk.getStepTransaction({
+            await xdaiDataService.getStepTransaction({
               route: quote,
+              account: data.sender,
             });
 
             try {
@@ -634,9 +651,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -653,12 +672,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.invalidTokenAddress_xdaiUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -696,9 +717,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -715,11 +738,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             // without fromTokenAddress
             toTokenAddress,
@@ -757,9 +782,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -776,12 +803,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.invalidTokenAddress_xdaiUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -819,9 +848,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -838,11 +869,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             // without toTokenAddress,
@@ -880,9 +913,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -899,12 +934,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -938,9 +975,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -957,12 +996,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -996,9 +1037,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -1015,12 +1058,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -1054,9 +1099,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await xdaiMainNetSdk.getExchangeSupportedAssets({
+          await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
         try {
@@ -1073,11 +1120,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_xdaiUSDC;
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromChainId = data.xdai_chainid;
 
-          await xdaiMainNetSdk.getExchangeOffers({
+          await arbitrumDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -1123,7 +1172,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromchainid detail',
@@ -1165,7 +1214,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without toChainId detail',
@@ -1208,7 +1257,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid fromTokenAddress detail',
@@ -1251,7 +1300,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect fromTokenAddress detail',
@@ -1293,7 +1342,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromTokenAddress detail',
@@ -1336,7 +1385,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid toTokenAddress detail',
@@ -1379,7 +1428,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect toTokenAddress detail',
@@ -1421,7 +1470,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without toTokenAddress detail',
@@ -1464,7 +1513,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid fromAddress detail',
@@ -1507,7 +1556,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect fromAddress detail',
@@ -1549,7 +1598,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAddress: data.sender,
           };
 
-          await xdaiMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromAmount detail',
@@ -1584,13 +1633,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromchainid detail',
@@ -1625,13 +1675,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without toChainId detail',
@@ -1666,6 +1717,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.invalidTokenAddress_xdaiUSDC,
@@ -1673,7 +1725,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with invalid fromTokenAddress detail',
@@ -1708,6 +1760,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.incorrectTokenAddress_xdaiUSDC,
@@ -1715,7 +1768,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with incorrect fromTokenAddress detail',
@@ -1750,13 +1803,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromTokenAddress detail',
@@ -1791,6 +1845,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
@@ -1798,7 +1853,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with invalid toTokenAddress detail',
@@ -1833,6 +1888,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
@@ -1840,7 +1896,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with incorrect toTokenAddress detail',
@@ -1875,13 +1931,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without toTokenAddress detail',
@@ -1916,13 +1973,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.xdai_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_xdaiUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
           };
 
-          await xdaiMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromAmount detail',

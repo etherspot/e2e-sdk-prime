@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -12,6 +12,7 @@ dotenv.config(); // init dotenv
 let goerliTestNetSdk;
 let goerliEtherspotWalletAddress;
 let goerliNativeAddress = null;
+let goerliDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with goerli network on the TestNet', function () {
@@ -30,7 +31,7 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
 
       try {
         assert.strictEqual(
-          goerliTestNetSdk.state.walletAddress,
+          goerliTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -71,7 +72,13 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
       );
     }
 
-    let output = await goerliTestNetSdk.getAccountBalances({
+    // initializating Data service...
+    goerliDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await goerliDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.GOERLI_CHAINID),
     });

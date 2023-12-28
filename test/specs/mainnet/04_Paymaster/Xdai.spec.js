@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
+let xdaiDataService;
 let runTest;
 
 /* eslint-disable prettier/prettier */
@@ -30,7 +31,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -71,7 +72,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    xdaiDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),
     });

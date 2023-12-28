@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let mumbaiTestNetSdk;
 let mumbaiEtherspotWalletAddress;
 let mumbaiNativeAddress = null;
+let mumbaiiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with mumbai network on the TestNet', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       try {
         assert.strictEqual(
-          mumbaiTestNetSdk.state.walletAddress,
+          mumbaiTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await mumbaiTestNetSdk.getAccountBalances({
+    // initializating Data service...
+    mumbaiiDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await mumbaiiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.MUMBAI_CHAINID),
     });
@@ -188,8 +195,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await mumbaiTestNetSdk.getTransaction({
+            singleTransaction = await mumbaiiDataService.getTransaction({
               hash: transactionHash,
+              chainId: Number(process.env.MUMBAI_CHAINID),
             });
 
             try {
@@ -770,8 +778,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await mumbaiTestNetSdk.getTransaction({
+          singleTransaction = await mumbaiiDataService.getTransaction({
             hash: randomHash, // Add your transaction hash
+            chainId: Number(process.env.MUMBAI_CHAINID),
           });
 
           try {
@@ -1154,8 +1163,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await mumbaiTestNetSdk.getTransaction({
+          transaction = await mumbaiiDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
+            chainId: Number(process.env.MUMBAI_CHAINID),
           });
 
           if (transaction == null) {
@@ -1193,8 +1203,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         try {
           try {
-            await mumbaiTestNetSdk.getTransaction({
+            await mumbaiiDataService.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
+              chainId: Number(process.env.MUMBAI_CHAINID),
             });
             assert.fail(
               'The transaction history is fetched with hash which not having 32 size hex.',

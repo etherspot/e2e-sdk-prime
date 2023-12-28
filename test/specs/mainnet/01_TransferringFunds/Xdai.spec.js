@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -12,6 +12,7 @@ dotenv.config(); // init dotenv
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
+let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with xdai network on the MainNet', function () {
@@ -30,7 +31,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -71,7 +72,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    xdaiDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),
     });

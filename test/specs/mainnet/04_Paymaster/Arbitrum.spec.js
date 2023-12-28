@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let arbitrumMainNetSdk;
 let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
+let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with arbitrum network on the MainNet.', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
 
       try {
         assert.strictEqual(
-          arbitrumMainNetSdk.state.walletAddress,
+          arbitrumMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       );
     }
 
-    let output = await arbitrumMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    arbitrumDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await arbitrumDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.ARBITRUM_CHAINID),
     });

@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -12,6 +12,7 @@ dotenv.config(); // init dotenv
 let maticMainNetSdk;
 let maticEtherspotWalletAddress;
 let maticNativeAddress = null;
+let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with matic network on the MainNet', function () {
@@ -30,7 +31,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
 
       try {
         assert.strictEqual(
-          maticMainNetSdk.state.walletAddress,
+          maticMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -71,7 +72,13 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       );
     }
 
-    let output = await maticMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    maticDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await maticDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.POLYGON_CHAINID),
     });

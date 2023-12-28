@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let maticMainNetSdk;
 let maticEtherspotWalletAddress;
 let maticNativeAddress = null;
+let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with matic network on the MainNet', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       try {
         assert.strictEqual(
-          maticMainNetSdk.state.walletAddress,
+          maticMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await maticMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    maticDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await maticDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.POLYGON_CHAINID),
     });
@@ -188,8 +195,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await maticMainNetSdk.getTransaction({
+            singleTransaction = await maticDataService.getTransaction({
               hash: transactionHash,
+              chainId: Number(process.env.POLYGON_CHAINID),
             });
 
             try {
@@ -641,8 +649,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await maticMainNetSdk.getTransaction({
+          singleTransaction = await maticDataService.getTransaction({
             hash: randomHash, // Add your transaction hash
+            chainId: Number(process.env.POLYGON_CHAINID),
           });
 
           try {
@@ -1025,8 +1034,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await maticMainNetSdk.getTransaction({
+          transaction = await maticDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
+            chainId: Number(process.env.POLYGON_CHAINID),
           });
 
           if (transaction == null) {
@@ -1064,8 +1074,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         try {
           try {
-            await maticMainNetSdk.getTransaction({
+            await maticDataService.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
+              chainId: Number(process.env.POLYGON_CHAINID),
             });
             assert.fail(
               'The transaction history is fetched with hash which not having 32 size hex.',

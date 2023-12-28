@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
 let optimismNativeAddress = null;
+let optimismDataService;
 let runTest;
 
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with optimism network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
       try {
         assert.strictEqual(
-          optimismMainNetSdk.state.walletAddress,
+          optimismMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       );
     }
 
-    let output = await optimismMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    optimismDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await optimismDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.OPTIMISM_CHAINID),
     });
@@ -105,9 +112,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -125,12 +134,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         let offers;
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          offers = await optimismMainNetSdk.getExchangeOffers({
+          offers = await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -225,9 +236,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -245,12 +258,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         let offers;
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = constants.AddressZero;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          offers = await optimismMainNetSdk.getExchangeOffers({
+          offers = await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -356,7 +371,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           };
 
           quotes =
-            await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+            await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           if (quotes.items.length > 0) {
             try {
@@ -450,6 +465,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quotes;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
@@ -458,12 +474,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           };
 
           quotes =
-            await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+            await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           if (quotes.items.length > 0) {
             const quote = quotes.items[0]; // Selected the first route
-            await arbitrumMainNetSdk.getStepTransaction({
+            await optimismDataService.getStepTransaction({
               route: quote,
+              account: data.sender,
             });
 
             try {
@@ -628,9 +645,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -647,12 +666,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.invalidTokenAddress_optimismUSDC; // Invalid fromTokenAddress
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -690,9 +711,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -709,11 +732,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             // without fromTokenAddress
             toTokenAddress,
@@ -751,9 +776,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -770,12 +797,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.invalidTokenAddress_optimismUSDT; // Invalid toTokenAddress
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -813,9 +842,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -832,11 +863,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             // without toTokenAddress,
@@ -874,9 +907,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -893,12 +928,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.invalidValue; // invalid fromAmount
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -932,9 +969,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -951,12 +990,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -990,9 +1031,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -1009,12 +1052,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -1048,9 +1093,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     if (runTest) {
       await customRetryAsync(async function () {
         exchangeSupportedAssets =
-          await optimismMainNetSdk.getExchangeSupportedAssets({
+          await optimismDataService.getExchangeSupportedAssets({
             page: 1,
             limit: 100,
+            account: data.sender,
+            chainId: Number(process.env.OPTIMISM_CHAINID),
           });
 
         try {
@@ -1067,11 +1114,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
 
         try {
+          let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromChainId = data.optimism_chainid;
 
-          await optimismMainNetSdk.getExchangeOffers({
+          await optimismDataService.getExchangeOffers({
+            fromAddress,
             fromChainId,
             fromTokenAddress,
             toTokenAddress,
@@ -1117,7 +1166,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromchainid detail',
@@ -1159,7 +1208,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without toChainId detail',
@@ -1202,7 +1251,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid fromTokenAddress detail',
@@ -1245,7 +1294,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect fromTokenAddress detail',
@@ -1287,7 +1336,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromTokenAddress detail',
@@ -1330,7 +1379,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid toTokenAddress detail',
@@ -1373,7 +1422,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect toTokenAddress detail',
@@ -1415,7 +1464,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without toTokenAddress detail',
@@ -1458,7 +1507,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with invalid fromAddress detail',
@@ -1501,7 +1550,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform with incorrect fromAddress detail',
@@ -1543,7 +1592,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAddress: data.sender,
           };
 
-          await optimismMainNetSdk.getCrossChainQuotes(quoteRequestPayload);
+          await optimismDataService.getCrossChainQuotes(quoteRequestPayload);
 
           assert.fail(
             'The getCrossChainQuotes request allowed to perform without fromAmount detail',
@@ -1578,13 +1627,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromchainid detail',
@@ -1619,13 +1669,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without toChainId detail',
@@ -1660,6 +1711,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.invalidTokenAddress_optimismUSDC,
@@ -1667,7 +1719,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with invalid fromTokenAddress detail',
@@ -1702,6 +1754,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.incorrectTokenAddress_optimismUSDC,
@@ -1709,7 +1762,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with incorrect fromTokenAddress detail',
@@ -1744,13 +1797,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             toTokenAddress: data.tokenAddress_maticUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromTokenAddress detail',
@@ -1785,6 +1839,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
@@ -1792,7 +1847,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with invalid toTokenAddress detail',
@@ -1827,6 +1882,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
@@ -1834,7 +1890,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform with incorrect toTokenAddress detail',
@@ -1869,13 +1925,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
             fromAmount: utils.parseUnits(data.swap_value, 6),
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without toTokenAddress detail',
@@ -1910,13 +1967,14 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
+            fromAddress: data.sender,
             fromChainId: data.optimism_chainid,
             toChainId: data.matic_chainid,
             fromTokenAddress: data.tokenAddress_optimismUSDC,
             toTokenAddress: data.tokenAddress_maticUSDC,
           };
 
-          await optimismMainNetSdk.getAdvanceRoutesLiFi(quoteRequestPayload);
+          await optimismDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
           assert.fail(
             'The getAdvanceRoutesLiFi request allowed to perform without fromAmount detail',

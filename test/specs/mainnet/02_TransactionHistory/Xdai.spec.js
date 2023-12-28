@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
+let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       try {
         assert.strictEqual(
-          xdaiMainNetSdk.state.walletAddress,
+          xdaiMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await xdaiMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    xdaiDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),
     });
@@ -188,8 +195,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await xdaiMainNetSdk.getTransaction({
+            singleTransaction = await xdaiDataService.getTransaction({
               hash: transactionHash,
+              chainId: Number(process.env.XDAI_CHAINID),
             });
 
             try {
@@ -641,8 +649,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await xdaiMainNetSdk.getTransaction({
+          singleTransaction = await xdaiDataService.getTransaction({
             hash: randomHash, // Add your transaction hash
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
           try {
@@ -1025,8 +1034,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await xdaiMainNetSdk.getTransaction({
+          transaction = await xdaiDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
+            chainId: Number(process.env.XDAI_CHAINID),
           });
 
           if (transaction == null) {
@@ -1064,8 +1074,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         try {
           try {
-            await xdaiMainNetSdk.getTransaction({
+            await xdaiDataService.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
+              chainId: Number(process.env.XDAI_CHAINID),
             });
             assert.fail(
               'The transaction history is fetched with hash which not having 32 size hex.',

@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -12,6 +12,7 @@ dotenv.config(); // init dotenv
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
 let optimismNativeAddress = null;
+let optimismDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with optimism network on the MainNet', function () {
@@ -30,7 +31,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       try {
         assert.strictEqual(
-          optimismMainNetSdk.state.walletAddress,
+          optimismMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -71,7 +72,13 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       );
     }
 
-    let output = await optimismMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    optimismDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await optimismDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.OPTIMISM_CHAINID),
     });

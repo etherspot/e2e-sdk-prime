@@ -27,7 +27,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
         try {
           assert.strictEqual(
-            maticMainNetSdk.state.walletAddress,
+            maticMainNetSdk.state.EOAAddress,
             data.eoaAddress,
             'The EOA Address is not calculated correctly.',
           );
@@ -85,7 +85,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
         try {
           assert.strictEqual(
-            maticMainNetSdk.state.walletAddress,
+            maticMainNetSdk.state.EOAAddress,
             data.eoaAddress,
             'The EOA Address is not calculated correctly.',
           );

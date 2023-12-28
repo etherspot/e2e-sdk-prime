@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let maticMainNetSdk;
 let maticEtherspotWalletAddress;
 let maticNativeAddress = null;
+let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with matic network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       try {
         assert.strictEqual(
-          maticMainNetSdk.state.walletAddress,
+          maticMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       );
     }
 
-    let output = await maticMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    maticDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await maticDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.POLYGON_CHAINID),
     });
@@ -105,7 +112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         let nfts;
         try {
-          nfts = await maticMainNetSdk.getNftList({
+          nfts = await maticDataService.getNftList({
             chainId: Number(process.env.POLYGON_CHAINID),
             account: data.sender,
           });
@@ -214,7 +221,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenListTokens;
         let name;
         try {
-          tokenLists = await maticMainNetSdk.getTokenLists();
+          tokenLists = await maticDataService.getTokenLists();
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
@@ -257,7 +264,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await maticMainNetSdk.getTokenListTokens();
+          tokenListTokens = await maticDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -348,7 +355,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await maticMainNetSdk.getTokenListTokens({
+          tokenListTokens = await maticDataService.getTokenListTokens({
             name,
           });
 
@@ -474,7 +481,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -575,7 +582,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await maticMainNetSdk.getNftList({
+          await maticDataService.getNftList({
             chainId: process.env.INVALID_MATIC_CHAINID,
             account: data.sender,
           });
@@ -611,7 +618,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await maticMainNetSdk.getNftList({
+          await maticDataService.getNftList({
             chainId: Number(process.env.POLYGON_CHAINID),
             account: data.invalidSender,
           });
@@ -647,7 +654,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await maticMainNetSdk.getNftList({
+          await maticDataService.getNftList({
             chainId: Number(process.env.POLYGON_CHAINID),
             account: data.incorrectSender,
           });
@@ -686,7 +693,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         // let name;
         let endpoint;
         try {
-          tokenLists = await maticMainNetSdk.getTokenLists();
+          tokenLists = await maticDataService.getTokenLists();
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
@@ -729,7 +736,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await maticMainNetSdk.getTokenListTokens();
+          tokenListTokens = await maticDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -820,7 +827,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await maticMainNetSdk.getTokenListTokens({
+          tokenListTokens = await maticDataService.getTokenListTokens({
             endpoint,
           });
 
@@ -946,7 +953,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -1061,7 +1068,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1105,7 +1112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1142,7 +1149,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.MATIC_CHAINID),
           };
 
-          await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          await maticDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           let error = e.message;
           if (error.includes('Cannot set properties of undefined')) {
@@ -1185,7 +1192,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.INVALID_MATIC_CHAINID),
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1228,7 +1235,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             tokens: TOKEN_LIST,
           };
 
-          rates = await maticMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await maticDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(

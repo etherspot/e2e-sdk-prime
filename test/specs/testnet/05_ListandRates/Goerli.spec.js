@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let goerliTestNetSdk;
 let goerliEtherspotWalletAddress;
 let goerliNativeAddress = null;
+let goerliDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with goerli network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       try {
         assert.strictEqual(
-          goerliTestNetSdk.state.walletAddress,
+          goerliTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       );
     }
 
-    let output = await goerliTestNetSdk.getAccountBalances({
+    // initializating Data service...
+    goerliDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await goerliDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.GOERLI_CHAINID),
     });
@@ -105,7 +112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         let nfts;
         try {
-          nfts = await goerliTestNetSdk.getNftList({
+          nfts = await goerliDataService.getNftList({
             chainId: Number(process.env.GOERLI_CHAINID),
             account: data.sender,
           });
@@ -214,7 +221,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenListTokens;
         let name;
         try {
-          tokenLists = await goerliTestNetSdk.getTokenLists();
+          tokenLists = await goerliDataService.getTokenLists();
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
@@ -257,7 +264,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await goerliTestNetSdk.getTokenListTokens();
+          tokenListTokens = await goerliDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -348,7 +355,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await goerliTestNetSdk.getTokenListTokens({
+          tokenListTokens = await goerliDataService.getTokenListTokens({
             name,
           });
 
@@ -471,7 +478,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -572,7 +579,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await goerliTestNetSdk.getNftList({
+          await goerliDataService.getNftList({
             chainId: process.env.INVALID_GOERLI_CHAINID,
             account: data.sender,
           });
@@ -608,7 +615,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await goerliTestNetSdk.getNftList({
+          await goerliDataService.getNftList({
             chainId: Number(process.env.GOERLI_CHAINID),
             account: data.invalidSender,
           });
@@ -644,7 +651,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await goerliTestNetSdk.getNftList({
+          await goerliDataService.getNftList({
             chainId: Number(process.env.GOERLI_CHAINID),
             account: data.incorrectSender,
           });
@@ -683,7 +690,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         // let name;
         let endpoint;
         try {
-          tokenLists = await goerliTestNetSdk.getTokenLists();
+          tokenLists = await goerliDataService.getTokenLists();
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
@@ -726,7 +733,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await goerliTestNetSdk.getTokenListTokens();
+          tokenListTokens = await goerliDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -817,7 +824,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await goerliTestNetSdk.getTokenListTokens({
+          tokenListTokens = await goerliDataService.getTokenListTokens({
             endpoint,
           });
 
@@ -942,7 +949,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -1054,7 +1061,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1095,7 +1102,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1132,7 +1139,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.GOERLI_CHAINID),
           };
 
-          await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          await goerliDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           let error = e.message;
           if (error.includes('Cannot set properties of undefined')) {
@@ -1172,7 +1179,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.INVALID_GOERLI_CHAINID),
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1212,7 +1219,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             tokens: TOKEN_LIST,
           };
 
-          rates = await goerliTestNetSdk.fetchExchangeRates(requestPayload);
+          rates = await goerliDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(

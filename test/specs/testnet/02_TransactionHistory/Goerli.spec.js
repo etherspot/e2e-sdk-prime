@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let goerliTestNetSdk;
 let goerliEtherspotWalletAddress;
 let goerliNativeAddress = null;
+let goerliDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with goerli network on the TestNet', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       try {
         assert.strictEqual(
-          goerliTestNetSdk.state.walletAddress,
+          goerliTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await goerliTestNetSdk.getAccountBalances({
+    // initializating Data service...
+    goerliDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await goerliDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.GOERLI_CHAINID),
     });
@@ -188,8 +195,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await goerliTestNetSdk.getTransaction({
+            singleTransaction = await goerliDataService.getTransaction({
               hash: transactionHash,
+              chainId: Number(process.env.GOERLI_CHAINID),
             });
 
             try {
@@ -770,8 +778,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await goerliTestNetSdk.getTransaction({
+          singleTransaction = await goerliDataService.getTransaction({
             hash: randomHash, // Add your transaction hash
+            chainId: Number(process.env.GOERLI_CHAINID),
           });
 
           try {
@@ -1154,8 +1163,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await goerliTestNetSdk.getTransaction({
+          transaction = await goerliDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
+            chainId: Number(process.env.GOERLI_CHAINID),
           });
 
           if (transaction == null) {
@@ -1193,8 +1203,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         try {
           try {
-            await goerliTestNetSdk.getTransaction({
+            await goerliDataService.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
+              chainId: Number(process.env.GOERLI_CHAINID),
             });
             assert.fail(
               'The transaction history is fetched with hash which not having 32 size hex.',

@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -10,6 +10,7 @@ dotenv.config(); // init dotenv
 let arbitrumMainNetSdk;
 let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
+let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with arbitrum network on the MainNet', function () {
@@ -28,7 +29,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       try {
         assert.strictEqual(
-          arbitrumMainNetSdk.state.walletAddress,
+          arbitrumMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -69,7 +70,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       );
     }
 
-    let output = await arbitrumMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    arbitrumDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await arbitrumDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.ARBITRUM_CHAINID),
     });
@@ -105,7 +112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         let nfts;
         try {
-          nfts = await arbitrumMainNetSdk.getNftList({
+          nfts = await arbitrumDataService.getNftList({
             chainId: Number(process.env.ARBITRUM_CHAINID),
             account: data.sender,
           });
@@ -214,7 +221,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenListTokens;
         let name;
         try {
-          tokenLists = await arbitrumMainNetSdk.getTokenLists();
+          tokenLists = await arbitrumDataService.getTokenLists();
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
@@ -257,7 +264,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await arbitrumMainNetSdk.getTokenListTokens();
+          tokenListTokens = await arbitrumDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -348,7 +355,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await arbitrumMainNetSdk.getTokenListTokens({
+          tokenListTokens = await arbitrumDataService.getTokenListTokens({
             name,
           });
 
@@ -474,7 +481,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.ARBITRUM_CHAINID),
           };
 
-          rates = await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -575,7 +582,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await arbitrumMainNetSdk.getNftList({
+          await arbitrumDataService.getNftList({
             chainId: process.env.INVALID_arbitrum_CHAINID,
             account: data.sender,
           });
@@ -611,7 +618,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await arbitrumMainNetSdk.getNftList({
+          await arbitrumDataService.getNftList({
             chainId: Number(process.env.ARBITRUM_CHAINID),
             account: data.invalidSender,
           });
@@ -647,7 +654,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         try {
-          await arbitrumMainNetSdk.getNftList({
+          await arbitrumDataService.getNftList({
             chainId: Number(process.env.ARBITRUM_CHAINID),
             account: data.incorrectSender,
           });
@@ -686,7 +693,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         // let name;
         let endpoint;
         try {
-          tokenLists = await arbitrumMainNetSdk.getTokenLists();
+          tokenLists = await arbitrumDataService.getTokenLists();
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
@@ -729,7 +736,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await arbitrumMainNetSdk.getTokenListTokens();
+          tokenListTokens = await arbitrumDataService.getTokenListTokens();
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -820,7 +827,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             );
           }
 
-          tokenListTokens = await arbitrumMainNetSdk.getTokenListTokens({
+          tokenListTokens = await arbitrumDataService.getTokenListTokens({
             endpoint,
           });
 
@@ -946,7 +953,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.ARBITRUM_CHAINID),
           };
 
-          rates = await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -1061,7 +1068,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.ARBITRUM_CHAINID),
           };
 
-          rates = await xdaiMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1105,7 +1112,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.ARBITRUM_CHAINID),
           };
 
-          rates = await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1142,7 +1149,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.ARBITRUM_CHAINID),
           };
 
-          await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          await arbitrumDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           let error = e.message;
           if (error.includes('Cannot set properties of undefined')) {
@@ -1185,7 +1192,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(process.env.INVALID_ARBITRUM_CHAINID),
           };
 
-          rates = await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(
@@ -1228,7 +1235,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             tokens: TOKEN_LIST,
           };
 
-          rates = await arbitrumMainNetSdk.fetchExchangeRates(requestPayload);
+          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
 
           if (rates.items.length === 0) {
             console.log(

@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let mumbaiTestNetSdk;
 let mumbaiEtherspotWalletAddress;
 let mumbaiNativeAddress = null;
+let mumbaiiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with mumbai network on the MainNet.', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
       try {
         assert.strictEqual(
-          mumbaiTestNetSdk.state.walletAddress,
+          mumbaiTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       );
     }
 
-    let output = await mumbaiTestNetSdk.getAccountBalances({
+    // initializating Data service...
+    mumbaiiDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await mumbaiiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.MUMBAI_CHAINID),
     });

@@ -1,4 +1,4 @@
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/Helper.js';
@@ -11,6 +11,7 @@ dotenv.config(); // init dotenv
 let arbitrumMainNetSdk;
 let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
+let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with arbitrum network on the MainNet', function () {
@@ -29,7 +30,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       try {
         assert.strictEqual(
-          arbitrumMainNetSdk.state.walletAddress,
+          arbitrumMainNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -70,7 +71,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       );
     }
 
-    let output = await arbitrumMainNetSdk.getAccountBalances({
+    // initializating Data service...
+    arbitrumDataService = new DataUtils(
+      process.env.PROJECT_KEY,
+      graphqlEndpoints.QA,
+    );
+
+    let output = await arbitrumDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.ARBITRUM_CHAINID),
     });
@@ -188,8 +195,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await arbitrumMainNetSdk.getTransaction({
+            singleTransaction = await arbitrumDataService.getTransaction({
               hash: transactionHash,
+              chainId: Number(process.env.ARBITRUM_CHAINID),
             });
 
             try {
@@ -641,8 +649,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let blockExplorerUrl_singleTransaction;
 
         try {
-          singleTransaction = await arbitrumMainNetSdk.getTransaction({
+          singleTransaction = await arbitrumDataService.getTransaction({
             hash: randomHash, // Add your transaction hash
+            chainId: Number(process.env.ARBITRUM_CHAINID),
           });
 
           try {
@@ -1025,8 +1034,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await arbitrumMainNetSdk.getTransaction({
+          transaction = await arbitrumDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
+            chainId: Number(process.env.ARBITRUM_CHAINID),
           });
 
           if (transaction == null) {
@@ -1064,8 +1074,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         try {
           try {
-            await arbitrumMainNetSdk.getTransaction({
+            await arbitrumDataService.getTransaction({
               hash: data.invalid_hash, // Invalid Transaction Hash
+              chainId: Number(process.env.ARBITRUM_CHAINID),
             });
             assert.fail(
               'The transaction history is fetched with hash which not having 32 size hex.',
