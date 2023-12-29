@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
-import data from '../../../data/testData.json' assert { type: 'json' };
-import customRetryAsync from '../../../utils/baseTest.js';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
@@ -23,7 +23,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
       xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.XDAI_CHAINID),
+          chainId: Number(data.xdai_chainid),
           projectKey: process.env.PROJECT_KEY,
         },
       );
@@ -73,7 +73,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
 
     let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.XDAI_CHAINID),
+      chainId: Number(data.xdai_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -192,7 +192,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           op = await xdaiMainNetSdk.estimate({
             url: `https://arka.etherspot.io?apiKey=${
               process.env.API_KEY
-            }&chainId=${Number(process.env.XDAI_CHAINID)}`,
+            }&chainId=${Number(data.xdai_chainid)}`,
             context: { mode: 'sponsor' },
           });
 
@@ -404,7 +404,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -934,7 +934,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1556,7 +1556,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1615,7 +1615,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1670,7 +1670,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
   xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let queryString = `?chainId=${Number(process.env.XDAI_CHAINID)}`; // without API Key in queryString
+    let queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -1725,7 +1725,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_XDAI_CHAINID,
+      data.invalid_xdai_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1835,7 +1835,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1895,7 +1895,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1952,7 +1952,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2006,7 +2006,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2093,7 +2093,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2180,7 +2180,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2264,7 +2264,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2348,7 +2348,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2486,7 +2486,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2638,11 +2638,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(process.env.XDAI_CHAINID)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2793,9 +2793,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
-    let invalid_queryString = `?chainId=${Number(process.env.XDAI_CHAINID)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2946,10 +2946,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_XDAI_CHAINID,
+      data.invalid_xdai_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3101,7 +3101,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
@@ -3254,7 +3254,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.XDAI_CHAINID,
+      data.xdai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3351,7 +3351,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(process.env.XDAI_CHAINID)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
@@ -3444,7 +3444,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?chainId=${Number(process.env.XDAI_CHAINID)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
@@ -3538,7 +3538,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_XDAI_CHAINID,
+      data.invalid_xdai_chainid,
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {

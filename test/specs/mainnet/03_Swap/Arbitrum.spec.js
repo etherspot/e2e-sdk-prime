@@ -1,11 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
-import data from '../../../data/testData.json' assert { type: 'json' };
-import customRetryAsync from '../../../utils/baseTest.js';
 import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let arbitrumMainNetSdk;
 let arbitrumEtherspotWalletAddress;
@@ -21,7 +21,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       arbitrumMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.ARBITRUM_CHAINID),
+          chainId: Number(data.arbitrum_chainid),
           projectKey: process.env.PROJECT_KEY,
         },
       );
@@ -71,7 +71,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
     let output = await arbitrumMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.ARBITRUM_CHAINID),
+      chainId: Number(data.arbitrum_chainid),
     });
     let native_balance;
     let usdc_balance;

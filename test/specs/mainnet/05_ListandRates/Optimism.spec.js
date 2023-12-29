@@ -1,11 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
+import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
 
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
@@ -21,7 +21,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       optimismMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.OPTIMISM_CHAINID),
+          chainId: Number(data.optimism_chainid),
           projectKey: process.env.PROJECT_KEY,
         },
       );
@@ -71,7 +71,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
     let output = await optimismMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.OPTIMISM_CHAINID),
+      chainId: Number(data.optimism_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -106,7 +106,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let nfts;
         try {
           nfts = await optimismMainNetSdk.getNftList({
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
             account: data.sender,
           });
 
@@ -471,7 +471,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
           };
 
           rates = await optimismMainNetSdk.fetchExchangeRates(requestPayload);
@@ -576,7 +576,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         try {
           await optimismMainNetSdk.getNftList({
-            chainId: process.env.INVALID_OPTIMISM_CHAINID,
+            chainId: data.invalid_optimism_chainid,
             account: data.sender,
           });
 
@@ -612,7 +612,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         try {
           await optimismMainNetSdk.getNftList({
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
             account: data.invalidSender,
           });
 
@@ -648,7 +648,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         try {
           await optimismMainNetSdk.getNftList({
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
             account: data.incorrectSender,
           });
           assert.fail(
@@ -943,7 +943,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
           };
 
           rates = await optimismMainNetSdk.fetchExchangeRates(requestPayload);
@@ -1058,7 +1058,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
           };
 
           rates = await optimismMainNetSdk.fetchExchangeRates(requestPayload);
@@ -1102,7 +1102,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
           };
 
           rates = await optimismMainNetSdk.fetchExchangeRates(requestPayload);
@@ -1139,7 +1139,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           let requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.OPTIMISM_CHAINID),
+            chainId: Number(data.optimism_chainid),
           };
 
           await optimismMainNetSdk.fetchExchangeRates(requestPayload);
@@ -1182,7 +1182,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(process.env.INVALID_OPTIMISM_CHAINID),
+            chainId: Number(data.invalid_optimism_chainid),
           };
 
           rates = await optimismMainNetSdk.fetchExchangeRates(requestPayload);

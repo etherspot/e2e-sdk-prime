@@ -1,11 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers } from 'ethers';
 import { assert } from 'chai';
+import addContext from 'mochawesome/addContext.js';
 import Helper from '../../../utils/Helper.js';
 import data from '../../../data/api_testData.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
 
 let mumbaiTestNetSdk;
 
@@ -210,7 +210,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       mumbaiTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.MUMBAI_CHAINID),
+          chainId: Number(data.mumbai_chainid_testnet),
           projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );

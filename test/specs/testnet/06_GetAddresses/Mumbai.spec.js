@@ -1,10 +1,10 @@
-import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
-import { assert } from 'chai';
-import customRetryAsync from '../../../utils/baseTest.js';
-import data from '../../../data/testData.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
+import { assert } from 'chai';
+import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
+import addContext from 'mochawesome/addContext.js';
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let mumbaiTestNetSdk;
 let mumbaiSimpleAccountAddress;
@@ -19,7 +19,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         mumbaiTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(process.env.MUMBAI_CHAINID),
+            chainId: Number(data.mumbai_chainid),
             projectKey: process.env.PROJECT_KEY,
             factoryWallet: Factory.ZERO_DEV,
           },
@@ -77,7 +77,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         mumbaiTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(process.env.MUMBAI_CHAINID),
+            chainId: Number(data.mumbai_chainid),
             projectKey: process.env.PROJECT_KEY,
             factoryWallet: Factory.SIMPLE_ACCOUNT,
           },

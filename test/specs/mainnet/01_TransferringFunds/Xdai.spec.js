@@ -1,13 +1,13 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
+import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import abi from '../../../data/NFTabi.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
 
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
@@ -23,7 +23,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
       xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.XDAI_CHAINID),
+          chainId: Number(data.xdai_chainid),
           projectKey: process.env.PROJECT_KEY,
         },
       );
@@ -73,7 +73,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
 
     let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.XDAI_CHAINID),
+      chainId: Number(data.xdai_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -101,7 +101,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it('SMOKE: Perform the transfer native token with valid details on the xdai network', async function () {
+  it.only('SMOKE: Perform the transfer native token with valid details on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {

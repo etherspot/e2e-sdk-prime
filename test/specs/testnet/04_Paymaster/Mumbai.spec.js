@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
-import data from '../../../data/testData.json' assert { type: 'json' };
-import customRetryAsync from '../../../utils/baseTest.js';
-import addContext from 'mochawesome/addContext.js';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
+import addContext from 'mochawesome/addContext.js';
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let mumbaiTestNetSdk;
 let mumbaiEtherspotWalletAddress;
@@ -22,7 +22,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       mumbaiTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.MUMBAI_CHAINID),
+          chainId: Number(data.mumbai_chainid),
           projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );
@@ -72,7 +72,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
     let output = await mumbaiTestNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.MUMBAI_CHAINID),
+      chainId: Number(data.mumbai_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -402,7 +402,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -930,7 +930,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1552,7 +1552,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1611,7 +1611,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1666,7 +1666,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
   it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the mumbai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let queryString = `?chainId=${Number(process.env.MUMBAI_CHAINID)}`; // without API Key in queryString
+    let queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -1721,7 +1721,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_MUMBAI_CHAINID,
+      data.invalid_mumbai_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1831,7 +1831,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1891,7 +1891,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1948,7 +1948,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2002,7 +2002,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2089,7 +2089,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2176,7 +2176,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2260,7 +2260,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2344,7 +2344,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2482,7 +2482,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2634,11 +2634,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(process.env.MUMBAI_CHAINID)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2789,9 +2789,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
-    let invalid_queryString = `?chainId=${Number(process.env.MUMBAI_CHAINID)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2942,10 +2942,10 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_MUMBAI_CHAINID,
+      data.invalid_mumbai_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3097,7 +3097,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
@@ -3250,7 +3250,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.MUMBAI_CHAINID,
+      data.mumbai_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3347,7 +3347,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(process.env.MUMBAI_CHAINID)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
@@ -3440,7 +3440,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the mumbai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?chainId=${Number(process.env.MUMBAI_CHAINID)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
@@ -3534,7 +3534,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      process.env.INVALID_MUMBAI_CHAINID,
+      data.invalid_mumbai_chainid,
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {

@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
+import addContext from 'mochawesome/addContext.js';
 import Helper from '../../../utils/Helper.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
 
 let goerliTestNetSdk;
 let goerliEtherspotWalletAddress;
@@ -22,7 +22,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       goerliTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.GOERLI_CHAINID),
+          chainId: Number(data.goerli_chainid),
           projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );
@@ -72,7 +72,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     let output = await goerliTestNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.GOERLI_CHAINID),
+      chainId: Number(data.goerli_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -457,7 +457,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let nfts;
         try {
           nfts = await goerliTestNetSdk.getNftList({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.sender,
           });
 
@@ -598,7 +598,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         try {
           transactions = await goerliTestNetSdk.getTransactions({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.sender,
           });
           randomTransaction =
@@ -1237,7 +1237,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getTransactions({
-            chainId: Number(process.env.goerli_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.sender,
           });
           assert.fail(
@@ -1307,7 +1307,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getTransactions({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.invalidSender,
           });
           assert.fail(
@@ -1342,7 +1342,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getTransactions({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.incorrectSender,
           });
           assert.fail(
@@ -1377,7 +1377,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getNftList({
-            chainId: process.env.goerli_CHAINID,
+            chainId: data.goerli_chainid,
             account: data.sender,
           });
 
@@ -1413,7 +1413,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getNftList({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.invalidSender,
           });
 
@@ -1449,7 +1449,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await goerliTestNetSdk.getNftList({
-            chainId: Number(process.env.GOERLI_CHAINID),
+            chainId: Number(data.goerli_chainid),
             account: data.incorrectSender,
           });
           assert.fail(

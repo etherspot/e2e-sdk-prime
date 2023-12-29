@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config(); // init dotenv
 import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
+import addContext from 'mochawesome/addContext.js';
 import Helper from '../../../utils/Helper.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
-import addContext from 'mochawesome/addContext.js';
-import * as dotenv from 'dotenv';
-dotenv.config(); // init dotenv
 
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
@@ -22,7 +22,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       xdaiMainNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.XDAI_CHAINID),
+          chainId: Number(data.xdai_chainid),
           projectKey: process.env.PROJECT_KEY,
         },
       );
@@ -72,7 +72,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     let output = await xdaiMainNetSdk.getAccountBalances({
       account: data.sender,
-      chainId: Number(process.env.XDAI_CHAINID),
+      chainId: Number(data.xdai_chainid),
     });
     let native_balance;
     let usdc_balance;
@@ -469,7 +469,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         try {
           transactions = await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+            chainId: Number(data.xdai_chainid),
             account: data.sender,
           });
           randomTransaction =
@@ -1108,7 +1108,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.INVALID_XDAI_CHAINID),
+            chainId: Number(data.invalid_xdai_chainid),
             account: data.sender,
           });
           assert.fail(
@@ -1178,7 +1178,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+            chainId: Number(data.xdai_chainid),
             account: data.invalidSender,
           });
           assert.fail(
@@ -1213,7 +1213,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       await customRetryAsync(async function () {
         try {
           await xdaiMainNetSdk.getTransactions({
-            chainId: Number(process.env.XDAI_CHAINID),
+            chainId: Number(data.xdai_chainid),
             account: data.incorrectSender,
           });
           assert.fail(
