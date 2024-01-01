@@ -74,7 +74,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     // initializating Data service...
     optimismDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await optimismDataService.getAccountBalances({

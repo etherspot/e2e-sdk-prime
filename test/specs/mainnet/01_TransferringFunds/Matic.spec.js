@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     // initializating Data service...
     maticDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await maticDataService.getAccountBalances({

@@ -74,7 +74,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     // initializating Data service...
     arbitrumDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await arbitrumDataService.getAccountBalances({

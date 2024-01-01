@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     // initializating Data service...
     xdaiDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await xdaiDataService.getAccountBalances({

@@ -73,7 +73,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     // initializating Data service...
     xdaiDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await xdaiDataService.getAccountBalances({

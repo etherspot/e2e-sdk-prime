@@ -74,7 +74,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     // initializating Data service...
     maticDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await maticDataService.getAccountBalances({

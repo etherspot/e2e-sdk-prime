@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     // initializating Data service...
     xdaiDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await xdaiDataService.getAccountBalances({

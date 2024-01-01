@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     // initializating Data service...
     optimismDataService = new DataUtils(
       process.env.PROJECT_KEY,
-      graphqlEndpoints.QA,
+      graphqlEndpoints.PROD,
     );
 
     let output = await optimismDataService.getAccountBalances({
