@@ -14,7 +14,7 @@ let goerliDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with goerli network on the MainNet', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -75,7 +75,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       process.env.PROJECT_KEY_TESTNET,
       graphqlEndpoints.QA,
     );
+  });
 
+  beforeEach(async function () {
     let output = await goerliDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.GOERLI_CHAINID),

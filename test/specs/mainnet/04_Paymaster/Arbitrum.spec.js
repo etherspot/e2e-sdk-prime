@@ -15,7 +15,7 @@ let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with arbitrum network on the MainNet.', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -76,7 +76,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       process.env.PROJECT_KEY,
       graphqlEndpoints.PROD,
     );
+  });
 
+  beforeEach(async function () {
     let output = await arbitrumDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.ARBITRUM_CHAINID),

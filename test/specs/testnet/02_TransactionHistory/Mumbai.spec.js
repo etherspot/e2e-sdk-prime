@@ -15,6 +15,69 @@ let mumbaiiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with mumbai network on the TestNet', function () {
+  beforeAll(async function () {
+    var test = this;
+
+    // initializating sdk
+    try {
+      mumbaiTestNetSdk = new PrimeSdk(
+        { privateKey: process.env.PRIVATE_KEY },
+        {
+          chainId: Number(process.env.MUMBAI_CHAINID),
+          projectKey: process.env.PROJECT_KEY_TESTNET,
+        },
+      );
+
+      try {
+        assert.strictEqual(
+          mumbaiTestNetSdk.state.EOAAddress,
+          data.eoaAddress,
+          'The EOA Address is not calculated correctly.',
+        );
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The SDK is not initialled successfully.');
+    }
+
+    // get EtherspotWallet address
+    try {
+      mumbaiEtherspotWalletAddress =
+        await mumbaiTestNetSdk.getCounterFactualAddress();
+
+      try {
+        assert.strictEqual(
+          mumbaiEtherspotWalletAddress,
+          data.sender,
+          'The Etherspot Wallet Address is not calculated correctly.',
+        );
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail(
+        'The Etherspot Wallet Address is not displayed successfully.',
+      );
+    }
+
+    // initializating Data service...
+    mumbaiiDataService = new DataUtils(
+      process.env.PROJECT_KEY_TESTNET,
+      graphqlEndpoints.QA,
+    );
+  });
+
   beforeEach(async function () {
     var test = this;
 

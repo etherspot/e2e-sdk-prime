@@ -16,7 +16,7 @@ let goerliDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with goerli network on the TestNet', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -77,7 +77,9 @@ describe('The PrimeSDK, when transfer a token with goerli network on the TestNet
       process.env.PROJECT_KEY_TESTNET,
       graphqlEndpoints.QA,
     );
+  });
 
+  beforeEach(async function () {
     let output = await goerliDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.GOERLI_CHAINID),

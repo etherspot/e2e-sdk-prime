@@ -15,7 +15,7 @@ let optimismDataService;
 let runTest;
 
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with optimism network on the MainNet.', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -76,7 +76,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
       process.env.PROJECT_KEY,
       graphqlEndpoints.PROD,
     );
+  });
 
+  beforeEach(async function () {
     let output = await optimismDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.OPTIMISM_CHAINID),

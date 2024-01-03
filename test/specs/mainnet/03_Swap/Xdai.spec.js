@@ -14,7 +14,7 @@ let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with xdai network on the MainNet', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -75,7 +75,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       process.env.PROJECT_KEY,
       graphqlEndpoints.PROD,
     );
+  });
 
+  beforeEach(async function () {
     let output = await xdaiDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.XDAI_CHAINID),

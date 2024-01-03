@@ -15,7 +15,7 @@ let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with matic network on the MainNet', function () {
-  beforeEach(async function () {
+  beforeAll(async function () {
     var test = this;
 
     // initializating sdk
@@ -76,7 +76,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       process.env.PROJECT_KEY,
       graphqlEndpoints.PROD,
     );
+  });
 
+  beforeEach(async function () {
     let output = await maticDataService.getAccountBalances({
       account: data.sender,
       chainId: Number(process.env.POLYGON_CHAINID),
