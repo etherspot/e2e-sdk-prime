@@ -71,10 +71,17 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
 
     // initializating Data service...
-    arbitrumDataService = new DataUtils(
-      process.env.PROJECT_KEY,
-      graphqlEndpoints.PROD,
-    );
+    try {
+      arbitrumDataService = new DataUtils(
+        process.env.PROJECT_KEY,
+        graphqlEndpoints.PROD,
+      );
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The Data service is not initialled successfully.');
+    }
   });
 
   beforeEach(async function () {

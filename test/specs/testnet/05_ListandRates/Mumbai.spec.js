@@ -71,10 +71,17 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
 
     // initializating Data service...
-    mumbaiiDataService = new DataUtils(
-      process.env.PROJECT_KEY_TESTNET,
-      graphqlEndpoints.QA,
-    );
+    try {
+      mumbaiiDataService = new DataUtils(
+        process.env.PROJECT_KEY_TESTNET,
+        graphqlEndpoints.QA,
+      );
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The Data service is not initialled successfully.');
+    }
   });
 
   beforeEach(async function () {

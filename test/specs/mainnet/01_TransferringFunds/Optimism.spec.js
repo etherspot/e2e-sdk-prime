@@ -73,10 +73,17 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     }
 
     // initializating Data service...
-    optimismDataService = new DataUtils(
-      process.env.PROJECT_KEY,
-      graphqlEndpoints.PROD,
-    );
+    try {
+      optimismDataService = new DataUtils(
+        process.env.PROJECT_KEY,
+        graphqlEndpoints.PROD,
+      );
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The Data service is not initialled successfully.');
+    }
   });
 
   beforeEach(async function () {

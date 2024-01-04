@@ -72,10 +72,17 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
 
     // initializating Data service...
-    goerliDataService = new DataUtils(
-      process.env.PROJECT_KEY_TESTNET,
-      graphqlEndpoints.QA,
-    );
+    try {
+      goerliDataService = new DataUtils(
+        process.env.PROJECT_KEY_TESTNET,
+        graphqlEndpoints.QA,
+      );
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The Data service is not initialled successfully.');
+    }
   });
 
   beforeEach(async function () {

@@ -72,10 +72,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
 
     // initializating Data service...
-    maticDataService = new DataUtils(
-      process.env.PROJECT_KEY,
-      graphqlEndpoints.PROD,
-    );
+    try {
+      maticDataService = new DataUtils(
+        process.env.PROJECT_KEY,
+        graphqlEndpoints.PROD,
+      );
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('The Data service is not initialled successfully.');
+    }
   });
 
   beforeEach(async function () {
