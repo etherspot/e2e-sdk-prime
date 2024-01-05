@@ -1,4 +1,4 @@
-import saveToDatabase from '../../../utils/arkacsvtodatabase.js';
+import saveToDatabase from '../../../utils/arkaCsvToDatabase.js';
 
 describe('CSV to Database Test', function () {
   it('Saving the Arka CSV data to the database', function (done) {

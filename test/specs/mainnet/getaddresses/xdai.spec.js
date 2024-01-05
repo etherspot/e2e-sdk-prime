@@ -3,8 +3,8 @@ dotenv.config(); // init dotenv
 import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
-import customRetryAsync from '../../../utils/basetest.js';
-import data from '../../../data/testdata.json' assert { type: 'json' };
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
 let xdaiSimpleAccountAddress;

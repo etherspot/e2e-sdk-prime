@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import Helper from '../../../utils/helper.js';
-import data from '../../../data/apitestdata.json' assert { type: 'json' };
+import data from '../../../data/apiTestData.json' assert { type: 'json' };
 
 let mumbaiTestNetSdk;
 

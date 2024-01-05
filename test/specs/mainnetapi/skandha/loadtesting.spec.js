@@ -1,4 +1,4 @@
-import saveToDatabase from '../../../utils/skandhacsvtodatabase.js';
+import saveToDatabase from '../../../utils/skandhaCsvToDatabase.js';
 
 describe('CSV to Database Test', function () {
   it('Saving the Skandha CSV data to the database', function (done) {

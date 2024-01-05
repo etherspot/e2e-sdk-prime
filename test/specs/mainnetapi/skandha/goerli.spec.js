@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
-import data from '../../../data/api_testData.json' assert { type: 'json' };
+import data from '../../../data/apiTestData.json' assert { type: 'json' };
 
 describe('Performance testing of Skandha Endpoints with Goerli Network', function () {
   it('SMOKE: Validate the skandha_getGasPrice method of the skandha with valid details on Goerli Network', async function () {

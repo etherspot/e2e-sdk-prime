@@ -5,8 +5,8 @@ import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
-import customRetryAsync from '../../../utils/basetest.js';
-import data from '../../../data/testdata.json' assert { type: 'json' };
+import customRetryAsync from '../../../utils/baseTest.js';
+import data from '../../../data/testData.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
