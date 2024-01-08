@@ -16,7 +16,7 @@ let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with matic network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

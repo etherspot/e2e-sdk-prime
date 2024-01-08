@@ -15,7 +15,7 @@ let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with arbitrum network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

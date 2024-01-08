@@ -16,7 +16,7 @@ let mumbaiiDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with Mumbai Network on the TestNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

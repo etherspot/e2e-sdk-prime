@@ -16,7 +16,7 @@ let optimismDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with optimism network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk
