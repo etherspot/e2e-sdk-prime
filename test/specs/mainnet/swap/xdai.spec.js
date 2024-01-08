@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
-import { utils, constants } from 'ethers';
+import { utils, constants, BigNumber } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
