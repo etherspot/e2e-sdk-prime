@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
-import { utils } from 'ethers';
+import { utils, constants } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -149,7 +149,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          offers = await arbitrumDataService.getExchangeOffers({
+          offers = await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -273,7 +273,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          offers = await arbitrumDataService.getExchangeOffers({
+          offers = await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -687,7 +687,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -752,7 +752,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             // without fromTokenAddress
@@ -818,7 +818,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -883,7 +883,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_value;
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -949,7 +949,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.invalidValue; // invalid fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -1011,7 +1011,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_decimal_value; // decimal fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -1073,7 +1073,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let fromAmount = data.exchange_offer_big_value; // big fromAmount
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
@@ -1134,7 +1134,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           let toTokenAddress = data.tokenAddress_xdaiUSDT;
           let fromChainId = data.xdai_chainid;
 
-          await arbitrumDataService.getExchangeOffers({
+          await xdaiDataService.getExchangeOffers({
             fromAddress,
             fromChainId,
             fromTokenAddress,
