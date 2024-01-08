@@ -15,7 +15,7 @@ let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

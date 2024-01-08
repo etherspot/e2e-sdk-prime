@@ -15,7 +15,7 @@ let maticDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with matic network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

@@ -15,7 +15,7 @@ let optimismDataService;
 let runTest;
 
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with optimism network on the MainNet.', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

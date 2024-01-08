@@ -15,7 +15,7 @@ let mumbaiiDataService;
 let runTest;
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with mumbai network on the TestNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

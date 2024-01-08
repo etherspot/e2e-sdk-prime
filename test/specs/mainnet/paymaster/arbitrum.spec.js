@@ -15,7 +15,7 @@ let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with arbitrum network on the MainNet.', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

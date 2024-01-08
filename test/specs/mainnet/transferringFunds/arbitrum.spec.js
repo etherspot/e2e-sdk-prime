@@ -16,7 +16,7 @@ let arbitrumDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with arbitrum network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

@@ -16,7 +16,7 @@ let runTest;
 
 /* eslint-disable prettier/prettier */
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with xdai network on the MainNet.', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk

@@ -16,7 +16,7 @@ let xdaiDataService;
 let runTest;
 
 describe('The PrimeSDK, when transfer a token with xdai network on the MainNet', function () {
-  beforeAll(async function () {
+  before(async function () {
     var test = this;
 
     // initializating sdk
