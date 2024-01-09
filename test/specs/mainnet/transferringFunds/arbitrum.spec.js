@@ -1165,7 +1165,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         // passing callGasLimit as 40000 to manually set it
         let op;
         try {
-          op = await arbitrumMainNetSdk.estimate(null, null, 40000);
+          op = await arbitrumMainNetSdk.estimate(null, null, 50000);
 
           try {
             assert.isNotEmpty(
@@ -1224,19 +1224,8 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
 
           try {
             assert.isNotEmpty(
-              op.callGasLimit._hex,
-              'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.callGasLimit._isBigNumber,
-              'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
+              op.callGasLimit,
+              'The callGasLimit value is empty in the estimate transactions added to the batch response.',
             );
           } catch (e) {
             console.error(e);
@@ -1367,6 +1356,76 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer native token by passing less callGasLimit to the batch while estimate the added transactions to the batch on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+        // clear the transaction batch
+        try {
+          await arbitrumMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The transaction of the batch is not clear correctly.');
+        }
+
+        // add transactions to the batch
+        try {
+          await arbitrumMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The addition of transaction in the batch is not performed.',
+          );
+        }
+
+        // get balance of the account address
+        try {
+          await arbitrumMainNetSdk.getNativeBalance();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // estimate transactions added to the batch
+        // passing callGasLimit as 40000 to manually set it
+        try {
+          await arbitrumMainNetSdk.estimate(null, null, 40000); // low CallGasLimit
+
+          assert.fail(
+            'The expected validation is not displayed when added low CallGasLimit to the batch while adding the estimate transactions to the batch.',
+          );
+        } catch (e) {
+          const errorMessage = e.error;
+          if (errorMessage.includes('CallGasLimit is too low')) {
+            console.log(
+              'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The expected validation is not displayed when added low CallGasLimit to the batch while adding the estimate transactions to the batch.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WHEN ADDED LOW CALLGASLIMIT TO THE BATCH ON THE arbitrum NETWORK',
       );
     }
   });
