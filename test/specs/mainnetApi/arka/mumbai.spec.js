@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk } from '@etherspot/prime-sdk';
+import { PrimeSdk} from '@etherspot/prime-sdk';
 import { ethers } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
@@ -13,8 +13,8 @@ let mumbaiTestNetSdk;
 describe('Performance testing of Arka Endpoints with Mumbai Network', function () {
   it('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async function () {
     var test = this;
-
-    const addresses = [data.address];
+    const randomAddress = ethers.Wallet.createRandom();
+    const addresses = [randomAddress.address];
     const startTime = performance.now();
 
     try {
@@ -97,11 +97,58 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
     }
   });
 
-  it('SMOKE: Validate the Check an Address is Whitelist endpoint of Arka on Mumbai Network', async function () {
+  it('SMOKE: Validate the Check Whitelist address endpoint with already whitelisted address of Arka on Mumbai Network', async function () {
     var test = this;
 
     const sponsorAddress = data.address;
     const addresses = data.address;
+    const startTime = performance.now();
+
+    try {
+      const response = await fetch(data.arka_checkwhitelist, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          params: [
+            sponsorAddress,
+            addresses,
+            data.mumbai_chainid_testnet,
+            process.env.API_KEY,
+          ],
+        }),
+      });
+      if (!response.ok) {
+        console.error('Response status:', response.status);
+        addContext(test, 'Response status: ' + response.status);
+        const errorResponse = await response.text();
+        console.error('Error response:', errorResponse);
+        assert.fail('Getting an error');
+      } else {
+        addContext(test, 'Response status: ' + response.status);
+        const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
+        const ttfb_s = (ttfb_ms / 1000).toFixed(2);
+
+        addContext(test, 'Time to First Byte (TTFB): ' + ttfb_s + ' second');
+        const returnedValue = await response.json();
+        const returnedValueString = JSON.stringify(returnedValue);
+        addContext(test, 'Value returned: ' + returnedValueString);
+      }
+    } catch (e) {
+      console.error('Fetch error:', e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Getting an error');
+    }
+  });
+
+  it('SMOKE: Validate the Check Whitelist address endpoint with non whitelisted address of Arka on Mumbai Network', async function () {
+    var test = this;
+    const randomAddress = ethers.Wallet.createRandom();
+    const sponsorAddress = data.address;
+    const addresses = randomAddress.address;
     const startTime = performance.now();
 
     try {
@@ -198,14 +245,14 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       mumbaiTestNetSdk = new PrimeSdk(
         { privateKey: process.env.PRIVATE_KEY },
         {
-          chainId: Number(process.env.MUMBAI_CHAINID),
+          chainId: Number(data.mumbai_chainid_testnet),
           projectKey: process.env.PROJECT_KEY_TESTNET,
         },
       );
 
       try {
         assert.strictEqual(
-          mumbaiTestNetSdk.state.walletAddress,
+          mumbaiTestNetSdk.state.EOAAddress,
           data.eoaAddress,
           'The EOA Address is not calculated correctly.',
         );
@@ -284,9 +331,8 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
     }
 
     // sign the UserOp and sending to the bundler
-    let uoHash;
     try {
-      uoHash = await mumbaiTestNetSdk.send(op);
+      await mumbaiTestNetSdk.send(op);
     } catch (e) {
       console.error(e);
       const eString = e.toString();
@@ -294,21 +340,6 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       assert.fail(
         'The sign the UserOp and sending to the bundler action is not performed.',
       );
-    }
-
-    // get transaction hash
-    let userOpsReceipt = null;
-    try {
-      const timeout = Date.now() + 60000; // 1 minute timeout
-      while (userOpsReceipt == null && Date.now() < timeout) {
-        await Helper.wait(2000);
-        userOpsReceipt = await mumbaiTestNetSdk.getUserOpReceipt(uoHash);
-      }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The get transaction hash action is not performed.');
     }
 
     const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds

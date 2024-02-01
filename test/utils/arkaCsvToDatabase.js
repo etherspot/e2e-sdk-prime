@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const insertQuery = `INSERT INTO arka_summaryreport (Label,No_Samples,Average,Min,Max,Std_Dev,Error_Per,Throughput,Received_KBpersec,Sent_KBpersec,Avg_Bytes) 
+const insertQuery = `INSERT INTO arka_summaryreport (Label,No_Samples,Average,Min,Max,Std_Dev,Error_Per,Throughput,Received_Kbpersec,Sent_Kbpersec,Avg_Bytes) 
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 function saveToDatabase(csvFilePath) {
@@ -29,8 +29,8 @@ function saveToDatabase(csvFilePath) {
         row.Std_Dev,
         row.Error_Per,
         row.Throughput,
-        row.Received_KBpersec,
-        row.Sent_KBpersec,
+        row.Received_Kbpersec,
+        row.Sent_Kbpersec,
         row.Avg_Bytes,
       ]; // these column names exist in your CSV
 
