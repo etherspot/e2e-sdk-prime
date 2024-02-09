@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
-import { utils, EtherspotBundler } from 'ethers';
+import { utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -23,7 +23,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.matic_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY
         },
       );
 

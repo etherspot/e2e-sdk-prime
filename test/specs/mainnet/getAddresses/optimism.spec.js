@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
-import { EtherspotBundler } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -24,7 +23,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           {
             chainId: Number(data.optimism_chainid),
             projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.ZERO_DEV, bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), process.env.PORTAL_API_KEY)
+            factoryWallet: Factory.ZERO_DEV
           },
         );
 
@@ -82,7 +81,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           {
             chainId: Number(data.optimism_chainid),
             projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.SIMPLE_ACCOUNT, bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), process.env.PORTAL_API_KEY)
+            factoryWallet: Factory.SIMPLE_ACCOUNT
           },
         );
 

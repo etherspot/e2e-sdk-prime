@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
-import { ethers, utils, EtherspotBundler } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import Helper from '../../../utils/helper.js';
@@ -24,7 +24,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.arbitrum_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY
         },
       );
 
