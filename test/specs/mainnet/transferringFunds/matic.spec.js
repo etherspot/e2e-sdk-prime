@@ -1165,7 +1165,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // passing callGasLimit as 40000 to manually set it
         let op;
         try {
-          op = await maticMainNetSdk.estimate({ callGasLimit: 4000 });
+          op = await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           try {
             assert.isNotEmpty(
@@ -1782,7 +1782,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 4000 });
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
@@ -1851,7 +1851,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 4000 });
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
@@ -1906,7 +1906,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 4000 });
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
