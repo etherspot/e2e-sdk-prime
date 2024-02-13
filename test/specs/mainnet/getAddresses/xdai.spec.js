@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
+import { Factory, PrimeSdk, EtherspotBundler } from '@etherspot/prime-sdk';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
@@ -10,6 +10,7 @@ let xdaiMainNetSdk;
 let xdaiAccountAddress;
 let xdaiMainNetSdk1;
 let xdaiAccountAddress1;
+let xdaiSimpleAccountAddress;
 
 describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with xdai network on the MainNet', function () {
   it('SMOKE: Validate the ZeroDev address on the xdai network', async function () {
@@ -23,7 +24,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           {
             chainId: Number(data.xdai_chainid),
             projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.ZERO_DEV
+            factoryWallet: Factory.ZERO_DEV, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
           },
         );
 
@@ -81,7 +82,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           {
             chainId: Number(data.xdai_chainid),
             projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.SIMPLE_ACCOUNT
+            factoryWallet: Factory.SIMPLE_ACCOUNT, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
           },
         );
 
@@ -138,7 +139,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.xdai_chainid),
-            projectKey: process.env.PROJECT_KEY
+            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
           },
         );
 
@@ -189,7 +190,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.xdai_chainid),
-            projectKey: process.env.PROJECT_KEY, index: 1
+            projectKey: process.env.PROJECT_KEY, index: 1, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
           });
 
         try {

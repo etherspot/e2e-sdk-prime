@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils, providers } from 'ethers';
 import { assert } from 'chai';
 import Helper from '../../../utils/helper.js';
@@ -26,7 +26,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.xdai_chainid),
-          projectKey: process.env.PROJECT_KEY
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
         },
       );
 

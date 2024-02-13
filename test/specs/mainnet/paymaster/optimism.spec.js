@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -24,7 +24,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.optimism_chainid),
-          projectKey: process.env.PROJECT_KEY
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.optimism_chainid), process.env.PORTAL_API_KEY)
         },
       );
 
