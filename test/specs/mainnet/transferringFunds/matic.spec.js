@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
-import { ethers, utils } from 'ethers';
+import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
+import { ethers, utils, providers } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
@@ -25,7 +25,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.matic_chainid),
-          projectKey: process.env.PROJECT_KEY,
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.PORTAL_API_KEY)
         },
       );
 
@@ -1165,7 +1165,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // passing callGasLimit as 40000 to manually set it
         let op;
         try {
-          op = await maticMainNetSdk.estimate(null, null, 40000);
+          op = await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           try {
             assert.isNotEmpty(
@@ -1367,6 +1367,150 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE matic NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Perform the concurrent userops with valid details on the matic network', async function () {
+    // NOTE: assume the sender wallet is deployed
+
+    var test = this;
+    if (runTest) {
+
+      await customRetryAsync(async function () {
+        const provider = new providers.JsonRpcProvider();
+
+        // clear the transaction batch
+        try {
+          await maticMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The transaction of the batch is not clear correctly.');
+        }
+
+        // add transactions to the batch
+        let transactionBatch;
+        try {
+          transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.to,
+              'The To Address value is empty in the add transactions to batch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.data,
+              'The data value is empty in the add transactions to batch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              transactionBatch.value,
+              'The value value is empty in the add transactions to batch response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The addition of transaction in the batch is not performed.',
+          );
+        }
+
+        // get balance of the account address
+        let balance;
+        try {
+          balance = await maticMainNetSdk.getNativeBalance();
+
+          try {
+            assert.isNotEmpty(
+              balance,
+              'The balance is not number in the get native balance response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // Note that usually Bundlers do not allow sending more than 10 concurrent userops from an unstaked entites (wallets, factories, paymaster)
+        // Staked entities can send as many userops as they want
+        let concurrentUseropsCount = 3;
+        const userops = [];
+        const uoHashes = [];
+
+        try {
+          while (--concurrentUseropsCount >= 0) {
+            const op = await maticMainNetSdk.estimate({ key: concurrentUseropsCount });
+            userops.push(op);
+          }
+
+          console.log("Sending userops...");
+          for (const op of userops) {
+            const uoHash = await maticMainNetSdk.send(op);
+            uoHashes.push(uoHash);
+          }
+        } catch (e) {
+          assert.fail('An error is display while sending the userops.')
+        }
+
+        try {
+          console.log('Waiting for transactions...');
+          const userOpsReceipts = new Array(uoHashes.length).fill(null);
+          const timeout = Date.now() + 60000; // 1 minute timeout
+          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
+            Helper.wait(2000)
+            for (let i = 0; i < uoHashes.length; ++i) {
+              if (userOpsReceipts[i]) continue;
+              const uoHash = uoHashes[i];
+              userOpsReceipts[i] = await maticMainNetSdk.getUserOpReceipt(uoHash);
+            }
+          }
+
+          if (userOpsReceipts.some(receipt => receipt != null)) {
+            for (const uoReceipt of userOpsReceipts) {
+              if (!uoReceipt) continue;
+              console.log('Submitted the user op successfully.');
+            }
+          } else {
+            console.log("Could not submit any user op");
+          }
+        } catch (e) {
+          assert.fail('An error is displayed while validating the userops receipts.')
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE CONCURRENT USEROPS ON THE matic NETWORK',
       );
     }
   });
@@ -1638,7 +1782,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate(null, null, 40000);
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
@@ -1707,7 +1851,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate(null, null, 40000);
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
@@ -1762,7 +1906,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate(null, null, 40000);
+          await maticMainNetSdk.estimate({ callGasLimit: 40000});
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -3662,6 +3806,246 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND ERC721 TOKEN WITH NOT ADDED THE TRANSACTION TO THE BATCH WHILE ADDING THE ESTIMATE TRANSACTIONS TO THE BATCH ON THE matic NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the concurrent userops with invalid concurrentUseropsCount on the matic network', async function () {
+    // NOTE: assume the sender wallet is deployed
+
+    var test = this;
+    if (runTest) {
+
+      await customRetryAsync(async function () {
+        const provider = new providers.JsonRpcProvider();
+
+        // clear the transaction batch
+        try {
+          await maticMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The transaction of the batch is not clear correctly.');
+        }
+
+        // add transactions to the batch
+        let transactionBatch;
+        try {
+          transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The addition of transaction in the batch is not performed.',
+          );
+        }
+
+        // get balance of the account address
+        let balance;
+        try {
+          balance = await maticMainNetSdk.getNativeBalance();
+
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // Note that usually Bundlers do not allow sending more than 10 concurrent userops from an unstaked entites (wallets, factories, paymaster)
+        // Staked entities can send as many userops as they want
+        let concurrentUseropsCount = -5; // invalid concurrent userops
+        const userops = [];
+        const uoHashes = [];
+
+        try {
+          while (--concurrentUseropsCount >= 0) {
+            const op = await maticMainNetSdk.estimate({ key: concurrentUseropsCount });
+            userops.push(op);
+          }
+
+          console.log("Sending userops...");
+          for (const op of userops) {
+            const uoHash = await maticMainNetSdk.send(op);
+            uoHashes.push(uoHash);
+          }
+        } catch (e) {
+          assert.fail('An error is display while sending the userops.')
+        }
+
+        try {
+          console.log('Waiting for transactions...');
+          const userOpsReceipts = new Array(uoHashes.length).fill(null);
+          const timeout = Date.now() + 60000; // 1 minute timeout
+          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
+            Helper.wait(2000)
+            for (let i = 0; i < uoHashes.length; ++i) {
+              if (userOpsReceipts[i]) continue;
+              const uoHash = uoHashes[i];
+              userOpsReceipts[i] = await maticMainNetSdk.getUserOpReceipt(uoHash);
+            }
+          }
+
+          if (userOpsReceipts.some(receipt => receipt != null)) {
+            for (const uoReceipt of userOpsReceipts) {
+              if (!uoReceipt) continue;
+              console.log('Submitted the user op successfully.');
+            }
+          } else {
+            console.log("Could not submit any user op");
+          }
+        } catch (e) {
+          assert.fail('An error is displayed while validating the userops receipts.')
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE CONCURRENT USEROPS ON THE matic NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the concurrent userops without concurrentUseropsCount on the matic network', async function () {
+    // NOTE: assume the sender wallet is deployed
+
+    var test = this;
+    if (runTest) {
+
+      await customRetryAsync(async function () {
+        const provider = new providers.JsonRpcProvider();
+
+        // clear the transaction batch
+        try {
+          await maticMainNetSdk.clearUserOpsFromBatch();
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The transaction of the batch is not clear correctly.');
+        }
+
+        // add transactions to the batch
+        let transactionBatch;
+        try {
+          transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+            to: data.recipient,
+            value: ethers.utils.parseEther(data.value),
+          });
+
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The addition of transaction in the batch is not performed.',
+          );
+        }
+
+        // get balance of the account address
+        let balance;
+        try {
+          balance = await maticMainNetSdk.getNativeBalance();
+
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('The balance of the native token is not displayed.');
+        }
+
+        // Note that usually Bundlers do not allow sending more than 10 concurrent userops from an unstaked entites (wallets, factories, paymaster)
+        // Staked entities can send as many userops as they want
+        let concurrentUseropsCount; // invalid concurrent userops
+        const userops = [];
+        const uoHashes = [];
+
+        try {
+          while (--concurrentUseropsCount >= 0) {
+            const op = await maticMainNetSdk.estimate({ key: concurrentUseropsCount });
+            userops.push(op);
+          }
+
+          console.log("Sending userops...");
+          for (const op of userops) {
+            const uoHash = await maticMainNetSdk.send(op);
+            uoHashes.push(uoHash);
+          }
+        } catch (e) {
+          assert.fail('An error is display while sending the userops.')
+        }
+
+        try {
+          console.log('Waiting for transactions...');
+          const userOpsReceipts = new Array(uoHashes.length).fill(null);
+          const timeout = Date.now() + 60000; // 1 minute timeout
+          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
+            Helper.wait(2000)
+            for (let i = 0; i < uoHashes.length; ++i) {
+              if (userOpsReceipts[i]) continue;
+              const uoHash = uoHashes[i];
+              userOpsReceipts[i] = await maticMainNetSdk.getUserOpReceipt(uoHash);
+            }
+          }
+
+          if (userOpsReceipts.some(receipt => receipt != null)) {
+            for (const uoReceipt of userOpsReceipts) {
+              if (!uoReceipt) continue;
+              console.log('Submitted the user op successfully.');
+            }
+          } else {
+            console.log("Could not submit any user op");
+          }
+        } catch (e) {
+          assert.fail('An error is displayed while validating the userops receipts.')
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE CONCURRENT USEROPS ON THE matic NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the concurrent userops with non deployed address on the matic network', async function () {
+    var test = this;
+    if (runTest) {
+
+      await customRetryAsync(async function () {
+        const provider = new providers.JsonRpcProvider();
+
+        try {
+          if ((await provider.getCode(data.eoaAddress)).length <= 2) {
+            console.log("Account must be created first");
+            return;
+          }
+          assert.fail('The address is considered as a deployed.')
+        } catch (e) {
+          const errorMessage = e.message;
+          if (errorMessage.includes('could not detect network')) {
+            console.log(
+              'The validation for non deployed address is displayed as expected while performing the concurrent userops.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The expected validation is not displayed when address is not deployed while performing the concurrent userops.',
+            );
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE CONCURRENT USEROPS ON THE matic NETWORK',
       );
     }
   });

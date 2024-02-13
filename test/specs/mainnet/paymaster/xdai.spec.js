@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -25,7 +25,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.xdai_chainid),
-          projectKey: process.env.PROJECT_KEY,
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
         },
       );
 
@@ -206,10 +206,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         let op;
         try {
           op = await xdaiMainNetSdk.estimate({
-            url: `https://arka.etherspot.io?apiKey=${
-              process.env.API_KEY
-            }&chainId=${Number(data.xdai_chainid)}`,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: `https://arka.etherspot.io?apiKey=${process.env.API_KEY
+                }&chainId=${Number(data.xdai_chainid)}`,
+              context: { mode: 'sponsor' },
+            }
           });
 
           try {
@@ -779,8 +780,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             op = await xdaiMainNetSdk.estimate({
-              url: `${arka_url}${queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
 
             try {
@@ -1061,12 +1064,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           op = await xdaiMainNetSdk.estimate({
-            url: `${arka_url}${queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
 
           try {
@@ -1270,9 +1275,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: data.invalid_paymaster_arka, // invalid URL
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.invalid_paymaster_arka, // invalid URL
+              api_key: process.env.API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
         } catch (e) {
           if (e.message === 'Not Found') {
@@ -1338,9 +1345,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            // without URL
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              // without URL
+              api_key: process.env.API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
         } catch (e) {
           if (e.message === 'Not Found') {
@@ -1406,9 +1415,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.INVALID_API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              api_key: process.env.INVALID_API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
         } catch (e) {
           if (e.message === 'Invalid Api Key') {
@@ -1474,9 +1485,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.INCORRECT_API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              api_key: process.env.INCORRECT_API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
         } catch (e) {
           if (e.message === 'Invalid Api Key') {
@@ -1542,9 +1555,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: data.paymaster_arka,
-            // without api_key
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              // without api_key
+              context: { mode: 'sponsor' },
+            }
           });
         } catch (e) {
           if (e.message === 'Invalid Api Key') {
@@ -2617,8 +2632,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await xdaiMainNetSdk.estimate({
-              url: `${invalid_arka_url}${queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${invalid_arka_url}${queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
           } catch (e) {
             let errorMessage = e.message;
@@ -2656,9 +2673,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
       data.xdai_chainid,
     )}`;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2772,8 +2788,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await xdaiMainNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
           } catch (e) {
             let errorMessage = e.message;
@@ -2925,8 +2943,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await xdaiMainNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
           } catch (e) {
             let errorMessage = e.message;
@@ -3080,8 +3100,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await xdaiMainNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
           } catch (e) {
             let errorMessage = e.message;
@@ -3233,8 +3255,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await xdaiMainNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
           } catch (e) {
             let errorMessage = e.message;
@@ -3332,12 +3356,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: `${invalid_arka_url}${queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${invalid_arka_url}${queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
         } catch (e) {
           let errorMessage = e.message;
@@ -3365,9 +3391,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.xdai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
@@ -3428,12 +3453,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
         } catch (e) {
           if (e.message === 'Invalid Api Key') {
@@ -3521,12 +3548,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
         } catch (e) {
           if (e.message === 'Invalid Api Key') {
@@ -3616,12 +3645,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
         } catch (e) {
           let errorMessage = e.message;
@@ -3710,12 +3741,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await xdaiMainNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
         } catch (e) {
           let errorMessage = e.message;
