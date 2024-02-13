@@ -24,7 +24,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.arbitrum_chainid),
-          projectKey: process.env.PROJECT_KEY
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.PORTAL_API_KEY)
         },
       );
 
