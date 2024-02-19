@@ -68,7 +68,7 @@
   "providerNetwork_xdai": "https://gnosis-bundler.etherspot.io",
   "invalidProviderNetwork_xdai": "http://gnosis-bundler.etherspot.io",
   "otherProviderNetwork_xdai": "https://polygon-bundler.etherspot.io",
-  "tokenAddress_mumbaiUSDC": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+  "tokenAddress_mumbaiUSDC": "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
   "incorrectTokenAddress_mumbaiUSDC": "0x34A178ba837468266621b3BC094E42A0212e7eB23",
   "invalidTokenAddress_mumbaiUSDC": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B2",
   "providerNetwork_mumbai": "https://mumbai-bundler.etherspot.io",
@@ -116,5 +116,10 @@
   "paymaster_arka": "https://arka.etherspot.io",
   "invalid_paymaster_arka": "http://arka.etherspot.io",
   "usdc_token": "USDC",
-  "invalid_usdc_token": "USDD"
+  "invalid_usdc_token": "USDD",
+  "recipient1": "0xC22cF2aA30A0181d6fE4B0B11aab238714Ba54f3",
+  "recipient2": "0x7a2a592061b32B16eB7e6d30C0Edd4705972E87D",
+  "recipient3": "0xeD1098F954CC08936e4888Eb3EBAAcA6f15bD061",
+  "recipient4": "0x81a13A210717b765C5733aD70D81deC1DF1834dd",
+  "recipient5": "0xE05FB316eB8C4ba7288D43c1bd87BE8a8d16761C"
 }
