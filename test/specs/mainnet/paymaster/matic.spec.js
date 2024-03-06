@@ -63,7 +63,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         addContext(test, eString);
       }
     } catch (e) {
-      console.error(e);
+      console.error(e.message);
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
@@ -74,8 +74,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     // initializating Data service...
     try {
       maticDataService = new DataUtils(
-        process.env.PROJECT_KEY,
-        graphqlEndpoints.PROD,
+        process.env.PORTAL_API_KEY
       );
     } catch (e) {
       console.error(e);
@@ -83,36 +82,42 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
       addContext(test, eString);
       assert.fail('The Data service is not initialled successfully.');
     }
-  });
 
-  beforeEach(async function () {
-    let output = await maticDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.matic_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
+    // validate the balance of the wallet
+    try {
+      let output = await maticDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.matic_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
 
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === maticNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_maticUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === maticNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_maticUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
       }
-    }
 
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Validation of the balance of the wallet is not performed.');
     }
   });
 

@@ -75,8 +75,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     // initializating Data service...
     try {
       maticDataService = new DataUtils(
-        process.env.PROJECT_KEY,
-        graphqlEndpoints.PROD,
+        process.env.PORTAL_API_KEY,
       );
     } catch (e) {
       console.error(e);
@@ -84,36 +83,42 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       addContext(test, eString);
       assert.fail('The Data service is not initialled successfully.');
     }
-  });
 
-  beforeEach(async function () {
-    let output = await maticDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.matic_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
+    // validate the balance of the wallet
+    try {
+      let output = await maticDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.matic_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
 
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === maticNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_maticUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === maticNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_maticUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
       }
-    }
 
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Validation of the balance of the wallet is not performed.');
     }
   });
 
@@ -483,7 +488,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
           );
 
           try {
@@ -1165,7 +1170,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // passing callGasLimit as 40000 to manually set it
         let op;
         try {
-          op = await maticMainNetSdk.estimate({ callGasLimit: 40000});
+          op = await maticMainNetSdk.estimate({ callGasLimit: 40000 });
 
           try {
             assert.isNotEmpty(
@@ -1782,7 +1787,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 40000});
+          await maticMainNetSdk.estimate({ callGasLimit: 40000 });
 
           assert.fail(
             'The expected validation is not displayed when entered the incorrect To Address while estimate the added transactions to the batch.',
@@ -1851,7 +1856,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 40000});
+          await maticMainNetSdk.estimate({ callGasLimit: 40000 });
 
           assert.fail(
             'The expected validation is not displayed when entered the invalid To Address while estimate the added transactions to the batch.',
@@ -1906,7 +1911,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await maticMainNetSdk.estimate({ callGasLimit: 40000});
+          await maticMainNetSdk.estimate({ callGasLimit: 40000 });
 
           assert.fail(
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
@@ -2384,7 +2389,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
           assert.fail(
@@ -2690,7 +2695,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.incorrectRecipient, // incorrect recipient address
-            ethers.utils.parseUnits(data.value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
           assert.fail(
@@ -2768,7 +2773,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.invalidRecipient, // invalid recipient address
-            ethers.utils.parseUnits(data.value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
           assert.fail(
@@ -2845,7 +2850,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
-            ethers.utils.parseUnits(data.value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
           assert.fail(
@@ -2923,7 +2928,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
           );
         } catch (e) {
           console.error(e);
@@ -3036,7 +3041,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
           );
         } catch (e) {
           console.error(e);
@@ -3149,7 +3154,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
           );
         } catch (e) {
           console.error(e);
@@ -3262,7 +3267,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.value, decimals)],
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
           );
         } catch (e) {
           console.error(e);
@@ -3373,7 +3378,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
         } catch (e) {
           console.error(e);
@@ -3402,7 +3407,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'Make sure the sdk fn called has valid parameters') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );
@@ -3789,7 +3794,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             'The expected validation is not displayed when not added the transaction to the batch while adding the estimate transactions to the batch.',
           );
         } catch (e) {
-          if (e.message === 'cannot sign empty transaction batch') {
+          if (e.message === 'Make sure the sdk fn called has valid parameters') {
             console.log(
               'The validation for transaction batch is displayed as expected while adding the estimate transactions to the batch.',
             );

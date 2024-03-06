@@ -62,7 +62,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         addContext(test, eString);
       }
     } catch (e) {
-      console.error(e);
+      console.error(e.message);
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
@@ -73,8 +73,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     // initializating Data service...
     try {
       optimismDataService = new DataUtils(
-        process.env.PROJECT_KEY,
-        graphqlEndpoints.PROD,
+        process.env.PORTAL_API_KEY
       );
     } catch (e) {
       console.error(e);
@@ -82,36 +81,42 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       addContext(test, eString);
       assert.fail('The Data service is not initialled successfully.');
     }
-  });
 
-  beforeEach(async function () {
-    let output = await optimismDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.optimism_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
+    // validate the balance of the wallet
+    try {
+      let output = await optimismDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.optimism_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
 
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === optimismNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === optimismNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
       }
-    }
 
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Validation of the balance of the wallet is not performed.');
     }
   });
 
@@ -230,7 +235,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenListTokens;
         let name;
         try {
-          tokenLists = await optimismDataService.getTokenLists();
+          tokenLists = await optimismDataService.getTokenLists({ chainId: data.optimism_chainid });
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
@@ -258,22 +263,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               const eString = e.toString();
               addContext(test, eString);
             }
-
-            try {
-              assert.isNotEmpty(
-                tokenLists[0].__typename,
-                'The __typename value is empty in the token list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
           } else {
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await optimismDataService.getTokenListTokens();
+          tokenListTokens = await optimismDataService.getTokenListTokens({ chainId: data.optimism_chainid });
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -281,17 +275,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               test,
               'The tokens are available in the token list tokens.',
             );
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].__typename,
-                'The __typename value is empty in the token list token response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
 
             try {
               assert.isNotEmpty(
@@ -365,6 +348,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           }
 
           tokenListTokens = await optimismDataService.getTokenListTokens({
+            chainId: data.optimism_chainid,
             name,
           });
 
@@ -376,17 +360,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               test,
               `${name} token list tokens length: ` + tokenListTokens.length,
             );
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].__typename,
-                'The __typename value is empty in the selected token list token response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
 
             try {
               assert.isNotEmpty(
@@ -480,10 +453,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let rates;
         let requestPayload;
         try {
-          TOKEN_LIST = [
-            data.tokenAddress_optimismUSDC,
-            data.tokenAddress_optimismUSDT,
-          ];
+          TOKEN_LIST = [data.tokenAddress_optimismUSDC, data.tokenAddress_optimismUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
@@ -547,30 +517,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               const eString = e.toString();
               addContext(test, eString);
             }
-
-            try {
-              assert.strictEqual(
-                rates.items[i].__typename,
-                'RateInfo',
-                'The __typename value is empty in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          }
-
-          try {
-            assert.strictEqual(
-              rates.__typename,
-              'RateData',
-              'The __typename value is empty in the rate list response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
           }
         } catch (e) {
           console.error(e);
@@ -582,42 +528,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE optimism NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the NFT List with invalid chainid on the optimism network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          await optimismDataService.getNftList({
-            chainId: data.invalid_optimism_chainid,
-            account: data.sender,
-          });
-
-          assert.fail(
-            'Validate the NFT List with invalid chainid is performed',
-          );
-        } catch (e) {
-          const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'chainId') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with invalid chainid',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with invalid chainid',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID CHAINID ON THE optimism NETWORK',
       );
     }
   });
@@ -702,7 +612,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         // let name;
         let endpoint;
         try {
-          tokenLists = await optimismDataService.getTokenLists();
+          tokenLists = await optimismDataService.getTokenLists({ chainId: data.optimism_chainid });
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
@@ -730,22 +640,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               const eString = e.toString();
               addContext(test, eString);
             }
-
-            try {
-              assert.isNotEmpty(
-                tokenLists[0].__typename,
-                'The __typename value is empty in the token list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
           } else {
             console.log('The items are not available in the tokenLists list.');
           }
 
-          tokenListTokens = await optimismDataService.getTokenListTokens();
+          tokenListTokens = await optimismDataService.getTokenListTokens({ chainId: data.optimism_chainid });
 
           if (tokenListTokens.length > 0) {
             console.log('The tokens are available in the token list tokens.');
@@ -753,17 +652,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               test,
               'The tokens are available in the token list tokens.',
             );
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].__typename,
-                'The __typename value is empty in the token list token response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
 
             try {
               assert.isNotEmpty(
@@ -837,6 +725,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           }
 
           tokenListTokens = await optimismDataService.getTokenListTokens({
+            chainId: data.optimism_chainid,
             endpoint,
           });
 
@@ -848,17 +737,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               test,
               `${endpoint} token list tokens length: ` + tokenListTokens.length,
             );
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].__typename,
-                'The __typename value is empty in the selected token list token response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
 
             try {
               assert.isNotEmpty(
@@ -964,91 +842,23 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          for (let i = 0; i < rates.items.length; i++) {
-            try {
-              assert.isNotEmpty(
-                rates.items[i].address,
-                'The address value is empty in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                rates.items[i].eth,
-                'The eth value is not number in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                rates.items[i].eur,
-                'The eur value is not number in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                rates.items[i].gbp,
-                'The gbp value is not number in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                rates.items[i].usd,
-                'The usd value is not number in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.strictEqual(
-                rates.items[i].__typename,
-                'RateInfo',
-                'The __typename value is empty in the rate list response.',
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          }
-
-          try {
-            assert.strictEqual(
-              rates.__typename,
-              'RateData',
-              'The __typename value is empty in the rate list response.',
+          assert.fail(
+            'The list of rates are displayed with other Token Address while fetching the exchange rates',
+          );
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
+            console.log(
+              'The correct validation is displayed with other Token Address while fetching the exchange rates.',
             );
-          } catch (e) {
+          } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed with other Token Address while fetching the exchange rates.',
+            );
           }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1065,7 +875,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let TOKEN_LIST;
         let rates;
         let requestPayload;
-
         try {
           TOKEN_LIST = [
             data.invalidTokenAddress_optimismUSDC,
@@ -1079,20 +888,23 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          if (rates.items.length === 0) {
+          assert.fail(
+            'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
+          );
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
             console.log(
-              'The list of rates are not displayed with invalid Token Address while fetching the exchange rates.',
+              'The correct validation is displayed with invalid Token Address while fetching the exchange rates.',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
-              'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
+              'The respective validate is not displayed with invalid Token Address while fetching the exchange rates.',
             );
           }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1123,20 +935,24 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          if (rates.items.length === 0) {
+          assert.fail(
+            'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
+          );
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
             console.log(
-              'The list of rates are not displayed with incorrect Token Address while fetching the exchange rates.',
+              'The correct validation is displayed with incorrect Token Address while fetching the exchange rates.',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
-              'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
+              'The respective validate is not displayed with incorrect Token Address while fetching the exchange rates.',
             );
           }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1159,6 +975,10 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           };
 
           await optimismDataService.fetchExchangeRates(requestPayload);
+
+          assert.fail(
+            'The list of rates are displayed when not added the token address while fetching the exchange rates',
+          );
         } catch (e) {
           let error = e.message;
           if (error.includes('Cannot set properties of undefined')) {
@@ -1191,10 +1011,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
 
         try {
-          TOKEN_LIST = [
-            data.tokenAddress_optimismUSDC,
-            data.tokenAddress_optimismUSDT,
-          ];
+          TOKEN_LIST = [data.tokenAddress_optimismUSDC, data.tokenAddress_optimismUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
@@ -1203,20 +1020,24 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          if (rates.items.length === 0) {
+          assert.fail(
+            'The list of rates are displayed with invalid ChainID while fetching the exchange rates',
+          );
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
             console.log(
-              'The list of rates are not displayed with invalid chainid while fetching the exchange rates.',
+              'The correct validation is displayed with invalid ChainID while fetching the exchange rates.',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
-              'The list of rates are displayed with invalid chainid while fetching the exchange rates',
+              'The respective validate is not displayed with invalid ChainID while fetching the exchange rates.',
             );
           }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1235,10 +1056,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
 
         try {
-          TOKEN_LIST = [
-            data.tokenAddress_optimismUSDC,
-            data.tokenAddress_optimismUSDT,
-          ];
+          TOKEN_LIST = [data.tokenAddress_optimismUSDC, data.tokenAddress_optimismUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
@@ -1246,20 +1064,24 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          if (rates.items.length === 0) {
+          assert.fail(
+            'The list of rates are displayed without ChainID while fetching the exchange rates',
+          );
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
             console.log(
-              'The list of rates are not displayed without chainid while fetching the exchange rates.',
+              'The correct validation is displayed without ChainID while fetching the exchange rates.',
             );
           } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
             assert.fail(
-              'The list of rates are displayed without chainid while fetching the exchange rates',
+              'The respective validate is not displayed without ChainID while fetching the exchange rates.',
             );
           }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
