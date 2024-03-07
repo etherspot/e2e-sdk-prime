@@ -25,7 +25,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.matic_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
         },
       );
 
@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     // initializating Data service...
     try {
       maticDataService = new DataUtils(
-        process.env.PORTAL_API_KEY,
+        process.env.DATA_API_KEY,
       );
     } catch (e) {
       console.error(e);

@@ -26,7 +26,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.xdai_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
         },
       );
 
@@ -76,7 +76,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     // initializating Data service...
     try {
       xdaiDataService = new DataUtils(
-        process.env.PORTAL_API_KEY,
+        process.env.DATA_API_KEY,
       );
     } catch (e) {
       console.error(e);
@@ -1521,7 +1521,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
     }
   });
 
-  it.only('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {

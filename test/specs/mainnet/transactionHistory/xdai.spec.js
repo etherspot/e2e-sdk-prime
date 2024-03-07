@@ -24,7 +24,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.xdai_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
         },
       );
 
@@ -74,7 +74,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     // initializating Data service...
     try {
       xdaiDataService = new DataUtils(
-        process.env.PORTAL_API_KEY
+        process.env.DATA_API_KEY
       );
     } catch (e) {
       console.error(e);
