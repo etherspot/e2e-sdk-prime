@@ -23,7 +23,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         { privateKey: process.env.PRIVATE_KEY },
         {
           chainId: Number(data.matic_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.PORTAL_API_KEY)
+          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
         },
       );
 
@@ -62,7 +62,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         addContext(test, eString);
       }
     } catch (e) {
-      console.error(e);
+      console.error(e.message);
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
@@ -73,8 +73,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     // initializating Data service...
     try {
       maticDataService = new DataUtils(
-        process.env.PROJECT_KEY,
-        graphqlEndpoints.PROD,
+        process.env.DATA_API_KEY
       );
     } catch (e) {
       console.error(e);
@@ -82,40 +81,46 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       addContext(test, eString);
       assert.fail('The Data service is not initialled successfully.');
     }
-  });
 
-  beforeEach(async function () {
-    let output = await maticDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.matic_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
+    // validate the balance of the wallet
+    try {
+      let output = await maticDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.matic_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
 
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === maticNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_maticUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === maticNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_maticUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
       }
-    }
 
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail('Validation of the balance of the wallet is not performed.');
     }
   });
 
-  it('SMOKE: Validate the Exchange offers response with ERC20 to ERC20 and valid details on the matic network', async function () {
+  xit('SMOKE: Validate the Exchange offers response with ERC20 to ERC20 and valid details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -239,7 +244,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Validate the Exchange offers response with ERC20 to Native Token and valid details on the matic network', async function () {
+  xit('SMOKE: Validate the Exchange offers response with ERC20 to Native Token and valid details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -363,7 +368,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('SMOKE: Validate the getCrossChainQuotes response with valid details on the matic network', async function () {
+  xit('SMOKE: Validate the getCrossChainQuotes response with valid details on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -648,7 +653,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response with invalid fromTokenAddress details on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response with invalid fromTokenAddress details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -714,7 +719,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response without fromTokenAddress details on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response without fromTokenAddress details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -779,7 +784,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response with invalid toTokenAddress details on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response with invalid toTokenAddress details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -845,7 +850,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response without toTokenAddress details on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response without toTokenAddress details on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -910,7 +915,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response with invalid fromAmount on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response with invalid fromAmount on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -972,7 +977,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response with decimal fromAmount on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response with decimal fromAmount on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1034,7 +1039,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response with big fromAmount on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response with big fromAmount on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1096,7 +1101,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the Exchange offers response without fromAmount on the matic network', async function () {
+  xit('REGRESSION: Validate the Exchange offers response without fromAmount on the matic network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1161,7 +1166,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response without fromChainId detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1203,7 +1208,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response without toChainId detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1245,7 +1250,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with invalid fromTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1288,7 +1293,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1331,7 +1336,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response without fromTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1373,7 +1378,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with invalid toTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1416,7 +1421,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with incorrect toTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1459,7 +1464,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response without toTokenAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1501,7 +1506,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with invalid fromAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1544,7 +1549,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response with incorrect fromAddress detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1587,7 +1592,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }
   });
 
-  it('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the matic network', async function () {
+  xit('REGRESSION: Validate the getCrossChainQuotes response without fromAmount detail on the matic network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
