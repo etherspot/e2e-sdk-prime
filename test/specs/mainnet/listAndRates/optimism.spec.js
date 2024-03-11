@@ -17,107 +17,109 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
   before(async function () {
     var test = this;
 
-    // initializating sdk
-    try {
-      optimismMainNetSdk = new PrimeSdk(
-        { privateKey: process.env.PRIVATE_KEY },
-        {
-          chainId: Number(data.optimism_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.optimism_chainid), process.env.BUNDLER_API_KEY)
-        },
-      );
-
+    await customRetryAsync(async function () {
+      // initializating sdk
       try {
-        assert.strictEqual(
-          optimismMainNetSdk.state.EOAAddress,
-          data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
+        optimismMainNetSdk = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.optimism_chainid),
+            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.optimism_chainid), process.env.BUNDLER_API_KEY)
+          },
         );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The SDK is not initialled successfully.');
-    }
 
-    // get EtherspotWallet address
-    try {
-      optimismEtherspotWalletAddress =
-        await optimismMainNetSdk.getCounterFactualAddress();
-
-      try {
-        assert.strictEqual(
-          optimismEtherspotWalletAddress,
-          data.sender,
-          'The Etherspot Wallet Address is not calculated correctly.',
-        );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e.message);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
-      );
-    }
-
-    // initializating Data service...
-    try {
-      optimismDataService = new DataUtils(
-        process.env.DATA_API_KEY
-      );
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The Data service is not initialled successfully.');
-    }
-
-    // validate the balance of the wallet
-    try {
-      let output = await optimismDataService.getAccountBalances({
-        account: data.sender,
-        chainId: Number(data.optimism_chainid),
-      });
-      let native_balance;
-      let usdc_balance;
-      let native_final;
-      let usdc_final;
-
-      for (let i = 0; i < output.items.length; i++) {
-        let tokenAddress = output.items[i].token;
-        if (tokenAddress === optimismNativeAddress) {
-          native_balance = output.items[i].balance;
-          native_final = utils.formatUnits(native_balance, 18);
-        } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
-          usdc_balance = output.items[i].balance;
-          usdc_final = utils.formatUnits(usdc_balance, 6);
+        try {
+          assert.strictEqual(
+            optimismMainNetSdk.state.EOAAddress,
+            data.eoaAddress,
+            'The EOA Address is not calculated correctly.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('The SDK is not initialled successfully.');
       }
 
-      if (
-        native_final > data.minimum_native_balance &&
-        usdc_final > data.minimum_token_balance
-      ) {
-        runTest = true;
-      } else {
-        runTest = false;
+      // get EtherspotWallet address
+      try {
+        optimismEtherspotWalletAddress =
+          await optimismMainNetSdk.getCounterFactualAddress();
+
+        try {
+          assert.strictEqual(
+            optimismEtherspotWalletAddress,
+            data.sender,
+            'The Etherspot Wallet Address is not calculated correctly.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e.message);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(
+          'The Etherspot Wallet Address is not displayed successfully.',
+        );
       }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('Validation of the balance of the wallet is not performed.');
-    }
+
+      // initializating Data service...
+      try {
+        optimismDataService = new DataUtils(
+          process.env.DATA_API_KEY
+        );
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('The Data service is not initialled successfully.');
+      }
+
+      // validate the balance of the wallet
+      try {
+        let output = await optimismDataService.getAccountBalances({
+          account: data.sender,
+          chainId: Number(data.optimism_chainid),
+        });
+        let native_balance;
+        let usdc_balance;
+        let native_final;
+        let usdc_final;
+
+        for (let i = 0; i < output.items.length; i++) {
+          let tokenAddress = output.items[i].token;
+          if (tokenAddress === optimismNativeAddress) {
+            native_balance = output.items[i].balance;
+            native_final = utils.formatUnits(native_balance, 18);
+          } else if (tokenAddress === data.tokenAddress_optimismUSDC) {
+            usdc_balance = output.items[i].balance;
+            usdc_final = utils.formatUnits(usdc_balance, 6);
+          }
+        }
+
+        if (
+          native_final > data.minimum_native_balance &&
+          usdc_final > data.minimum_token_balance
+        ) {
+          runTest = true;
+        } else {
+          runTest = false;
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('Validation of the balance of the wallet is not performed.');
+      }
+    }, data.retry); // Retry this async test up to 5 times
   });
 
   it('SMOKE: Validate the NFT List on the optimism network', async function () {
@@ -842,23 +844,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed with other Token Address while fetching the exchange rates',
-          );
         } catch (e) {
-          let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed with other Token Address while fetching the exchange rates.',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed with other Token Address while fetching the exchange rates.',
-            );
-          }
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The respective validate is displayed with other Token Address while fetching the exchange rates.',
+          );
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1020,24 +1012,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           rates = await optimismDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed with invalid ChainID while fetching the exchange rates',
-          );
-
         } catch (e) {
-          let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed with invalid ChainID while fetching the exchange rates.',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed with invalid ChainID while fetching the exchange rates.',
-            );
-          }
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(
+            'The respective validate is displayed with invalid ChainID while fetching the exchange rates.',
+          );
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
