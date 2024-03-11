@@ -25,7 +25,6 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
             chainId: Number(data.arbitrum_chainid),
             projectKey: process.env.PROJECT_KEY,
             factoryWallet: Factory.ZERO_DEV, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-
           },
         );
 

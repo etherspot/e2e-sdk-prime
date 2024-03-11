@@ -18,107 +18,109 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
   before(async function () {
     var test = this;
 
-    // initializating sdk
-    try {
-      arbitrumMainNetSdk = new PrimeSdk(
-        { privateKey: process.env.PRIVATE_KEY },
-        {
-          chainId: Number(data.arbitrum_chainid),
-          projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-        },
-      );
-
+    await customRetryAsync(async function () {
+      // initializating sdk
       try {
-        assert.strictEqual(
-          arbitrumMainNetSdk.state.EOAAddress,
-          data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
+        arbitrumMainNetSdk = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.arbitrum_chainid),
+            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
+          },
         );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The SDK is not initialled successfully.');
-    }
 
-    // get EtherspotWallet address
-    try {
-      arbitrumEtherspotWalletAddress =
-        await arbitrumMainNetSdk.getCounterFactualAddress();
-
-      try {
-        assert.strictEqual(
-          arbitrumEtherspotWalletAddress,
-          data.sender,
-          'The Etherspot Wallet Address is not calculated correctly.',
-        );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e.message);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
-      );
-    }
-
-    // initializating Data service...
-    try {
-      arbitrumDataService = new DataUtils(
-        process.env.DATA_API_KEY
-      );
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The Data service is not initialled successfully.');
-    }
-
-    // validate the balance of the wallet
-    try {
-      let output = await arbitrumDataService.getAccountBalances({
-        account: data.sender,
-        chainId: Number(data.arbitrum_chainid),
-      });
-      let native_balance;
-      let usdc_balance;
-      let native_final;
-      let usdc_final;
-
-      for (let i = 0; i < output.items.length; i++) {
-        let tokenAddress = output.items[i].token;
-        if (tokenAddress === arbitrumNativeAddress) {
-          native_balance = output.items[i].balance;
-          native_final = utils.formatUnits(native_balance, 18);
-        } else if (tokenAddress === data.tokenAddress_arbitrumUSDC) {
-          usdc_balance = output.items[i].balance;
-          usdc_final = utils.formatUnits(usdc_balance, 6);
+        try {
+          assert.strictEqual(
+            arbitrumMainNetSdk.state.EOAAddress,
+            data.eoaAddress,
+            'The EOA Address is not calculated correctly.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
         }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('The SDK is not initialled successfully.');
       }
 
-      if (
-        native_final > data.minimum_native_balance &&
-        usdc_final > data.minimum_token_balance
-      ) {
-        runTest = true;
-      } else {
-        runTest = false;
+      // get EtherspotWallet address
+      try {
+        arbitrumEtherspotWalletAddress =
+          await arbitrumMainNetSdk.getCounterFactualAddress();
+
+        try {
+          assert.strictEqual(
+            arbitrumEtherspotWalletAddress,
+            data.sender,
+            'The Etherspot Wallet Address is not calculated correctly.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e.message);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(
+          'The Etherspot Wallet Address is not displayed successfully.',
+        );
       }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('Validation of the balance of the wallet is not performed.');
-    }
+
+      // initializating Data service...
+      try {
+        arbitrumDataService = new DataUtils(
+          process.env.DATA_API_KEY
+        );
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('The Data service is not initialled successfully.');
+      }
+
+      // validate the balance of the wallet
+      try {
+        let output = await arbitrumDataService.getAccountBalances({
+          account: data.sender,
+          chainId: Number(data.arbitrum_chainid),
+        });
+        let native_balance;
+        let usdc_balance;
+        let native_final;
+        let usdc_final;
+
+        for (let i = 0; i < output.items.length; i++) {
+          let tokenAddress = output.items[i].token;
+          if (tokenAddress === arbitrumNativeAddress) {
+            native_balance = output.items[i].balance;
+            native_final = utils.formatUnits(native_balance, 18);
+          } else if (tokenAddress === data.tokenAddress_arbitrumUSDC) {
+            usdc_balance = output.items[i].balance;
+            usdc_final = utils.formatUnits(usdc_balance, 6);
+          }
+        }
+
+        if (
+          native_final > data.minimum_native_balance &&
+          usdc_final > data.minimum_token_balance
+        ) {
+          runTest = true;
+        } else {
+          runTest = false;
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('Validation of the balance of the wallet is not performed.');
+      }
+    }, data.retry); // Retry this async test up to 5 times
   });
 
   it('SMOKE: Validate the transaction history of the native token transaction on arbitrum network', async function () {
