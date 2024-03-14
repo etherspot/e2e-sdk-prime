@@ -172,6 +172,8 @@ describe('The PrimeSDK, when transfer a token with fuse network on the MainNet',
         data.fuse_chainid,
       )}`;
 
+
+
       // clear the transaction batch
       try {
         await fuseMainNetSdk.clearUserOpsFromBatch();

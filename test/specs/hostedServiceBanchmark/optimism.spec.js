@@ -140,8 +140,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
       const ttfb_s = (ttfb_ms / 1000).toFixed(2);
 
-      addContext(test, 'Time to First Byte (TTFB): ' + ttfb_s + ' seconds');
-      console.log('Time to First Byte (TTFB): ' + ttfb_s + ' seconds')
+      addContext(test, 'Time to First Byte (TTFB) for the regular ERC20 token transaction on the optimism network is ' + ttfb_s + ' seconds');
+      console.log('Time to First Byte (TTFB) for the regular ERC20 token transaction on the optimism network is ' + ttfb_s + ' seconds');
     }, data.retry); // Retry this async test up to 5 times
   });
 
@@ -199,11 +199,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           return res.json();
         });
 
-        console.log('returnedValue:::::::::', returnedValue);
-
         paymasterAddress = returnedValue.message;
 
-        console.log('paymasterAddress:::::::::', paymasterAddress);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -326,7 +323,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
       const ttfb_s = (ttfb_ms / 1000).toFixed(2);
 
       addContext(test, 'Time to First Byte (TTFB) for the gasless ERC20 token transaction on the optimism network is ' + ttfb_s + ' seconds');
-      console.log('Time to First Byte (TTFB) for the gasless ERC20 token transaction on the optimism network is ' + ttfb_s + ' seconds')
+      console.log('Time to First Byte (TTFB) for the gasless ERC20 token transaction on the optimism network is ' + ttfb_s + ' seconds');
     }, data.retry); // Retry this async test up to 5 times
   });
 });
