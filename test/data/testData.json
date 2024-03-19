@@ -68,6 +68,8 @@
   "providerNetwork_xdai": "https://gnosis-bundler.etherspot.io",
   "invalidProviderNetwork_xdai": "http://gnosis-bundler.etherspot.io",
   "otherProviderNetwork_xdai": "https://polygon-bundler.etherspot.io",
+  "tokenAddress_fuseUSDC": "0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5",
+  "providerNetwork_fuse": "https://fuse-bundler.etherspot.io",
   "tokenAddress_mumbaiUSDC": "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
   "incorrectTokenAddress_mumbaiUSDC": "0x34A178ba837468266621b3BC094E42A0212e7eB23",
   "invalidTokenAddress_mumbaiUSDC": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B2",
@@ -98,6 +100,7 @@
   "matic_chainid": 137,
   "optimism_chainid": 10,
   "xdai_chainid": 100,
+  "fuse_chainid": 122,
   "mumbai_chainid": 80001,
   "goerli_chainid": 5,
   "sepolia_chainid": 11155111,
@@ -121,5 +124,9 @@
   "recipient2": "0x7a2a592061b32B16eB7e6d30C0Edd4705972E87D",
   "recipient3": "0xeD1098F954CC08936e4888Eb3EBAAcA6f15bD061",
   "recipient4": "0x81a13A210717b765C5733aD70D81deC1DF1834dd",
-  "recipient5": "0xE05FB316eB8C4ba7288D43c1bd87BE8a8d16761C"
+  "recipient5": "0xE05FB316eB8C4ba7288D43c1bd87BE8a8d16761C",
+  "arka_deposit": "https://arka.etherspot.io/deposit",
+  "arka_whitelist": "https://arka.etherspot.io/whitelist",
+  "arka_checkwhitelist": "https://arka.etherspot.io/checkWhitelist",
+  "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress"
 }
