@@ -23,7 +23,6 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            projectKey: process.env.PROJECT_KEY,
             factoryWallet: Factory.ZERO_DEV, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
           },
         );
@@ -81,7 +80,6 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            projectKey: process.env.PROJECT_KEY,
             factoryWallet: Factory.SIMPLE_ACCOUNT, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
           },
         );
@@ -139,7 +137,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
+            bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
           },
         );
 

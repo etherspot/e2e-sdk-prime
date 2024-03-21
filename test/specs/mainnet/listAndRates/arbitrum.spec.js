@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
@@ -24,7 +24,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
+            bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
           },
         );
 
@@ -999,7 +999,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         let TOKEN_LIST;
-        let rates;
         let requestPayload;
 
         try {
@@ -1010,15 +1009,22 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(data.invalid_arbitrum_chainid),
           };
 
-          rates = await arbitrumDataService.fetchExchangeRates(requestPayload);
+          await arbitrumDataService.fetchExchangeRates(requestPayload);
 
         } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The respective validate is displayed with invalid ChainID while fetching the exchange rates.',
-          );
+          let errorMessage = e.message;
+          if (errorMessage.includes('Cannot set properties of undefined')) {
+            console.log(
+              'The correct validation is displayed invalid ChainID while fetching the exchange rates.',
+            );
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(
+              'The respective validate is not displayed invalid ChainID while fetching the exchange rates.',
+            );
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {

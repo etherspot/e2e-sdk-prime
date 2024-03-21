@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { utils, constants, BigNumber } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
@@ -24,7 +24,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.xdai_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
+            bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
           },
         );
 
