@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints, EtherspotBundler } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils, providers } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -26,7 +26,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
+            bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
           },
         );
 
