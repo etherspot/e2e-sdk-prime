@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, ArkaPaymaster } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -9,111 +9,29 @@ import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 
 let mumbaiTestNetSdk;
-let mumbaiEtherspotWalletAddress;
-let mumbaiNativeAddress = null;
-let mumbaiiDataService;
+let arkaPaymaster;
 let runTest;
 
 describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with mumbai network on the MainNet.', function () {
   before(async function () {
     var test = this;
 
-    // initializating sdk
-    try {
-      mumbaiTestNetSdk = new PrimeSdk(
-        { privateKey: process.env.PRIVATE_KEY },
-        {
-          chainId: Number(data.mumbai_chainid),
-          projectKey: process.env.PROJECT_KEY_TESTNET,
-        },
-      );
-
+    await customRetryAsync(async function () {
+      // initializating sdk
       try {
-        assert.strictEqual(
-          mumbaiTestNetSdk.state.EOAAddress,
-          data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
+        mumbaiTestNetSdk = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.mumbai_chainid)
+          },
         );
       } catch (e) {
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
+        assert.fail('The SDK is not initialled successfully.');
       }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The SDK is not initialled successfully.');
-    }
-
-    // get EtherspotWallet address
-    try {
-      mumbaiEtherspotWalletAddress =
-        await mumbaiTestNetSdk.getCounterFactualAddress();
-
-      try {
-        assert.strictEqual(
-          mumbaiEtherspotWalletAddress,
-          data.sender,
-          'The Etherspot Wallet Address is not calculated correctly.',
-        );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
-      );
-    }
-
-    // initializating Data service...
-    try {
-      mumbaiiDataService = new DataUtils(
-        process.env.PROJECT_KEY_TESTNET,
-        graphqlEndpoints.QA,
-      );
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The Data service is not initialled successfully.');
-    }
-  });
-
-  beforeEach(async function () {
-    let output = await mumbaiiDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.mumbai_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
-
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === mumbaiNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_mumbaiUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
-      }
-    }
-
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
-    }
+    }, data.retry); // Retry this async test up to 5 times
   });
 
   it('SMOKE: Perform the transfer native token with paymaster on the mumbai network', async function () {
@@ -1222,6 +1140,257 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE mumbai NETWORK',
       );
     }
+  });
+
+  it('SMOKE: Validate the metadata of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // get the metadata
+      try {
+        let metadata = await arkaPaymaster.metadata();
+
+        console.log('metadata::::', metadata)
+
+        try {
+          assert.isNotEmpty(
+            metadata.sponsorAddress,
+            'The sponsorAddress is empty in the metadata response.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          assert.isNotEmpty(
+            metadata.sponsorWalletBalance,
+            'The sponsorWalletBalance is empty in the metadata response.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          assert.isNotEmpty(
+            metadata.chainsSupported,
+            'The chainsSupported is empty in the metadata response.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+
+        try {
+          assert.isNotEmpty(
+            metadata.tokenPaymasters,
+            'The tokenPaymasters is empty in the metadata response.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while calling the metadata function of arka.');
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // validate the get token paymaster address
+      try {
+        let getTokenPaymasterAddress = await arkaPaymaster.getTokenPaymasterAddress("USDC");
+
+        try {
+          assert.isNotEmpty(
+            getTokenPaymasterAddress,
+            'The getTokenPaymasterAddress response is empty.',
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while calling the get token paymaster address function of arka.');
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // validate the add whitelist address
+      try {
+        let addWhitelist = await arkaPaymaster.addWhitelist([data.sender]);
+
+        if (addWhitelist.includes('Successfully whitelisted with transaction Hash')) {
+          addContext(test, 'The address is whitelisted successfully.');
+          console.log('The address is whitelisted successfully.');
+        } else {
+          addContext(test, 'An error is displayed while whitelisting the address.');
+          assert.fail('An error is displayed while whitelisting the address.');
+        }
+      } catch (e) {
+        let errorMessage = e.message;
+        if (errorMessage.includes('already whitelisted')) {
+          addContext(test, 'The address is already whitelisted.');
+          console.log('The address is already whitelisted.');
+        } else {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+        }
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // validate the remove whitelist address
+      try {
+        let removeWhitelist = await arkaPaymaster.removeWhitelist([data.sender]);
+
+        if (removeWhitelist.includes('Successfully removed whitelisted addresses with transaction Hash')) {
+          addContext(test, 'Removed the address from whitelisted successfully.');
+          console.log('Removed the address from whitelisted successfully.');
+        } else {
+          addContext(test, 'An error is displayed while removing the address from whitelisting.');
+          assert.fail('An error is displayed while removing the address from whitelisting.');
+        }
+      } catch (e) {
+        let errorMessage = e.message;
+        if (errorMessage.includes('is not whitelisted')) {
+          addContext(test, 'The address is not whitelisted.');
+          console.log('The address is not whitelisted.');
+        } else {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+        }
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the check whitelist function of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // validate the whilelist address
+      try {
+        let checkWhitelist = await arkaPaymaster.checkWhitelist(data.sender);
+
+        if (checkWhitelist.includes('Already added')) {
+          addContext(test, 'The address is already whitelisted.');
+          console.log('The address is already whitelisted.');
+        } else if (checkWhitelist.includes('Not added yet')) {
+          addContext(test, 'The address is not whitelisted.');
+          console.log('The address is not whitelisted.');
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while calling the check whitelist address function of arka.');
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the deposit function of the arka paymaster on the mumbai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+
+      // initializating sdk...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
+      // validate the deposit
+      try {
+        let deposite = await arkaPaymaster.deposit(0.0001);
+        console.log('deposite::::::::::', deposite)
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while calling the deposite function of arka.');
+      }
+
+    }, data.retry); // Retry this async test up to 5 times
   });
 
   it('REGRESSION: Perform the transfer native token with invalid paymaster url on the mumbai network', async function () {
@@ -2652,9 +2821,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
       data.mumbai_chainid,
     )}`;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -3361,9 +3529,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the mumbai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address

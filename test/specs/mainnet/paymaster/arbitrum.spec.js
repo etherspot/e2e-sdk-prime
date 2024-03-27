@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, EtherspotBundler, ArkaPaymaster } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -12,8 +12,10 @@ let arbitrumMainNetSdk;
 let arbitrumEtherspotWalletAddress;
 let arbitrumNativeAddress = null;
 let arbitrumDataService;
+let arkaPaymaster;
 let runTest;
 
+/* eslint-disable prettier/prettier */
 describe('The PrimeSDK, when transaction with arka and pimlico paymasters with arbitrum network on the MainNet.', function () {
   before(async function () {
     var test = this;
@@ -84,6 +86,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         assert.fail('The Data service is not initialled successfully.');
       }
 
+      // initializating ArkaPaymaster...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.arbitrum_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail('An error is displayed while initializating sdk.');
+      }
+
       // validate the balance of the wallet
       try {
         let output = await arbitrumDataService.getAccountBalances({
@@ -123,7 +135,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Perform the transfer native token with paymaster on the arbitrum network', async function () {
+  it('SMOKE: Perform the transfer native token on arka paymaster on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -213,8 +225,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         try {
           op = await arbitrumMainNetSdk.estimate({
             paymasterDetails: {
-              url: data.paymaster_arka,
-              api_key: process.env.API_KEY,
+              url: `https://arka.etherspot.io?apiKey=${process.env.API_KEY
+                }&chainId=${Number(data.arbitrum_chainid)}`,
               context: { mode: 'sponsor' },
             }
           });
@@ -418,12 +430,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
       );
     }
   });
 
-  it('SMOKE: Perform the transfer token with arka pimlico paymaster on the arbitrum network', async function () {
+  it('*SMOKE: Perform the transfer token with arka pimlico paymaster on the arbitrum network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -477,7 +489,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: 'USDC' }],
+                params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
             },
           ).then((res) => {
@@ -785,7 +797,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             op = await arbitrumMainNetSdk.estimate({
               paymasterDetails: {
-                url: `${data.paymaster_arka}${queryString}`,
+                url: `${arka_url}${queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
@@ -1237,7 +1249,231 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid paymaster url on the arbitrum network', async function () {
+  it('SMOKE: Validate the metadata of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // get the metadata
+        try {
+          let metadata = await arkaPaymaster.metadata();
+
+          try {
+            assert.isNotEmpty(
+              metadata.sponsorAddress,
+              'The sponsorAddress is empty in the metadata response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.sponsorWalletBalance,
+              'The sponsorWalletBalance is empty in the metadata response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.chainsSupported,
+              'The chainsSupported is empty in the metadata response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.tokenPaymasters,
+              'The tokenPaymasters is empty in the metadata response.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the metadata function of arka.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the get token paymaster address
+        try {
+          let getTokenPaymasterAddress = await arkaPaymaster.getTokenPaymasterAddress("USDC");
+
+          try {
+            assert.isNotEmpty(
+              getTokenPaymasterAddress,
+              'The getTokenPaymasterAddress response is empty.',
+            );
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the get token paymaster address function of arka.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          let removeWhitelist = await arkaPaymaster.removeWhitelist([data.sender]);
+
+          if (removeWhitelist.includes('Successfully removed whitelisted addresses with transaction Hash')) {
+            addContext(test, 'Removed the address from whitelisted successfully.');
+            console.log('Removed the address from whitelisted successfully.');
+          } else {
+            addContext(test, 'An error is displayed while removing the address from whitelisting.');
+            assert.fail('An error is displayed while removing the address from whitelisting.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          let addWhitelist = await arkaPaymaster.addWhitelist([data.sender]);
+
+          if (addWhitelist.includes('Successfully whitelisted with transaction Hash')) {
+            addContext(test, 'The address is whitelisted successfully.');
+            console.log('The address is whitelisted successfully.');
+          } else {
+            addContext(test, 'An error is displayed while whitelisting the address.');
+            assert.fail('An error is displayed while whitelisting the address.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('already whitelisted')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the check whitelist function of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the whilelist address
+        try {
+          let checkWhitelist = await arkaPaymaster.checkWhitelist(data.sender);
+
+          if (checkWhitelist.includes('Already added')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else if (checkWhitelist.includes('Not added yet')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the check whitelist address function of arka.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('SMOKE: Validate the deposit function of the arka paymaster on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the deposit
+        try {
+          let deposit = await arkaPaymaster.deposit(0.000001);
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the deposit function of arka.');
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1302,12 +1538,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE arbitrum NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without paymaster url on the arbitrum network', async function () {
+  it('REGRESSION: Perform the transfer native token without arka paymaster url on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1372,12 +1608,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE arbitrum NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid API Key on the arbitrum network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1442,12 +1678,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE arbitrum NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with incorrect API Key on the arbitrum network', async function () {
+  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1512,12 +1748,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE arbitrum NETWORK',
       );
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without API Key on the arbitrum network', async function () {
+  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the arbitrum network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1582,7 +1818,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE arbitrum NETWORK',
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE arbitrum NETWORK',
       );
     }
   });
@@ -1896,27 +2132,20 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             return res.json();
           });
         } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
-        }
-
-        const errorMessage = returnedValue.error;
-        if (errorMessage.includes('invalid address')) {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid Entry Point Address.',
-          );
-        } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid Entry Point Address.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid Entry Point Address.',
-          );
+          const errorMessage = returnedValue.error;
+          if (errorMessage.includes('invalid address')) {
+            console.log(
+              'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid Entry Point Address.',
+            );
+          } else {
+            addContext(
+              test,
+              'The paymaster address is fetched with invalid Entry Point Address.',
+            );
+            assert.fail(
+              'The paymaster address is fetched with invalid Entry Point Address.',
+            );
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -3773,6 +4002,670 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     } else {
       console.warn(
         'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the get token paymaster address
+        try {
+          await arkaPaymaster.getTokenPaymasterAddress("USDS");
+
+          assert.fail('The get token paymaster address function is worked with incorrect token.')
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid network/token')) {
+            addContext(test, 'An appropriate validation message is displayed for incorrect token.');
+            console.log('An appropriate validation message is displayed for incorrect token.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the get token paymaster address function of arka with incorrect token.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the get token paymaster address
+        try {
+          await arkaPaymaster.getTokenPaymasterAddress();
+
+          assert.fail('The get token paymaster address function is worked without token.')
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            addContext(test, 'An appropriate validation message is displayed without token.');
+            console.log('An appropriate validation message is displayed without token.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the get token paymaster address function of arka without token.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          await arkaPaymaster.removeWhitelist([data.invalidSender]);
+
+          assert.fail('The remove whitelist address function performed successfully with invalid address.');
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'An appropriate validation is displayed while performing remove whitelist function with invalid address.');
+            console.log('An appropriate validation is displayed while performing remove whitelist function with invalid address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka with invalid address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          await arkaPaymaster.removeWhitelist([data.incorrectSender]);
+
+          assert.fail('The remove whitelist address function performed successfully with incorrect address.');
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'An appropriate validation is displayed while performing remove whitelist function with incorrect address.');
+            console.log('An appropriate validation is displayed while performing remove whitelist function with incorrect address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka with incorrect address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress.address]);
+
+          assert.fail('The remove whitelist address function performed successfully with random address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster without address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          await arkaPaymaster.removeWhitelist([]);
+
+          assert.fail('The remove whitelist address function performed successfully without address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress.address, data.sender]);
+
+          assert.fail('The remove whitelist address function performed successfully with random address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+
+          // make whitelisted addresses
+          await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          // remove whitelist addresses
+          let removewhitelist = await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          if (removewhitelist.includes('Successfully removed whitelisted addresses with transaction Hash')) {
+            addContext(test, 'Removed the addresses from whitelisted successfully.');
+            console.log('Removed the addresses from whitelisted successfully.');
+          } else {
+            addContext(test, 'An error is displayed while removing the addresses from whitelisting.');
+            assert.fail('An error is displayed while removing the addresses from whitelisting.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The addresses are not whitelisted.');
+            console.log('The addresses are not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          assert.fail('The remove whitelist address function performed successfully with multiple random addresses.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('is not whitelisted')) {
+            addContext(test, 'The addresses are not whitelisted.');
+            console.log('The addresses are not whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          await arkaPaymaster.addWhitelist([data.invalidSender]);
+
+          assert.fail('The add whitelist address function performed successfully with invalid address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'An appropriate validation is displayed while performing add whitelist function with invalid address.');
+            console.log('An appropriate validation is displayed while performing add whitelist function with invalid address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka with invalid address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          await arkaPaymaster.addWhitelist([data.incorrectSender]);
+
+          assert.fail('The add whitelist address function performed successfully with incorrect address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'An appropriate validation is displayed while performing add whitelist function with incorrect address.');
+            console.log('An appropriate validation is displayed while performing add whitelist function with incorrect address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka with incorrect address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress.address]);
+
+          if (addwhitelist.includes('Successfully whitelisted with transaction Hash')) {
+            addContext(test, 'The address is whitelisted successfully with random address.');
+            console.log('The address is whitelisted successfully with random address.');
+          } else {
+            addContext(test, 'An error is displayed while whitelisting the random address.');
+            assert.fail('An error is displayed while whitelisting the random address.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('already whitelisted')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster without address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          await arkaPaymaster.addWhitelist([]);
+
+          assert.fail('The add whitelist address function performed successfully without address.');
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.addWhitelist([randomAddress.address, data.sender]);
+
+          if (addWhitelist.includes('Successfully whitelisted with transaction Hash')) {
+            addContext(test, 'The address is whitelisted successfully.');
+            console.log('The address is whitelisted successfully.');
+          } else {
+            addContext(test, 'An error is displayed while whitelisting the address.');
+            assert.fail('An error is displayed while whitelisting the address.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('already whitelisted')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the add whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+
+          // add whitelist addresses
+          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          if (addwhitelist.includes('Successfully whitelisted with transaction Hash')) {
+            addContext(test, 'Added the addresses in whitelisted successfully.');
+            console.log('Added the addresses in whitelisted successfully.');
+          } else {
+            addContext(test, 'An error is displayed while adding the addresses in whitelisting.');
+            assert.fail('An error is displayed while adding the addresses in whitelisting.');
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('already whitelisted')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist(data.invalidSender);
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'The validation message is displayed while checking the whitelist address with invalid address.');
+            console.log('The validation message is displayed while checking the whitelist address with invalid address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while checking the whitelist address function of arka with invalid address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist(data.invalidSender);
+
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'The validation message is displayed while checking the whitelist address with incorrect address.');
+            console.log('The validation message is displayed while checking the whitelist address with incorrect address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while checking the whitelist address function of arka with incorrect address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the whilelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          let checkwhitelist = await arkaPaymaster.checkWhitelist(randomAddress.address);
+          
+          if (checkwhitelist.includes('Already added')) {
+            addContext(test, 'The address is already whitelisted.');
+            console.log('The address is already whitelisted.');
+          } else if (checkwhitelist.includes('Not added yet')) {
+            addContext(test, 'The address is not whitelisted.');
+            console.log('The address is not whitelisted.');
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail('An error is displayed while calling the check whitelist address function of arka.');
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist();
+
+          assert.fail('The check whitelist address function performed successfully without address.');
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
+            addContext(test, 'The validation message is displayed while checking the whitelist address with incorrect address.');
+            console.log('The validation message is displayed while checking the whitelist address with incorrect address.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while checking the whitelist address function of arka with incorrect address.');
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the deposit
+        try {
+          await arkaPaymaster.deposit("one");
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            addContext(test, 'The validation message is displayed while deposit with invalid amount.');
+            console.log('The validation message is displayed while deposit with invalid amount.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while deposit function of arka with invalid amount.');
+          }
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
+      );
+    }
+  });
+
+  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the arbitrum network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        // validate the deposit
+        try {
+          await arkaPaymaster.deposit("one");
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes('Invalid data provided')) {
+            addContext(test, 'The validation message is displayed while deposit with invalid amount.');
+            console.log('The validation message is displayed while deposit with invalid amount.');
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail('An error is displayed while deposit function of arka with invalid amount.');
+          }
+        }
+
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(
+        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE arbitrum NETWORK',
       );
     }
   });

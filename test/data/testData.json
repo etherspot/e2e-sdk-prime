@@ -128,5 +128,6 @@
   "arka_deposit": "https://arka.etherspot.io/deposit",
   "arka_whitelist": "https://arka.etherspot.io/whitelist",
   "arka_checkwhitelist": "https://arka.etherspot.io/checkWhitelist",
-  "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress"
+  "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress",
+  "txCount": 50
 }
