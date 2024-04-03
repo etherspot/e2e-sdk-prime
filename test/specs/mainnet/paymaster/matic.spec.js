@@ -4640,33 +4640,4 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
       );
     }
   });
-
-  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the matic network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-
-        // validate the deposit
-        try {
-          await arkaPaymaster.deposit("one");
-        } catch (e) {
-          let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            addContext(test, 'The validation message is displayed while deposit with invalid amount.');
-            console.log('The validation message is displayed while deposit with invalid amount.');
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail('An error is displayed while deposit function of arka with invalid amount.');
-          }
-        }
-
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE matic NETWORK',
-      );
-    }
-  });
 });

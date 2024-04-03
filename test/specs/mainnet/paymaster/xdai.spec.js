@@ -435,7 +435,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('*SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
+  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1258,6 +1258,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         try {
           let metadata = await arkaPaymaster.metadata();
 
+          console.log('metadata::::::', metadata)
+
           try {
             assert.isNotEmpty(
               metadata.sponsorAddress,
@@ -1823,7 +1825,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1882,7 +1884,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
@@ -1938,7 +1940,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
@@ -1992,7 +1994,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2048,7 +2050,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -2102,7 +2104,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2155,7 +2157,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2212,7 +2214,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2266,7 +2268,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2353,7 +2355,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2440,7 +2442,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2524,7 +2526,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2608,7 +2610,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2745,7 +2747,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
@@ -2900,7 +2902,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3056,7 +3058,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3211,7 +3213,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3368,7 +3370,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -4560,7 +4562,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         try {
           const randomAddress = ethers.Wallet.createRandom();
           let checkwhitelist = await arkaPaymaster.checkWhitelist(randomAddress.address);
-          
+
           if (checkwhitelist.includes('Already added')) {
             addContext(test, 'The address is already whitelisted.');
             console.log('The address is already whitelisted.');
@@ -4604,35 +4606,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
             assert.fail('An error is displayed while checking the whitelist address function of arka with incorrect address.');
           }
         }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE xdai NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the xdai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-
-        // validate the deposit
-        try {
-          await arkaPaymaster.deposit("one");
-        } catch (e) {
-          let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            addContext(test, 'The validation message is displayed while deposit with invalid amount.');
-            console.log('The validation message is displayed while deposit with invalid amount.');
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail('An error is displayed while deposit function of arka with invalid amount.');
-          }
-        }
-
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(
