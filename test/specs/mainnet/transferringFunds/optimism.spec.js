@@ -1470,7 +1470,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
         // Note that usually Bundlers do not allow sending more than 10 concurrent userops from an unstaked entites (wallets, factories, paymaster)
         // Staked entities can send as many userops as they want
-        let concurrentUseropsCount = 3;
+        let concurrentUseropsCount = 1;
         const userops = [];
         const uoHashes = [];
 
