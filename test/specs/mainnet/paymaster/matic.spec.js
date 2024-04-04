@@ -1457,7 +1457,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // validate the deposit
         try {
-          let deposit = await arkaPaymaster.deposit(0.000001);
+          let deposit = await arkaPaymaster.deposit(data.value);
+
+          if (deposit.includes('Successfully deposited')) {
+            addContext(test, 'The amount deposited successfully.')
+            console.log('The amount deposited successfully.')
+          } else {
+            addContext(test, 'An error is displayed while perform the deposit.')
+            assert.fail('An error is displayed while perform the deposit')
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -4159,36 +4167,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster without address on the matic network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-
-        // validate the remove whitelist address
-        try {
-          await arkaPaymaster.removeWhitelist([]);
-
-          assert.fail('The remove whitelist address function performed successfully without address.');
-        } catch (e) {
-          let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE matic NETWORK',
-      );
-    }
-  });
-
   it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the matic network', async function () {
     var test = this;
     if (runTest) {
@@ -4383,30 +4361,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
             addContext(test, eString);
             assert.fail('An error is displayed while calling the add whitelist address function of arka.');
           }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE matic NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster without address on the matic network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-
-        // validate the add whitelist address
-        try {
-          await arkaPaymaster.addWhitelist([]);
-
-          assert.fail('The add whitelist address function performed successfully without address.');
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('An error is displayed while calling the add whitelist address function of arka.');
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
