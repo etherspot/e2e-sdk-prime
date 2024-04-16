@@ -6,6 +6,8 @@ import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import constant from '../../../data/constant.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let maticMainNetSdk;
 let maticEtherspotWalletAddress;
@@ -32,8 +34,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           assert.strictEqual(
             maticMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
-          );
+            message.vali_eoa_address);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -43,7 +44,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get EtherspotWallet address
@@ -55,8 +56,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           assert.strictEqual(
             maticEtherspotWalletAddress,
             data.sender,
-            'The Etherspot Wallet Address is not calculated correctly.',
-          );
+            message.vali_smart_address);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -66,9 +66,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         console.error(e.message);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail(
-          'The Etherspot Wallet Address is not displayed successfully.',
-        );
+        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
@@ -80,7 +78,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Data service is not initialled successfully.');
+        assert.fail(message.fail_data_service);
       }
 
       // validate the balance of the wallet
@@ -117,7 +115,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('Validation of the balance of the wallet is not performed.');
+        assert.fail(message.fail_wallet_balance);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -134,12 +132,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           });
 
           if (nfts.items.length > 0) {
-            console.log('The items are available in the NFT list.');
+            addContext(test, message.pass_nft_list_1)
+            console.log(message.pass_nftList_1);
 
             try {
               assert.isNotEmpty(
                 nfts.items[0].contractName,
-                'The contractName value is empty in the NFT list response.',
+                message.vali_nftList_contractName,
               );
             } catch (e) {
               console.error(e);
@@ -150,7 +149,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].contractAddress,
-                'The contractAddress value is empty in the NFT list response.',
+                message.vali_nftList_contractAddress,
               );
             } catch (e) {
               console.error(e);
@@ -161,7 +160,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].tokenType,
-                'The tokenType value is empty in the NFT list response.',
+                message.vali_nftList_tokenType
               );
             } catch (e) {
               console.error(e);
@@ -172,7 +171,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 nfts.items[0].balance,
-                'The balance value is not number in the NFT list response.',
+                message.vali_nftList_balance
               );
             } catch (e) {
               console.error(e);
@@ -183,7 +182,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].items[0].tokenId,
-                'The tokenId value of the items is empty in the NFT list response.',
+                message.vali_nftList_items_tokenId
               );
             } catch (e) {
               console.error(e);
@@ -194,7 +193,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].items[0].name,
-                'The name value of the items is empty in the NFT list response.',
+                message.vali_nftList_items_name,
               );
             } catch (e) {
               console.error(e);
@@ -205,7 +204,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 nfts.items[0].items[0].amount,
-                'The amount value of the items is not number in the NFT list response.',
+                message.vali_nftList_items_amount,
               );
             } catch (e) {
               console.error(e);
@@ -213,19 +212,18 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log('The items are not available in the NFT list.');
+            addContext(test, message.pass_nftList_2)
+            console.log(message.pass_nftList_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The get NFT list is not performed correctly.');
+          assert.fail(message.fail_nftList_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE NFT LIST ON THE matic NETWORK',
-      );
+      console.warn(message.nftList_insufficientBalance);
     }
   });
 
@@ -241,13 +239,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
-            console.log('The items are available in the token list.');
-            addContext(test, 'The items are available in the token list.');
+            console.log(message.pass_tokenList_1);
+            addContext(test, message.pass_tokenList_1);
 
             try {
               assert.isNotEmpty(
                 tokenLists[0].name,
-                'The name value is empty in the token list response.',
+                message.vali_tokenList_name,
               );
             } catch (e) {
               console.error(e);
@@ -258,7 +256,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenLists[0].endpoint,
-                'The endpoint value is empty in the token list response.',
+                message.vali_tokenList_endpoint,
               );
             } catch (e) {
               console.error(e);
@@ -266,22 +264,20 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log('The items are not available in the tokenLists list.');
+            addContext(test, message.pass_tokenList_2)
+            console.log(message.pass_tokenList_2);
           }
 
           tokenListTokens = await maticDataService.getTokenListTokens({ chainId: data.matic_chainid });
 
           if (tokenListTokens.length > 0) {
-            console.log('The tokens are available in the token list tokens.');
-            addContext(
-              test,
-              'The tokens are available in the token list tokens.',
-            );
+            console.log(message.pass_tokenList_3);
+            addContext(test, message.pass_tokenList_3);
 
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].address,
-                'The address value is empty in the token list token response.',
+                message.vali_tokenListTokens_address,
               );
             } catch (e) {
               console.error(e);
@@ -292,7 +288,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].name,
-                'The name value is empty in the token list token response.',
+                message.vali_tokenListTokens_name,
               );
             } catch (e) {
               console.error(e);
@@ -303,7 +299,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].symbol,
-                'The symbol value is empty in the token list token response.',
+                message.vali_tokenListTokens_symbol,
               );
             } catch (e) {
               console.error(e);
@@ -314,7 +310,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].decimals,
-                'The decimals value is not number in the token list token response.',
+                message.vali_tokenListTokens_decimals,
               );
             } catch (e) {
               console.error(e);
@@ -325,7 +321,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].logoURI,
-                'The logoURI value is empty in the token list token response.',
+                message.vali_tokenListTokens_logoURI
               );
             } catch (e) {
               console.error(e);
@@ -336,7 +332,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].chainId,
-                'The chainId value is not number in the token list token response.',
+                message.vali_tokenListTokens_chainId,
               );
             } catch (e) {
               console.error(e);
@@ -344,9 +340,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log(
-              'The Tokens are not available in the tokenListTokens list.',
-            );
+            addContext.log(message.pass_tokenList_4)
+            console.log(message.pass_tokenList_4);
           }
 
           tokenListTokens = await maticDataService.getTokenListTokens({
@@ -355,18 +350,10 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           });
 
           if (tokenListTokens.length > 0) {
-            console.log(
-              `${name} token list tokens length: ` + tokenListTokens.length,
-            );
-            addContext(
-              test,
-              `${name} token list tokens length: ` + tokenListTokens.length,
-            );
-
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].address,
-                'The address value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_address,
               );
             } catch (e) {
               console.error(e);
@@ -377,7 +364,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].name,
-                'The name value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_name
               );
             } catch (e) {
               console.error(e);
@@ -388,7 +375,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].symbol,
-                'The symbol value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_symbol
               );
             } catch (e) {
               console.error(e);
@@ -399,7 +386,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].decimals,
-                'The decimals value is not number in the selected token list token response.',
+                message.vali_selectedTokenListTokens_decimals
               );
             } catch (e) {
               console.error(e);
@@ -410,7 +397,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].logoURI,
-                'The logoURI value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_logoURI
               );
             } catch (e) {
               console.error(e);
@@ -421,7 +408,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].chainId,
-                'The chainId value is not number in the selected token list token response.',
+                message.vali_selectedTokenListTokens_chainId
               );
             } catch (e) {
               console.error(e);
@@ -429,21 +416,18 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log(
-              'The Tokens are not available in the tokenListTokens list.',
-            );
+            addContext(test, message.pass_tokenList_4)
+            console.log(message.pass_tokenList_4);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The get token list is not performed correctly.');
+          assert.fail(message.fail_tokenList_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE TOKEN LIST ON THE matic NETWORK',
-      );
+      console.warn(message.tokenList_insufficientBalance);
     }
   });
 
@@ -468,7 +452,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 rates.items[i].address,
-                'The address value is empty in the rate list response.',
+                message.vali_exchangeRates_address,
               );
             } catch (e) {
               console.error(e);
@@ -479,7 +463,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].eth,
-                'The eth value is not number in the rate list response.',
+                message.vali_exchangeRates_eth,
               );
             } catch (e) {
               console.error(e);
@@ -490,7 +474,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].eur,
-                'The eur value is not number in the rate list response.',
+                message.vali_exchangeRates_eur,
               );
             } catch (e) {
               console.error(e);
@@ -501,7 +485,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].gbp,
-                'The gbp value is not number in the rate list response.',
+                message.vali_exchangeRates_gbp,
               );
             } catch (e) {
               console.error(e);
@@ -512,7 +496,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].usd,
-                'The usd value is not number in the rate list response.',
+                message.vali_exchangeRates_usd,
               );
             } catch (e) {
               console.error(e);
@@ -524,13 +508,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The fetch exchange rates are not performed correctly.');
+          assert.fail(message.fail_exchangeRates_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -544,29 +526,23 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             account: data.invalidSender,
           });
 
-          assert.fail(
-            'Validate the NFT List with invalid account address is performed',
-          );
+          addContext(test, message.fail_nftList_2)
+          assert.fail(message.fail_nftList_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'account') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with invalid account address',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
+            addContext(test, message.pass_nftList_3)
+            console.log(message.pass_nftList_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with invalid account address',
-            );
+            assert.fail(message.fail_nftList_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INVALID ACCOUNT ON THE matic NETWORK',
-      );
+      console.warn(message.nftList_insufficientBalance);
     }
   });
 
@@ -579,29 +555,24 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(data.matic_chainid),
             account: data.incorrectSender,
           });
-          assert.fail(
-            'Validate the NFT List with inncorrect account address is performed',
-          );
+
+          addContext(test, message.fail_nftList_3)
+          assert.fail(message.fail_nftList_3);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'account') {
-            console.log(
-              'The correct validation is displayed while getting the NFT list with inncorrect account address',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
+            addContext(test, message.pass_nftList_4)
+            console.log(message.pass_nftList_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed for the NFT List with incorrect account address',
-            );
+            assert.fail(message.fail_nftList_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE HISTORY OF THE NFT LIST WITH INCORRECT ACCOUNT ON THE matic NETWORK',
-      );
+      console.warn(message.nftList_insufficientBalance);
     }
   });
 
@@ -611,20 +582,19 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       await customRetryAsync(async function () {
         let tokenLists;
         let tokenListTokens;
-        // let name;
         let endpoint;
         try {
           tokenLists = await maticDataService.getTokenLists({ chainId: data.matic_chainid });
           endpoint = tokenLists[0].endpoint;
 
           if (tokenLists.length > 0) {
-            console.log('The items are available in the token list.');
-            addContext(test, 'The items are available in the token list.');
+            console.log(message.pass_tokenList_1);
+            addContext(test, message.pass_tokenList_1);
 
             try {
               assert.isNotEmpty(
                 tokenLists[0].name,
-                'The name value is empty in the token list response.',
+                message.vali_tokenList_name,
               );
             } catch (e) {
               console.error(e);
@@ -635,7 +605,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenLists[0].endpoint,
-                'The endpoint value is empty in the token list response.',
+                message.vali_tokenList_endpoint,
               );
             } catch (e) {
               console.error(e);
@@ -643,22 +613,20 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log('The items are not available in the tokenLists list.');
+            addContext(test, message.pass_tokenList_2)
+            console.log(message.pass_tokenList_2);
           }
 
           tokenListTokens = await maticDataService.getTokenListTokens({ chainId: data.matic_chainid });
 
           if (tokenListTokens.length > 0) {
-            console.log('The tokens are available in the token list tokens.');
-            addContext(
-              test,
-              'The tokens are available in the token list tokens.',
-            );
+            addContext(test, message.pass_tokenList_3);
+            console.log(message.pass_tokenList_3);
 
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].address,
-                'The address value is empty in the token list token response.',
+                message.vali_tokenListTokens_address,
               );
             } catch (e) {
               console.error(e);
@@ -669,7 +637,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].name,
-                'The name value is empty in the token list token response.',
+                message.vali_tokenListTokens_name,
               );
             } catch (e) {
               console.error(e);
@@ -680,7 +648,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].symbol,
-                'The symbol value is empty in the token list token response.',
+                message.vali_tokenListTokens_symbol,
               );
             } catch (e) {
               console.error(e);
@@ -691,7 +659,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].decimals,
-                'The decimals value is not number in the token list token response.',
+                message.vali_tokenListTokens_decimals,
               );
             } catch (e) {
               console.error(e);
@@ -702,7 +670,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].logoURI,
-                'The logoURI value is empty in the token list token response.',
+                message.vali_tokenListTokens_logoURI
               );
             } catch (e) {
               console.error(e);
@@ -713,7 +681,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].chainId,
-                'The chainId value is not number in the token list token response.',
+                message.vali_tokenListTokens_chainId,
               );
             } catch (e) {
               console.error(e);
@@ -721,9 +689,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log(
-              'The Tokens are not available in the tokenListTokens list.',
-            );
+            addContext(test, message.pass_tokenList_4)
+            console.log(message.pass_tokenList_4);
           }
 
           tokenListTokens = await maticDataService.getTokenListTokens({
@@ -732,18 +699,10 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           });
 
           if (tokenListTokens.length > 0) {
-            console.log(
-              `${endpoint} token list tokens length: ` + tokenListTokens.length,
-            );
-            addContext(
-              test,
-              `${endpoint} token list tokens length: ` + tokenListTokens.length,
-            );
-
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].address,
-                'The address value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_address,
               );
             } catch (e) {
               console.error(e);
@@ -754,7 +713,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].name,
-                'The name value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_name
               );
             } catch (e) {
               console.error(e);
@@ -765,7 +724,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].symbol,
-                'The symbol value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_symbol
               );
             } catch (e) {
               console.error(e);
@@ -776,7 +735,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].decimals,
-                'The decimals value is not number in the selected token list token response.',
+                message.vali_selectedTokenListTokens_decimals
               );
             } catch (e) {
               console.error(e);
@@ -787,7 +746,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].logoURI,
-                'The logoURI value is empty in the selected token list token response.',
+                message.vali_selectedTokenListTokens_logoURI
               );
             } catch (e) {
               console.error(e);
@@ -798,7 +757,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].chainId,
-                'The chainId value is not number in the selected token list token response.',
+                message.vali_selectedTokenListTokens_chainId
               );
             } catch (e) {
               console.error(e);
@@ -806,20 +765,17 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            console.log(
-              'The Tokens are not available in the tokenListTokens list.',
-            );
+            addContext(test, message.pass_tokenList_4)
+            console.log(message.pass_tokenList_4);
           }
         } catch (e) {
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The get token list is not performed correctly.');
+          assert.fail(message.fail_tokenList_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE TOKEN LIST ON THE matic NETWORK',
-      );
+      console.warn(message.tokenList_insufficientBalance);
     }
   });
 
@@ -828,13 +784,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         let TOKEN_LIST;
-        let rates;
         let requestPayload;
         try {
           TOKEN_LIST = [
             data.tokenAddress_maticUSDC,
             data.tokenAddress_maticUSDT,
-            data.tokenAddress_maticUSDC,
+            data.tokenAddress_xdaiUSDC,
           ];
 
           requestPayload = {
@@ -842,21 +797,16 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(data.matic_chainid),
           };
 
-          rates = await maticDataService.fetchExchangeRates(requestPayload);
-
+          await maticDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The respective validate is displayed with other Token Address while fetching the exchange rates.',
-          );
+          assert.fail(message.fail_exchangeRates_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -865,7 +815,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         let TOKEN_LIST;
-        let rates;
         let requestPayload;
         try {
           TOKEN_LIST = [
@@ -878,31 +827,25 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(data.matic_chainid),
           };
 
-          rates = await maticDataService.fetchExchangeRates(requestPayload);
+          await maticDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed with invalid Token Address while fetching the exchange rates',
-          );
+          addContext(test, message.fail_exchangeRates_3)
+          assert.fail(message.fail_exchangeRates_3);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed with invalid Token Address while fetching the exchange rates.',
-            );
+          if (errorMessage.includes(constant.property_undefined)) {
+            addContext(test, message.pass_exchangeRates_1)
+            console.log(message.pass_exchangeRates_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed with invalid Token Address while fetching the exchange rates.',
-            );
+            assert.fail(message.fail_exchangeRates_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -911,7 +854,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         let TOKEN_LIST;
-        let rates;
         let requestPayload;
 
         try {
@@ -925,32 +867,25 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             chainId: Number(data.matic_chainid),
           };
 
-          rates = await maticDataService.fetchExchangeRates(requestPayload);
+          await maticDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed with incorrect Token Address while fetching the exchange rates',
-          );
-
+          addContext(test, message.fail_exchangeRates_4)
+          assert.fail(message.fail_exchangeRates_4);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed with incorrect Token Address while fetching the exchange rates.',
-            );
+          if (errorMessage.includes(constant.property_undefined)) {
+            addContext(test, message.pass_exchangeRates_2)
+            console.log(message.pass_exchangeRates_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed with incorrect Token Address while fetching the exchange rates.',
-            );
+            assert.fail(message.fail_exchangeRates_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -968,29 +903,23 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           await maticDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed when not added the token address while fetching the exchange rates',
-          );
+          addContext(test, message.fail_exchangeRates_5)
+          assert.fail(message.fail_exchangeRates_5);
         } catch (e) {
           let error = e.message;
-          if (error.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed when not added the token address while fetching the exchnage rates',
-            );
+          if (error.includes(constant.property_undefined)) {
+            addContext(test, message.pass_exchangeRates_3)
+            console.log(message.pass_exchangeRates_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when not added the token address while fetching the exchnage rates',
-            );
+            assert.fail(message.fail_exchangeRates_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -1010,27 +939,21 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           };
 
           await maticDataService.fetchExchangeRates(requestPayload);
-
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed invalid ChainID while fetching the exchange rates.',
-            );
+          if (errorMessage.includes(constant.property_undefined)) {
+            addContext(test, message.pass_exchangeRates_4)
+            console.log(message.pass_exchangeRates_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed invalid ChainID while fetching the exchange rates.',
-            );
+            assert.fail(message.fail_exchangeRates_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 
@@ -1039,7 +962,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
         let TOKEN_LIST;
-        let rates;
         let requestPayload;
 
         try {
@@ -1049,32 +971,25 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             tokens: TOKEN_LIST,
           };
 
-          rates = await maticDataService.fetchExchangeRates(requestPayload);
+          await maticDataService.fetchExchangeRates(requestPayload);
 
-          assert.fail(
-            'The list of rates are displayed without ChainID while fetching the exchange rates',
-          );
-
+          addContext(test, message.fail_exchangeRates_7)
+          assert.fail(message.fail_exchangeRates_7);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Cannot set properties of undefined')) {
-            console.log(
-              'The correct validation is displayed without ChainID while fetching the exchange rates.',
-            );
+          if (errorMessage.includes(constant.property_undefined)) {
+            addContext(test, message.pass_exchangeRates_5)
+            console.log(message.pass_exchangeRates_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed without ChainID while fetching the exchange rates.',
-            );
+            assert.fail(message.fail_exchangeRates_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE RATE ON THE matic NETWORK',
-      );
+      console.warn(message.exchangeRates_insufficientBalance);
     }
   });
 });

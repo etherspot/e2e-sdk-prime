@@ -1,0 +1,45 @@
+{
+    "invalid_address_1": "account must be an address",
+    "invalid_address_2": "fromTokenAddress must be an address",
+    "invalid_address_3": "toTokenAddress must be an address",
+    "invalid_address_4": "invalid address",
+    "invalid_address_5": "The given address is invalid. Please try again with valid address", 
+    "invalid_address_6": "bad address checksum", 
+    "contract_address_1": "provider is required to use ENS name as contract address",
+    "contract_address_2": "invalid contract address or ENS name",
+
+    "invalid_chainid_1": "fromChainId",
+    "invalid_chainid_2": "toChainId",
+    "invalid_chainid_3": "chainId must be a positive number",
+
+    "property_undefined": "Cannot set properties of undefined",
+    "remove_whitelist_1": "is not whitelisted",
+    "remove_whitelist_2": "Successfully removed whitelisted addresses with transaction Hash",
+    "add_whitelist_1": "Successfully whitelisted with transaction Hash",
+    "add_whitelist_2": "already whitelisted",
+    "add_whitelist_3": "Successfully whitelisted with transaction Hash",
+    "check_whitelist_1": "Already added",
+    "check_whitelist_2": "Not added yet",
+    "deposit_1": "Successfully deposited",
+    
+    "invalid_network_1": "Invalid network/token",
+    "invalid_network_2": "could not detect network",
+    "invalid_network_3": "Unsupported network",
+    
+    "invalid_value_1": "invalid decimal value",
+    "invalid_value_2": "fractional component exceeds decimals",
+    "invalid_value_3": "call revert exception",
+    "invalid_value_4": "types/values length mismatch",
+    "invalid_bignumber_1": "invalid BigNumber string",
+    "invalid_bignumber_2": "fromAmount must be positive big numberish",
+    "invalid_bignumber_3":"fromAmount must be big numberish",
+    "hash_32": "hash must be hex with 32 size",
+
+    "invalid_parameter": "Make sure the sdk fn called has valid parameters",
+    "empty_batch": "cannot sign empty transaction batch",
+    "no_function": "no matching function",
+    "not_found": "Not Found",
+    
+    "invalid_apiKey": "Invalid Api Key",
+    "invalid_data": "Invalid data provided"
+}
