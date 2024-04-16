@@ -1382,7 +1382,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it.only('REGRESSION: Perform the transfer native token without arka paymaster url on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer native token without arka paymaster url on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
