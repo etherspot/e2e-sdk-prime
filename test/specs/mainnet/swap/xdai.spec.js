@@ -6,6 +6,8 @@ import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import constant from '../../../data/constant.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
 let xdaiEtherspotWalletAddress;
@@ -32,7 +34,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           assert.strictEqual(
             xdaiMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -43,7 +45,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get EtherspotWallet address
@@ -55,8 +57,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           assert.strictEqual(
             xdaiEtherspotWalletAddress,
             data.sender,
-            'The Etherspot Wallet Address is not calculated correctly.',
-          );
+            message.vali_smart_address);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -66,9 +67,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         console.error(e.message);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail(
-          'The Etherspot Wallet Address is not displayed successfully.',
-        );
+        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
@@ -80,7 +79,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Data service is not initialled successfully.');
+        assert.fail(message.fail_data_service);
       }
 
       // validate the balance of the wallet
@@ -117,7 +116,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('Validation of the balance of the wallet is not performed.');
+        assert.fail(message.fail_wallet_balance);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -137,10 +136,77 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].address,
+                message.vali_exchangeOffers_address
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].chainId,
+                message.vali_exchangeOffers_chainId
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].name,
+                message.vali_exchangeOffers_name
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].symbol,
+                message.vali_exchangeOffers_symbol
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].decimals,
+                message.vali_exchangeOffers_decimals
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].logoURI,
+                message.vali_exchangeOffers_logoURI
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -169,7 +235,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].provider,
-                  'The provider value is empty in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_provider
                 );
               } catch (e) {
                 console.error(e);
@@ -179,8 +245,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
               try {
                 assert.isNotEmpty(
-                  offers[i].receiveAmount._hex,
-                  'The receiveAmount value of the transaction is empty in the getExchangeOffers response.',
+                  offers[i].receiveAmount,
+                  message.vali_exchangeOffers_receiveAmount,
                 );
               } catch (e) {
                 console.error(e);
@@ -191,7 +257,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNumber(
                   offers[i].exchangeRate,
-                  'The exchangeRate value of the transaction is not number in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_exchangeRate
                 );
               } catch (e) {
                 console.error(e);
@@ -202,7 +268,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].transactions,
-                  'The transactions value of the transaction is empty in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_transactions
                 );
               } catch (e) {
                 console.error(e);
@@ -213,7 +279,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].__typename,
-                  'The __typename value of the transaction is not correct in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_typename,
                 );
               } catch (e) {
                 console.error(e);
@@ -222,27 +288,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               }
             }
           } else {
-            addContext(
-              test,
-              'The Offers are not available in the getExchangeOffers response.',
-            );
-            assert.fail(
-              'The Offers are not available in the getExchangeOffers response.',
-            );
+            addContext(test, message.vali_exchangeOffers_3);
+            console.log(message.vali_exchangeOffers_3);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The offers are not display in the Exchange offers response',
-          );
+          assert.fail(message.fail_exchangeOffers_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -261,10 +318,77 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].address,
+                message.vali_exchangeOffers_address,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].chainId,
+                message.vali_exchangeOffers_chainId,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].name,
+                message.vali_exchangeOffers_name,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].symbol,
+                message.vali_exchangeOffers_symbol
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].decimals,
+                message.vali_exchangeOffers_decimals
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].logoURI,
+                message.vali_exchangeOffers_logoURI
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -293,7 +417,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].provider,
-                  'The provider value is empty in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_provider,
                 );
               } catch (e) {
                 console.error(e);
@@ -303,8 +427,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
               try {
                 assert.isNotEmpty(
-                  offers[i].receiveAmount._hex,
-                  'The receiveAmount value of the transaction is empty in the getExchangeOffers response.',
+                  offers[i].receiveAmount,
+                  message.vali_exchangeOffers_receiveAmount
                 );
               } catch (e) {
                 console.error(e);
@@ -315,7 +439,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNumber(
                   offers[i].exchangeRate,
-                  'The exchangeRate value of the transaction is not number in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_exchangeRate
                 );
               } catch (e) {
                 console.error(e);
@@ -326,7 +450,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].transactions,
-                  'The transactions value of the transaction is empty in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_transactions
                 );
               } catch (e) {
                 console.error(e);
@@ -337,7 +461,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].__typename,
-                  'The __typename value of the transaction is not correct in the getExchangeOffers response.',
+                  message.vali_exchangeOffers_typename,
                 );
               } catch (e) {
                 console.error(e);
@@ -346,27 +470,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               }
             }
           } else {
-            addContext(
-              test,
-              'The Offers are not available in the getExchangeOffers response.',
-            );
-            assert.fail(
-              'The Offers are not available in the getExchangeOffers response.',
-            );
+            addContext(test, message.vali_exchangeOffers_3);
+            console.log(message.vali_exchangeOffers_3);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The offers are not display in the Exchange offers response',
-          );
+          assert.fail(message.fail_exchangeOffers_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -393,7 +508,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].provider,
-                'The provider value is empty in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_provider,
               );
             } catch (e) {
               console.error(e);
@@ -404,7 +519,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].transaction.data,
-                'The data value of the transaction is empty in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_data,
               );
             } catch (e) {
               console.error(e);
@@ -415,7 +530,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].transaction.to,
-                'The to value of the transaction is empty in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_to
               );
             } catch (e) {
               console.error(e);
@@ -426,7 +541,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].transaction.value,
-                'The value value of the transaction is empty in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_value
               );
             } catch (e) {
               console.error(e);
@@ -437,7 +552,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].transaction.from,
-                'The from value of the transaction is not correct in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_from
               );
             } catch (e) {
               console.error(e);
@@ -448,7 +563,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNumber(
                 quotes.items[0].transaction.chainId,
-                'The chainId value of the transaction is not number in the getCrossChainQuotes response.',
+                message.vali_crossChainQuotes_chainId
               );
             } catch (e) {
               console.error(e);
@@ -456,23 +571,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               addContext(test, eString);
             }
           } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The items are not available in the getCrossChainQuotes response.',
-            );
+            addContext(test, message.vali_crossChainQuotes_1)
+            console.log(message.vali_crossChainQuotes_1);
           }
         } catch (e) {
-          assert.fail(
-            'The quotes are not display in the getCrossChainQuotes response',
-          );
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_crossChainQuotes_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -482,6 +592,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
       await customRetryAsync(async function () {
         let quoteRequestPayload;
         let quotes;
+        let stepTransaction;
         try {
           quoteRequestPayload = {
             fromAddress: data.sender,
@@ -497,7 +608,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           if (quotes.items.length > 0) {
             const quote = quotes.items[0]; // Selected the first route
-            await xdaiDataService.getStepTransaction({
+            stepTransaction = await xdaiDataService.getStepTransaction({
               route: quote,
               account: data.sender,
             });
@@ -505,7 +616,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].id,
-                'The id value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_id,
               );
             } catch (e) {
               console.error(e);
@@ -516,7 +627,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNumber(
                 quotes.items[0].fromChainId,
-                'The fromChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_fromChainId,
               );
             } catch (e) {
               console.error(e);
@@ -527,7 +638,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].fromAmountUSD,
-                'The fromAmountUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_fromAmountUSD
               );
             } catch (e) {
               console.error(e);
@@ -538,7 +649,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].fromAmount,
-                'The fromAmount value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_fromAmount
               );
             } catch (e) {
               console.error(e);
@@ -549,7 +660,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].fromToken,
-                'The fromToken value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_fromToken,
               );
             } catch (e) {
               console.error(e);
@@ -560,7 +671,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].fromAddress,
-                'The fromAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_fromAddress
               );
             } catch (e) {
               console.error(e);
@@ -571,7 +682,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNumber(
                 quotes.items[0].toChainId,
-                'The toChainId value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toChainId
               );
             } catch (e) {
               console.error(e);
@@ -582,7 +693,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].toAmountUSD,
-                'The toAmountUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toAmountUSD
               );
             } catch (e) {
               console.error(e);
@@ -593,7 +704,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].toAmount,
-                'The toAmount value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toAmount
               );
             } catch (e) {
               console.error(e);
@@ -604,7 +715,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].toAmountMin,
-                'The toAmountMin value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toAmountMin
               );
             } catch (e) {
               console.error(e);
@@ -615,7 +726,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].toToken,
-                'The toToken value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toToken
               );
             } catch (e) {
               console.error(e);
@@ -626,7 +737,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].toAddress,
-                'The toAddress value of the first item is displayed correctly in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_toAddress
               );
             } catch (e) {
               console.error(e);
@@ -637,7 +748,139 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].gasCostUSD,
-                'The gasCostUSD value of the first item is empty in the getAdvanceRoutesLiFi response.',
+                message.vali_advanceRoutesLiFi_gasCostUSD
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[0].data,
+                message.vali_stepTransaction_data,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[0].value,
+                message.vali_stepTransaction_value,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[0].to,
+                message.vali_stepTransaction_to
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                stepTransaction.items[0].chainId,
+                message.vali_stepTransaction_chainId
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[0].transactionType,
+                message.vali_stepTransaction_transactionType
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].transactionType,
+                message.vali_stepTransaction_transactionType
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].data,
+                message.vali_stepTransaction_data
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].to,
+                message.vali_stepTransaction_to
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].value,
+                message.vali_stepTransaction_value
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                stepTransaction.items[1].chainId,
+                message.vali_stepTransaction_chainId
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].gasLimit,
+                message.vali_stepTransaction_gasLimit
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                stepTransaction.items[1].gasPrice,
+                message.vali_stepTransaction_gasPrice
               );
             } catch (e) {
               console.error(e);
@@ -645,19 +888,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               addContext(test, eString);
             }
           } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail('The quotes are not display in the quote list');
+            addContext(test, message.vali_advanceRoutesLiFi_1);
+            console.log(message.vali_advanceRoutesLiFi_1);
           }
         } catch (e) {
-          assert.fail('The quotes are not display in the quote list');
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_advanceRoutesLiFi_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -676,10 +918,77 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].address,
+                message.vali_exchangeOffers_address,
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].chainId,
+                message.vali_exchangeOffers_chainId
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].name,
+                message.vali_exchangeOffers_name
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].symbol,
+                message.vali_exchangeOffers_symbol
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNumber(
+                exchangeSupportedAssets.items[0].decimals,
+                message.vali_exchangeOffers_decimals
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
+
+            try {
+              assert.isNotEmpty(
+                exchangeSupportedAssets.items[0].logoURI,
+                message.vali_exchangeOffers_logoURI
+              );
+            } catch (e) {
+              console.error(e);
+              const eString = e.toString();
+              addContext(test, eString);
+            }
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -701,29 +1010,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_2)
+          assert.fail(message.fail_exchangeOffers_2)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (
-            errorResponse[0].constraints.isAddress ===
-            'fromTokenAddress must be an address'
-          ) {
-            console.log(
-              'The correct validation is displayed when invalid fromTokenAddress detail added in the getExchangeOffers request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_exchangeOffers_4)
+            console.log(message.vali_exchangeOffers_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid fromTokenAddress detail added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -742,10 +1046,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -766,29 +1071,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_3)
+          assert.fail(message.fail_exchangeOffers_3)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (
-            errorResponse[0].constraints.isAddress ===
-            'fromTokenAddress must be an address'
-          ) {
-            console.log(
-              'The correct validation is displayed when fromTokenAddress detail not added in the getExchangeOffers request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_exchangeOffers_5)
+            console.log(message.vali_exchangeOffers_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromTokenAddress detail not added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -807,10 +1107,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -832,29 +1133,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_4)
+          assert.fail(message.fail_exchangeOffers_4)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (
-            errorResponse[0].constraints.isAddress ===
-            'toTokenAddress must be an address'
-          ) {
-            console.log(
-              'The correct validation is displayed when invalid toTokenAddress detail added in the getExchangeOffers request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_exchangeOffers_6)
+            console.log(message.vali_exchangeOffers_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid toTokenAddress detail added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -873,10 +1169,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -897,29 +1194,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             // without toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_5)
+          assert.fail(message.fail_exchangeOffers_5)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (
-            errorResponse[0].constraints.isAddress ===
-            'toTokenAddress must be an address'
-          ) {
-            console.log(
-              'The correct validation is displayed when toTokenAddress detail not added in the getExchangeOffers request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_exchangeOffers_7)
+            console.log(message.vali_exchangeOffers_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when toTokenAddress detail not added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -938,10 +1230,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -963,25 +1256,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_6)
+          assert.fail(message.fail_exchangeOffers_6)
         } catch (e) {
-          if (e.reason === 'invalid BigNumber string') {
-            console.log(
-              'The correct validation is displayed when invalid fromAmount detail added in the getExchangeOffers request',
-            );
+          if (e.reason === constant.invalid_bignumber_1) {
+            addContext(test, message.vali_exchangeOffers_8)
+            console.log(message.vali_exchangeOffers_8);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid fromAmount detail added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -1000,10 +1291,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -1025,25 +1317,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_7)
+          assert.fail(message.fail_exchangeOffers_7)
         } catch (e) {
-          if (e.reason === 'invalid BigNumber string') {
-            console.log(
-              'The correct validation is displayed when decimal fromAmount detail added in the getExchangeOffers request',
-            );
+          if (e.reason === constant.invalid_bignumber_1) {
+            addContext(test, message.vali_exchangeOffers_9)
+            console.log(message.vali_exchangeOffers_9);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when decimal fromAmount detail added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -1062,10 +1352,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -1087,25 +1378,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             fromAmount: BigNumber.from(fromAmount),
           });
+
+          addContext(test, message.fail_exchangeOffers_8)
+          assert.fail(message.fail_exchangeOffers_8)
         } catch (e) {
-          if (e.reason === 'invalid BigNumber string') {
-            console.log(
-              'The correct validation is displayed when big fromAmount detail added in the getExchangeOffers request',
-            );
+          if (e.reason === constant.invalid_bignumber_1) {
+            addContext(test, message.vali_exchangeOffers_10)
+            console.log(message.vali_exchangeOffers_10);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when big fromAmount detail added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_8);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -1124,10 +1413,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            console.log('Found exchange supported assets.');
+            addContext(test, message.vali_exchangeOffers_1)
+            console.log(message.vali_exchangeOffers_1);
           } else {
-            addContext(test, 'The exchange supported assets is not displayed.');
-            console.error('The exchange supported assets is not displayed.');
+            addContext(test, message.vali_exchangeOffers_2);
+            console.error(message.vali_exchangeOffers_2);
           }
         } catch (e) {
           console.error(e);
@@ -1148,29 +1438,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             toTokenAddress,
             // without fromAmount
           });
+
+          addContext(test, message.fail_exchangeOffers_9)
+          assert.fail(message.fail_exchangeOffers_9)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (
-            errorResponse[0].constraints.IsBigNumberish ===
-            'fromAmount must be positive big numberish'
-          ) {
-            console.log(
-              'The correct validation is displayed when fromAmount detail not added in the getExchangeOffers request',
-            );
+          if (errorResponse[0].constraints.IsBigNumberish === constant.invalid_bignumber_2) {
+            addContext(test, message.vali_exchangeOffers_11)
+            console.log(message.vali_exchangeOffers_11);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromAmount detail not added in the getExchangeOffers request',
-            );
+            assert.fail(message.fail_exchangeOffers_9);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE EXCHANGE OFFERS RESPONSE ON THE xdai NETWORK',
-      );
+      console.warn(message.exchangeOffers_insufficientBalance);
     }
   });
 
@@ -1190,29 +1475,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform without fromchainid detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_2)
+          assert.fail(message.fail_crossChainQuotes_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromChainId') {
-            console.log(
-              'The correct validation is displayed when fromchainid detail not added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].property === constant.invalid_chainid_1) {
+            addContext(test, message.vali_crossChainQuotes_2)
+            console.log(message.vali_crossChainQuotes_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromchainid detail not added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMCHAINID DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1232,29 +1511,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform without toChainId detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_3)
+          assert.fail(message.fail_crossChainQuotes_3)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toChainId') {
-            console.log(
-              'The correct validation is displayed when toChainId detail not added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].property === constant.invalid_chainid_2) {
+            addContext(test, message.vali_crossChainQuotes_3)
+            console.log(message.vali_crossChainQuotes_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when toChainId detail not added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOCHAINID DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1275,29 +1548,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with invalid fromTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_4)
+          assert.fail(message.fail_crossChainQuotes_4)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when invalid fromTokenAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_crossChainQuotes_4)
+            console.log(message.vali_crossChainQuotes_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid fromTokenAddress detail added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1318,29 +1585,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with incorrect fromTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_5)
+          assert.fail(message.fail_crossChainQuotes_5)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when incorrect fromTokenAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_crossChainQuotes_5)
+            console.log(message.vali_crossChainQuotes_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect fromTokenAddress detail added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1360,29 +1621,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform without fromTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_6)
+          assert.fail(message.fail_crossChainQuotes_6)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when fromTokenAddress detail not added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_crossChainQuotes_6)
+            console.log(message.vali_crossChainQuotes_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromTokenAddress detail not added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1403,29 +1658,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with invalid toTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_7)
+          assert.fail(message.fail_crossChainQuotes_7)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when invalid toTokenAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_crossChainQuotes_7)
+            console.log(message.vali_crossChainQuotes_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid toTokenAddress detail added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1446,29 +1695,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with incorrect toTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_8)
+          assert.fail(message.fail_crossChainQuotes_8)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when incorrect toTokenAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_crossChainQuotes_8)
+            console.log(message.vali_crossChainQuotes_8);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect toTokenAddress detail added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_8);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1488,29 +1731,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform without toTokenAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_9)
+          assert.fail(message.fail_crossChainQuotes_9)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when toTokenAddress detail not added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_crossChainQuotes_9)
+            console.log(message.vali_crossChainQuotes_9);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when toTokenAddress detail not added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_9);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1531,29 +1768,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with invalid fromAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_10)
+          assert.fail(message.fail_crossChainQuotes_10);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromAddress') {
-            console.log(
-              'The correct validation is displayed when invalid fromAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
+            addContext(test, message.vali_crossChainQuotes_10)
+            assert.fail(message.vali_crossChainQuotes_10);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid fromAddress detail added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_10);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INVALID FROMADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1574,29 +1805,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform with incorrect fromAddress detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_11)
+          assert.fail(message.fail_crossChainQuotes_11);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromAddress') {
-            console.log(
-              'The correct validation is displayed when incorrect fromAddress detail added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
+            addContext(test, message.vali_crossChainQuotes_11)
+            assert.fail(message.vali_crossChainQuotes_11);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect fromAddress detail added in the getCrossChainQuotes request',
-            );
+            addContext(test, message.fail_crossChainQuotes_12)
+            assert.fail(message.fail_crossChainQuotes_11);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITH INCORRECT FROMADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1616,29 +1842,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          assert.fail(
-            'The getCrossChainQuotes request allowed to perform without fromAmount detail',
-          );
+          addContext(test, message.fail_crossChainQuotes_12)
+          assert.fail(message.fail_crossChainQuotes_12);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromAmount') {
-            console.log(
-              'The correct validation is displayed when fromAmount not added in the getCrossChainQuotes request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
+            addContext(test, message.vali_crossChainQuotes_12)
+            console.log(message.vali_crossChainQuotes_12);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromAmount not added in the getCrossChainQuotes request',
-            );
+            assert.fail(message.fail_crossChainQuotes_12);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETCROSSCHAINQUOTES RESPONSE WITHOUT FROMADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.crossChainQuotes_insufficientBalance);
     }
   });
 
@@ -1658,29 +1878,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform without fromchainid detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_2)
+          assert.fail(fail_advanceRoutesLiFi_2)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromChainId') {
-            console.log(
-              'The correct validation is displayed when fromchainid detail not added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].property === constant.invalid_chainid_1) {
+            addContext(test, message.vali_advanceRoutesLiFi_2)
+            console.log(message.vali_advanceRoutesLiFi_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromchainid detail not added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMCHAINID DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1700,29 +1914,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform without toChainId detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_3)
+          assert.fail(fail_advanceRoutesLiFi_3)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toChainId') {
-            console.log(
-              'The correct validation is displayed when toChainId detail not added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].property === constant.invalid_chainid_2) {
+            addContext(test, message.vali_advanceRoutesLifi_3)
+            console.log(message.vali_advanceRoutesLifi_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when toChainId detail not added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_3)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOCHAINID DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1743,29 +1951,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform with invalid fromTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_4)
+          assert.fail(fail_advanceRoutesLiFi_4)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when invalid fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_advanceRoutesLifi_4)
+            console.log(message.vali_advanceRoutesLifi_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_4)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1786,29 +1988,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform with incorrect fromTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_5)
+          assert.fail(fail_advanceRoutesLiFi_5)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when incorrect fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_advanceRoutesLifi_5)
+            console.log(message.vali_advanceRoutesLifi_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect fromTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_5)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1828,29 +2024,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform without fromTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_6)
+          assert.fail(fail_advanceRoutesLiFi_6)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromTokenAddress') {
-            console.log(
-              'The correct validation is displayed when fromTokenAddress detail not added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
+            addContext(test, message.vali_advanceRoutesLifi_6)
+            console.log(message.vali_advanceRoutesLifi_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromTokenAddress detail not added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_6)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1871,29 +2061,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform with invalid toTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_7)
+          assert.fail(fail_advanceRoutesLiFi_7)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when invalid toTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_advanceRoutesLifi_7)
+            console.log(message.vali_advanceRoutesLifi_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid toTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_7)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INVALID TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1914,29 +2098,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform with incorrect toTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_8)
+          assert.fail(fail_advanceRoutesLiFi_8)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when incorrect toTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_advanceRoutesLifi_8)
+            console.log(message.vali_advanceRoutesLifi_8);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect toTokenAddress detail added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_8)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITH INCORRECT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1956,29 +2134,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform without toTokenAddress detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_9)
+          assert.fail(fail_advanceRoutesLiFi_9)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'toTokenAddress') {
-            console.log(
-              'The correct validation is displayed when toTokenAddress detail not added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
+            addContext(test, message.vali_advanceRoutesLifi_9)
+            console.log(message.vali_advanceRoutesLifi_9);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when toTokenAddress detail not added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_9)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT TOTOKENADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 
@@ -1998,29 +2170,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          assert.fail(
-            'The getAdvanceRoutesLiFi request allowed to perform without fromAmount detail',
-          );
+          addContext(test, fail_advanceRoutesLiFi_10)
+          assert.fail(fail_advanceRoutesLiFi_10)
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].property === 'fromAmount') {
-            console.log(
-              'The correct validation is displayed when fromAmount not added in the getAdvanceRoutesLiFi request',
-            );
+          if (errorResponse[0].constraints.IsBigNumberish === constant.invalid_bignumber_3) {
+            addContext(test, message.vali_advanceRoutesLifi_10)
+            console.log(message.vali_advanceRoutesLifi_10);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when fromAmount not added in the getAdvanceRoutesLiFi request',
-            );
+            assert.fail(fail_advanceRoutesLiFi_10)
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE GETADVANCEROUTESLIFI RESPONSE WITHOUT FROMADDRESS DETAIL ON THE xdai NETWORK',
-      );
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
     }
   });
 });

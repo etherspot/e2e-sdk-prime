@@ -5,12 +5,13 @@ import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let arbitrumMainNetSdk;
 let arbitrumAccountAddress;
-let arbitrumSimpleAccountAddress;
 let arbitrumMainNetSdk1;
 let arbitrumAccountAddress1;
+let arbitrumSimpleAccountAddress;
 
 describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with arbitrum network on the MainNet', function () {
   it('SMOKE: Validate the ZeroDev address on the arbitrum network', async function () {
@@ -31,7 +32,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -42,7 +43,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get ZeroDev address
@@ -54,7 +55,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumSimpleAccountAddress,
             data.zerodev_address,
-            'The Zero Dev Address is not calculated correctly.',
+            message.vali_zero_dev
           );
         } catch (e) {
           console.error(e);
@@ -65,7 +66,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Zero Dev Address is not displayed successfully.');
+        assert.fail(message.fail_zero_dev);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -88,7 +89,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -99,7 +100,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get SimpleAccount address
@@ -111,7 +112,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumSimpleAccountAddress,
             data.simpleaccount_address,
-            'The SimpleAccount Address is not calculated correctly.',
+            message.vali_simple_account,
           );
         } catch (e) {
           console.error(e);
@@ -122,7 +123,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SimpleAccount Address is not displayed successfully.');
+        assert.fail(message.fail_simple_account);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -145,7 +146,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -156,7 +157,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get account address
@@ -168,7 +169,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumAccountAddress,
             data.sender,
-            'The Account Address is not calculated correctly.',
+            message.vali_account_address,
           );
         } catch (e) {
           console.error(e);
@@ -179,7 +180,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Account Address is not displayed successfully.');
+        assert.fail(message.fail_account_address);
       }
 
       // initializating sdk for index 1...
@@ -195,7 +196,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumMainNetSdk1.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -206,7 +207,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get account address
@@ -218,7 +219,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             arbitrumAccountAddress1,
             data.sender1,
-            'The Account Address is not calculated correctly.',
+            message.vali_account_address,
           );
         } catch (e) {
           console.error(e);
@@ -229,7 +230,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Account Address is not displayed successfully.');
+        assert.fail(message.fail_account_address);
       }
     }, data.retry); // Retry this async test up to 5 times
   });

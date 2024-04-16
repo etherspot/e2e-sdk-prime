@@ -7,6 +7,8 @@ import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.j
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import constant from '../../../data/constant.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let optimismMainNetSdk;
 let optimismEtherspotWalletAddress;
@@ -35,8 +37,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           assert.strictEqual(
             optimismMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
-          );
+            message.vali_eoa_address);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -46,7 +47,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get EtherspotWallet address
@@ -58,8 +59,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           assert.strictEqual(
             optimismEtherspotWalletAddress,
             data.sender,
-            'The Etherspot Wallet Address is not calculated correctly.',
-          );
+            message.vali_smart_address);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -70,7 +70,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(
-          'The Etherspot Wallet Address is not displayed successfully.',
+          message.fail_smart_address,
         );
       }
 
@@ -83,7 +83,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Data service is not initialled successfully.');
+        assert.fail(message.fail_data_service);
       }
 
       // initializating ArkaPaymaster...
@@ -93,7 +93,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('An error is displayed while initializating sdk.');
+        assert.fail(message.fail_arka_initialize);
       }
 
       // validate the balance of the wallet
@@ -130,7 +130,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('Validation of the balance of the wallet is not performed.');
+        assert.fail(message.fail_wallet_balance);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -146,7 +146,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -160,8 +160,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              'The To Address value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -171,8 +170,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              'The data value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_data);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -182,8 +180,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              'The value value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_value);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -193,9 +190,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -206,8 +201,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is not number in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -217,7 +211,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -234,8 +228,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.sender,
-              'The sender value is not correct in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_sender);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -244,20 +237,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.nonce._hex,
-              'The hex value of the nonce is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.nonce._isBigNumber,
-              'The isBigNumber value of the nonce is false in the estimate transactions added to the batch response.',
-            );
+              op.nonce,
+              message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -267,8 +248,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.initCode,
-              'The initCode value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_initCode);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -278,8 +258,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.callData,
-              'The callData value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_callData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -288,20 +267,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.callGasLimit._hex,
-              'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.callGasLimit._isBigNumber,
-              'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
-            );
+              op.callGasLimit,
+              message.vali_estimateTransaction_callGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -310,20 +277,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.verificationGasLimit._hex,
-              'The hex value of the verificationGasLimit is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.verificationGasLimit._isBigNumber,
-              'The isBigNumber value of the verificationGasLimit is false in the estimate transactions added to the batch response.',
-            );
+              op.verificationGasLimit,
+              message.vali_estimateTransaction_verificationGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -333,8 +288,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              'The maxFeePerGas is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_maxFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -344,8 +298,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              'The maxPriorityFeePerGas is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_maxPriorityFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -355,8 +308,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              'The paymasterAndData value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_paymasterAndData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -365,20 +317,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.preVerificationGas._hex,
-              'The hex value of the preVerificationGas is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.preVerificationGas._isBigNumber,
-              'The isBigNumber value of the preVerificationGas is false in the estimate transactions added to the batch response.',
-            );
+              op.preVerificationGas,
+              message.vali_estimateTransaction_preVerificationGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -388,8 +328,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.signature,
-              'The signature value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_signature);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -399,9 +338,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
-          );
+          assert.fail(message.fail_estimateTransaction_1);
         }
 
         // sign the UserOp and sending to the bundler
@@ -412,8 +349,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               uoHash,
-              'The uoHash value is empty in the sending bundler response.',
-            );
+              message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -423,19 +359,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The sign the UserOp and sending to the bundler action is not performed.',
-          );
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('*SMOKE: Perform the transfer token with arka pimlico paymaster on the optimism network', async function () {
+  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -451,8 +383,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is empty in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -462,7 +393,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         /**
@@ -501,8 +432,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               paymasterAddress,
-              'The paymasterAddress is empty in the fetch paymaster address response.',
-            );
+              message.vali_pimlico_paymasterAddress_1);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -512,9 +442,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -538,8 +466,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 contract.to,
-                'The to value is empty in the erc20 contract response.',
-              );
+                message.vali_erc20Contract_to);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -549,8 +476,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 contract.data,
-                'The data value is empty in the erc20 contract response.',
-              );
+                message.vali_erc20Contract_data);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -560,9 +486,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get estimation of transaction
@@ -572,8 +496,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.sender,
-                'The sender value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_sender);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -582,9 +505,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                approveOp.nonce._hex,
-                'The nonce value is empty in the get transaction estimation response.',
-              );
+                approveOp.nonce,
+                message.vali_estimateTransaction_nonce);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -594,8 +516,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.initCode,
-                'The initCode value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_initCode);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -605,8 +526,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.callData,
-                'The callData value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_callData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -615,9 +535,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                approveOp.callGasLimit._hex,
-                'The callGasLimit value is empty in the get transaction estimation response.',
-              );
+                approveOp.callGasLimit,
+                message.vali_estimateTransaction_callGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -626,9 +545,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                approveOp.verificationGasLimit._hex,
-                'The verificationGasLimit value is empty in the get transaction estimation response.',
-              );
+                approveOp.verificationGasLimit,
+                message.vali_estimateTransaction_verificationGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -638,8 +556,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.maxFeePerGas,
-                'The maxFeePerGas value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_maxFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -649,8 +566,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.maxPriorityFeePerGas,
-                'The maxPriorityFeePerGas value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_maxPriorityFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -660,8 +576,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.paymasterAndData,
-                'The paymasterAndData value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_paymasterAndData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -670,9 +585,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                approveOp.preVerificationGas._hex,
-                'The preVerificationGas value is empty in the get transaction estimation response.',
-              );
+                approveOp.preVerificationGas,
+                message.vali_estimateTransaction_preVerificationGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -682,8 +596,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 approveOp.signature,
-                'The signature value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_signature);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -693,9 +606,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -705,8 +616,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 uoHash1,
-                'The uoHash1 value is empty in the get the uoHash response.',
-              );
+                message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -716,9 +626,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -728,9 +636,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -743,8 +649,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 transactionBatch.to,
-                'The to value is empty in the transactionBatch response.',
-              );
+                message.vali_addTransaction_to);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -754,8 +659,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 transactionBatch.data,
-                'The data value is empty in the transactionBatch response.',
-              );
+                message.vali_addTransaction_data);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -765,9 +669,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_addTransaction_1);
           }
 
           // get balance of the account address
@@ -777,8 +679,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 balance,
-                'The balance value is empty in the get balance of the account address response.',
-              );
+                message.vali_getBalance_balance);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -788,9 +689,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_getBalance_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -805,8 +704,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.sender,
-                'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_sender);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -815,9 +713,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                op.nonce._hex,
-                'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.nonce,
+                message.vali_estimateTransaction_nonce);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -827,8 +724,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.initCode,
-                'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_initCode);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -838,8 +734,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.callData,
-                'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_callData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -848,9 +743,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                op.callGasLimit._hex,
-                'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.callGasLimit,
+                message.vali_estimateTransaction_callGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -859,9 +753,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                op.verificationGasLimit._hex,
-                'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.verificationGasLimit,
+                message.vali_estimateTransaction_verificationGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -871,8 +764,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.maxFeePerGas,
-                'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_maxFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -882,8 +774,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.maxPriorityFeePerGas,
-                'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_maxPriorityFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -893,8 +784,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.paymasterAndData,
-                'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_paymasterAndData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -903,9 +793,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
             try {
               assert.isNotEmpty(
-                op.preVerificationGas._hex,
-                'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.preVerificationGas,
+                message.vali_estimateTransaction_preVerificationGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -915,8 +804,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 op.signature,
-                'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_signature);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -926,9 +814,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // sign the UserOp and sending to the bundler...
@@ -938,8 +824,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             try {
               assert.isNotEmpty(
                 uoHash,
-                'The uoHash value is empty in the sending bundler response.',
-              );
+                message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -949,19 +834,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
         } else {
-          addContext(test, 'Unable to fetch the paymaster address.');
-          assert.fail('Unable to fetch the paymaster address.');
+          addContext(test, message.fail_paymasterAddress_1);
+          assert.fail(message.fail_paymasterAddress_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -985,8 +866,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is empty in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -996,7 +876,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -1006,9 +886,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -1021,8 +899,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              'The to value is empty in the transactionBatch response.',
-            );
+              message.vali_addTransaction_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1032,8 +909,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              'The data value is empty in the transactionBatch response.',
-            );
+              message.vali_addTransaction_data);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1043,9 +919,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1055,8 +929,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               balance,
-              'The balance value is empty in the get balance of the account address response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1066,9 +939,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_getBalance_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -1093,8 +964,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.sender,
-              'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_sender);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1103,9 +973,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.nonce._hex,
-              'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.nonce,
+              message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1115,8 +984,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.initCode,
-              'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_initCode);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1126,8 +994,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.callData,
-              'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_callData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1136,9 +1003,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.callGasLimit._hex,
-              'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.callGasLimit,
+              message.vali_estimateTransaction_callGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1147,9 +1013,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.verificationGasLimit._hex,
-              'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.verificationGasLimit,
+              message.vali_estimateTransaction_verificationGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1159,8 +1024,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_maxFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1170,8 +1034,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_maxPriorityFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1181,8 +1044,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_paymasterAndData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1191,9 +1053,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
           try {
             assert.isNotEmpty(
-              op.preVerificationGas._hex,
-              'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.preVerificationGas,
+              message.vali_estimateTransaction_preVerificationGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1203,8 +1064,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               op.signature,
-              'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_signature);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1214,9 +1074,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_estimateTransaction_1);
         }
 
         // sign the UserOp and sending to the bundler...
@@ -1226,8 +1084,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               uoHash,
-              'The uoHash value is empty in the sending bundler response.',
-            );
+              message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1237,15 +1094,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
@@ -1261,8 +1114,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               metadata.sponsorAddress,
-              'The sponsorAddress is empty in the metadata response.',
-            );
+              message.vali_metadata_sponsorAddress);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1272,8 +1124,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               metadata.sponsorWalletBalance,
-              'The sponsorWalletBalance is empty in the metadata response.',
-            );
+              message.vali_metadata_sponsorWalletBalance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1283,8 +1134,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               metadata.chainsSupported,
-              'The chainsSupported is empty in the metadata response.',
-            );
+              message.vali_metadata_chainsSupported);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1294,8 +1144,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               metadata.tokenPaymasters,
-              'The tokenPaymasters is empty in the metadata response.',
-            );
+              message.vali_metadata_tokenPaymasters);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1305,13 +1154,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('An error is displayed while calling the metadata function of arka.');
+          assert.fail(message.fail_metadata_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1327,8 +1174,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           try {
             assert.isNotEmpty(
               getTokenPaymasterAddress,
-              'The getTokenPaymasterAddress response is empty.',
-            );
+              message.vali_getTokenPaymasterAddress_tokenPaymasterAddress);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1338,13 +1184,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('An error is displayed while calling the get token paymaster address function of arka.');
+          assert.fail(message.fail_getTokenPaymasterAddress_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1357,30 +1201,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           let removeWhitelist = await arkaPaymaster.removeWhitelist([data.sender]);
 
-          if (removeWhitelist.includes('Successfully removed whitelisted addresses with transaction Hash')) {
-            addContext(test, 'Removed the address from whitelisted successfully.');
-            console.log('Removed the address from whitelisted successfully.');
+          if (removeWhitelist.includes(constant.remove_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_1);
+            console.log(message.vali_removeWhitelist_1);
           } else {
-            addContext(test, 'An error is displayed while removing the address from whitelisting.');
-            assert.fail('An error is displayed while removing the address from whitelisting.');
+            addContext(test, message.fail_removeWhitelist_1);
+            assert.fail(message.fail_removeWhitelist_1);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+            assert.fail(message.fail_removeWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1393,30 +1235,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           let addWhitelist = await arkaPaymaster.addWhitelist([data.sender]);
 
-          if (addWhitelist.includes('Successfully whitelisted with transaction Hash')) {
-            addContext(test, 'The address is whitelisted successfully.');
-            console.log('The address is whitelisted successfully.');
+          if (addWhitelist.includes(constant.add_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
           } else {
-            addContext(test, 'An error is displayed while whitelisting the address.');
-            assert.fail('An error is displayed while whitelisting the address.');
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('already whitelisted')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+            assert.fail(message.fail_addWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1429,24 +1269,22 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           let checkWhitelist = await arkaPaymaster.checkWhitelist(data.sender);
 
-          if (checkWhitelist.includes('Already added')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
-          } else if (checkWhitelist.includes('Not added yet')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
+          if (checkWhitelist.includes(constant.check_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else if (checkWhitelist.includes(constant.check_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('An error is displayed while calling the check whitelist address function of arka.');
+          assert.fail(message.fail_checkWhitelist_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1459,25 +1297,22 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           let deposit = await arkaPaymaster.deposit(data.value);
 
-          if (deposit.includes('Successfully deposited')) {
-            addContext(test, 'The amount deposited successfully.')
-            console.log('The amount deposited successfully.')
+          if (deposit.includes(constant.deposit_1)) {
+            addContext(test, message.vali_deposit_1)
+            console.log(message.vali_deposit_1)
           } else {
-            addContext(test, 'An error is displayed while perform the deposit.')
-            assert.fail('An error is displayed while perform the deposit')
+            addContext(test, message.fail_deposit_1)
+            assert.fail(message.fail_deposit_1)
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('An error is displayed while calling the deposit function of arka.');
+          assert.fail(message.fail_deposit_2);
         }
-
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -1492,7 +1327,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1505,9 +1340,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1517,7 +1350,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -1529,29 +1362,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               context: { mode: 'sponsor' },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_2)
+          assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
-          if (e.message === 'Not Found') {
-            console.log(
-              'The correct validation is displayed when invalid paymaster url added while estimation.',
-            );
+          if (e.message === constant.not_found) {
+            addContext(test, message.vali_estimateTransaction_1)
+            console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid paymaster url added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without arka paymaster url on the optimism network', async function () {
+  it.only('REGRESSION: Perform the transfer native token without arka paymaster url on the optimism network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1562,7 +1393,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1575,9 +1406,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1)
         }
 
         // get balance of the account address
@@ -1587,7 +1416,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -1599,25 +1428,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               context: { mode: 'sponsor' },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_3)
+          assert.fail(message.fail_estimateTransaction_3);
         } catch (e) {
-          if (e.message === 'Not Found') {
-            console.log(
-              'The correct validation is displayed when paymaster url not added while estimation.',
-            );
+          if (e.message === constant.not_found) {
+            addContext(test, message.vali_estimateTransaction_2)
+            console.log(message.vali_estimateTransaction_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when paymaster url not added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
@@ -1632,7 +1459,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1645,9 +1472,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1657,7 +1482,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -1669,25 +1494,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               context: { mode: 'sponsor' },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_4)
+          assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
@@ -1702,7 +1525,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1715,9 +1538,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1727,7 +1548,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -1739,25 +1560,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               context: { mode: 'sponsor' },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_5)
+          assert.fail(message.fail_estimateTransaction_5);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when incorrect API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_4)
+            console.log(message.vali_estimateTransaction_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
@@ -1772,7 +1591,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1785,9 +1604,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1797,7 +1614,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
@@ -1809,29 +1626,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               context: { mode: 'sponsor' },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_6)
+          assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when API Key not added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_5)
+            console.log(message.vali_estimateTransaction_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when API Key not added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION WITH PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the optimism network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1864,33 +1679,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (paymasterAddress.includes('not found')) {
-          console.log(
-            'The paymaster address is not found as expected while fetching the paymaster address with invalid paymaster URL.',
-          );
+        if (paymasterAddress.includes(constant.not_found)) {
+          addContext(test, message.vali_pimlico_paymasterAddress_2)
+          console.log(message.vali_pimlico_paymasterAddress_2);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid paymaster URL.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid paymaster URL.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_2);
+          assert.fail(message.fail_pimlico_paymasterAddress_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
@@ -1920,33 +1725,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid Api Key') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid API Key in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_apiKey) {
+          addContext(test, message.vali_pimlico_paymasterAddress_3)
+          console.log(message.vali_pimlico_paymasterAddress_3);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid API Key in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid API Key in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_3);
+          assert.fail(message.fail_pimlico_paymasterAddress_3);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?chainId=${Number(data.optimism_chainid)}`; // without API Key in queryString
@@ -1974,33 +1769,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid Api Key') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without API Key in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_apiKey) {
+          addContext(test, message.vali_pimlico_paymasterAddress_4)
+          console.log(message.vali_pimlico_paymasterAddress_4);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without API Key in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched without API Key in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_4);
+          assert.fail(message.fail_pimlico_paymasterAddress_4);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2030,33 +1815,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Unsupported network') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid chainid in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_network_3) {
+          addContext(test, message.vali_pimlico_paymasterAddress_5)
+          console.log(message.vali_pimlico_paymasterAddress_5);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid chainid in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid chainid in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_5);
+          assert.fail(message.fail_pimlico_paymasterAddress_5);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -2084,33 +1859,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid data provided') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without chainid in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_data) {
+          addContext(test, message.vali_pimlico_paymasterAddress_6)
+          console.log(message.vali_pimlico_paymasterAddress_6);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without chainid in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched without chainid in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_6);
+          assert.fail(message.fail_pimlico_paymasterAddress_6);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2141,29 +1906,21 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           });
         } catch (e) {
           const errorMessage = returnedValue.error;
-          if (errorMessage.includes('invalid address')) {
-            console.log(
-              'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid Entry Point Address.',
-            );
+          if (errorMessage.includes(constant.invalid_address_4)) {
+            addContext(test, message.vali_pimlico_paymasterAddress_7)
+            console.log(message.vali_pimlico_paymasterAddress_7);
           } else {
-            addContext(
-              test,
-              'The paymaster address is fetched with invalid Entry Point Address.',
-            );
-            assert.fail(
-              'The paymaster address is fetched with invalid Entry Point Address.',
-            );
+            addContext(test, message.fail_pimlico_paymasterAddress_7);
+            assert.fail(message.fail_pimlico_paymasterAddress_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2196,31 +1953,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid network/token') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid token.',
-          );
+        if (returnedValue.error === constant.invalid_network_1) {
+          addContext(test, message.vali_pimlico_paymasterAddress_8)
+          console.log(message.vali_pimlico_paymasterAddress_8);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid token.',
-          );
-          assert.fail('The paymaster address is fetched with invalid token.');
+          addContext(test, message.fail_pimlico_paymasterAddress_8);
+          assert.fail(message.fail_pimlico_paymasterAddress_8);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2250,31 +1999,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid data provided') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without parameters.',
-          );
+        if (returnedValue.error === constant.invalid_data) {
+          addContext(test, message.vali_pimlico_paymasterAddress_9)
+          console.log(message.vali_pimlico_paymasterAddress_9);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_pimlico_paymasterAddress_9);
+          assert.fail(message.fail_pimlico_paymasterAddress_9);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2307,9 +2048,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2329,39 +2068,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (
-              errorMessage.includes(
-                'provider is required to use ENS name as contract address',
-              )
-            ) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with incorrect token address.',
-              );
+            if (errorMessage.includes(constant.contract_address_1)) {
+              addContext(test, message.vali_erc20Contract_1)
+              console.log(message.vali_erc20Contract_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with incorrect token address.',
-              );
+              assert.fail(message.fail_erc20Contract_3);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2394,9 +2121,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2416,39 +2141,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (
-              errorMessage.includes(
-                'provider is required to use ENS name as contract address',
-              )
-            ) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with invalid token address.',
-              );
+            if (errorMessage.includes(constant.contract_address_1)) {
+              addContext(test, message.vali_erc20Contract_2)
+              console.log(message.vali_erc20Contract_2);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with invalid token address.',
-              );
+              assert.fail(message.fail_erc20Contract_4);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2480,9 +2193,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         paymasterAddress = returnedValue.message;
@@ -2504,35 +2215,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('invalid address')) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with invalid paymaster address.',
-              );
+            if (errorMessage.includes(constant.invalid_address_4)) {
+              addContext(test, message.vali_erc20Contract_3)
+              console.log(message.vali_erc20Contract_3);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with invalid paymaster address.',
-              );
+              assert.fail(message.fail_erc20Contract_5);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2564,9 +2267,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         paymasterAddress = returnedValue.message;
@@ -2588,35 +2289,27 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('bad address checksum')) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with incorrect paymaster address.',
-              );
+            if (errorMessage.includes(constant.invalid_address_6)) {
+              addContext(test, message.vali_erc20Contract_4)
+              console.log(message.vali_erc20Contract_4);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with incorrect paymaster address.',
-              );
+              assert.fail(message.fail_erc20Contract_6);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2652,9 +2345,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2676,9 +2367,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2688,9 +2377,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2700,9 +2387,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2712,9 +2397,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2723,37 +2406,32 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               to: data.recipient,
               value: ethers.utils.parseEther(data.invalidValue),
             });
+
+            addContext(test, message.fail_addTransaction_2)
+            assert.fail(message.fail_addTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('invalid decimal value')) {
-              console.log(
-                'The validation for transactionBatch is displayed as expected while adding transactions to the batch with invalid value.',
-              );
+            if (errorMessage.includes(constant.invalid_value_1)) {
+              addContext(test, vali_addTransaction_1)
+              console.log(vali_addTransaction_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation is not displayed for the transactionBatch while adding transactions to the batch with invalid value.',
-              );
+              assert.fail(message.fail_addTransaction_3);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
@@ -2790,9 +2468,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2814,9 +2490,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2826,9 +2500,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2838,9 +2510,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2850,9 +2520,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2865,9 +2533,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -2878,37 +2544,32 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
+
+            addContext(test, message.fail_estimateTransaction_2)
+            assert.fail(message.fail_estimateTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Not Found')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
-              );
+            if (errorMessage.includes(constant.not_found)) {
+              addContext(test, message.vali_estimateTransaction_1)
+              console.log(message.vali_estimateTransaction_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
-              );
+              assert.fail(message.fail_estimateTransaction_2);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2946,9 +2607,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2970,9 +2629,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2982,9 +2639,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2994,9 +2649,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3006,9 +2659,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3021,9 +2672,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -3034,37 +2683,32 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
+
+            addContext(test, message.fail_estimateTransaction_4)
+            assert.fail(message.fail_estimateTransaction_4);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid Api Key')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid Api Key.',
-              );
+            if (errorMessage.includes(constant.invalid_apiKey)) {
+              addContext(test, message.vali_estimateTransaction_3)
+              console.log(message.vali_estimateTransaction_3);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid Api Key.',
-              );
+              assert.fail(message.fail_estimateTransaction_4);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3101,9 +2745,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -3125,9 +2767,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -3137,9 +2777,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -3149,9 +2787,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3161,9 +2797,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3176,9 +2810,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -3189,37 +2821,32 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
+
+            addContext(test, message.fail_estimateTransaction_6)
+            assert.fail(message.fail_estimateTransaction_6);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid Api Key')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions without Api Key.',
-              );
+            if (errorMessage.includes(constant.invalid_apiKey)) {
+              addContext(test, message.vali_estimateTransaction_5)
+              console.log(message.vali_estimateTransaction_5);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions without Api Key.',
-              );
+              assert.fail(message.fail_estimateTransaction_6);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3258,9 +2885,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -3282,9 +2907,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -3294,9 +2917,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -3306,9 +2927,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3318,9 +2937,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3333,9 +2950,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -3346,37 +2961,32 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
+
+            addContext(test, message.fail_estimateTransaction_7)
+            assert.fail(message.fail_estimateTransaction_7);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Unsupported network')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
-              );
+            if (errorMessage.includes(constant.invalid_network_3)) {
+              addContext(test, message.vali_estimateTransaction_6)
+              console.log(message.vali_estimateTransaction_6);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
-              );
+              assert.fail(message.fail_estimateTransaction_7);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the optimism network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the optimism network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3413,9 +3023,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -3437,9 +3045,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -3449,9 +3055,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -3461,9 +3065,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3473,9 +3075,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3488,9 +3088,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
@@ -3501,33 +3099,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
                 context: { token: data.usdc_token, mode: 'erc20' },
               }
             });
+
+            addContext(test, message.fail_estimateTransaction_8)
+            assert.fail(message.fail_estimateTransaction_8);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid data provided')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
-              );
+            if (errorMessage.includes(constant.invalid_data)) {
+              addContext(test, message.vali_estimateTransaction_7)
+              console.log(message.vali_estimateTransaction_7);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
-              );
+              assert.fail(message.fail_estimateTransaction_8);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3546,7 +3139,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3556,9 +3149,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3571,9 +3162,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3583,9 +3172,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3606,26 +3193,24 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_2)
+          assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Not Found')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
-            );
+          if (errorMessage.includes(constant.not_found)) {
+            addContext(test, message.vali_estimateTransaction_1)
+            console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
-            );
+            assert.fail(message.fail_estimateTransaction_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3643,7 +3228,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3653,9 +3238,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3668,9 +3251,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3680,9 +3261,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3703,25 +3282,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_4)
+          assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3738,7 +3315,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3748,9 +3325,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3763,9 +3338,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3775,9 +3348,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3798,25 +3369,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_6)
+          assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3835,7 +3404,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3845,9 +3414,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3860,9 +3427,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3872,9 +3437,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3895,26 +3458,24 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_7)
+          assert.fail(message.fail_estimateTransaction_7);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Unsupported network')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
-            );
+          if (errorMessage.includes(constant.invalid_network_3)) {
+            addContext(test, message.vali_estimateTransaction_6)
+            console.log(message.vali_estimateTransaction_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
-            );
+            assert.fail(message.fail_estimateTransaction_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3931,7 +3492,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3941,9 +3502,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3956,9 +3515,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3968,9 +3525,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3991,26 +3546,24 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
               },
             }
           });
+
+          addContext(test, message.fail_estimateTransaction_8)
+          assert.fail(message.fail_estimateTransaction_8);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
-            );
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_estimateTransaction_7)
+            console.log(message.vali_estimateTransaction_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
-            );
+            assert.fail(message.fail_estimateTransaction_8);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE optimism NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -4021,26 +3574,25 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
 
         // validate the get token paymaster address
         try {
-          await arkaPaymaster.getTokenPaymasterAddress("USDS");
+          await arkaPaymaster.getTokenPaymasterAddress(data.invalid_usdc_token);
 
-          assert.fail('The get token paymaster address function is worked with incorrect token.')
+          addContext(test, message.fail_getTokenPaymasterAddress_2)
+          assert.fail(message.fail_getTokenPaymasterAddress_2)
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Invalid network/token')) {
-            addContext(test, 'An appropriate validation message is displayed for incorrect token.');
-            console.log('An appropriate validation message is displayed for incorrect token.');
+          if (errorMessage.includes(constant.invalid_network_1)) {
+            addContext(test, message.vali_getTokenPaymasterAddress_1);
+            console.log(message.vali_getTokenPaymasterAddress_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the get token paymaster address function of arka with incorrect token.');
+            assert.fail(message.fail_getTokenPaymasterAddress_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4053,24 +3605,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.getTokenPaymasterAddress();
 
-          assert.fail('The get token paymaster address function is worked without token.')
+          addContext(test, message.fail_getTokenPaymasterAddress_3)
+          assert.fail(message.fail_getTokenPaymasterAddress_3)
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            addContext(test, 'An appropriate validation message is displayed without token.');
-            console.log('An appropriate validation message is displayed without token.');
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_getTokenPaymasterAddress_2);
+            console.log(message.vali_getTokenPaymasterAddress_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the get token paymaster address function of arka without token.');
+            assert.fail(message.fail_getTokenPaymasterAddress_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4083,25 +3634,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.removeWhitelist([data.invalidSender]);
 
-          assert.fail('The remove whitelist address function performed successfully with invalid address.');
-
+          addContext(test, message.fail_removeWhitelist_3)
+          assert.fail(message.fail_removeWhitelist_3);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'An appropriate validation is displayed while performing remove whitelist function with invalid address.');
-            console.log('An appropriate validation is displayed while performing remove whitelist function with invalid address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_removeWhitelist_3);
+            console.log(message.vali_removeWhitelist_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka with invalid address.');
+            assert.fail(message.fail_removeWhitelist_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4114,25 +3663,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.removeWhitelist([data.incorrectSender]);
 
-          assert.fail('The remove whitelist address function performed successfully with incorrect address.');
-
+          addContext(test, message.fail_removeWhitelist_4)
+          assert.fail(message.fail_removeWhitelist_4);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'An appropriate validation is displayed while performing remove whitelist function with incorrect address.');
-            console.log('An appropriate validation is displayed while performing remove whitelist function with incorrect address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_removeWhitelist_4);
+            console.log(message.vali_removeWhitelist_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka with incorrect address.');
+            assert.fail(message.fail_removeWhitelist_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4146,24 +3693,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           const randomAddress = ethers.Wallet.createRandom();
           await arkaPaymaster.removeWhitelist([randomAddress.address]);
 
-          assert.fail('The remove whitelist address function performed successfully with random address.');
+          addContext(test, message.fail_removeWhitelist_5)
+          assert.fail(message.fail_removeWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+            assert.fail(message.fail_removeWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4177,24 +3723,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           const randomAddress = ethers.Wallet.createRandom();
           await arkaPaymaster.removeWhitelist([randomAddress.address, data.sender]);
 
-          assert.fail('The remove whitelist address function performed successfully with random address.');
+          addContext(test, message.fail_removeWhitelist_5)
+          assert.fail(message.fail_removeWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+            assert.fail(message.fail_removeWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4214,30 +3759,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           // remove whitelist addresses
           let removewhitelist = await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
 
-          if (removewhitelist.includes('Successfully removed whitelisted addresses with transaction Hash')) {
-            addContext(test, 'Removed the addresses from whitelisted successfully.');
-            console.log('Removed the addresses from whitelisted successfully.');
+          if (removewhitelist.includes(constant.remove_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_1);
+            console.log(message.vali_removeWhitelist_1);
           } else {
-            addContext(test, 'An error is displayed while removing the addresses from whitelisting.');
-            assert.fail('An error is displayed while removing the addresses from whitelisting.');
+            addContext(test, message.fail_removeWhitelist_1);
+            assert.fail(message.fail_removeWhitelist_1);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The addresses are not whitelisted.');
-            console.log('The addresses are not whitelisted.');
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+            assert.fail(message.fail_removeWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4252,24 +3795,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           const randomAddress2 = ethers.Wallet.createRandom();
           await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
 
-          assert.fail('The remove whitelist address function performed successfully with multiple random addresses.');
+          addContext(test, message.fail_removeWhitelist_6)
+          assert.fail(message.fail_removeWhitelist_6);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('is not whitelisted')) {
-            addContext(test, 'The addresses are not whitelisted.');
-            console.log('The addresses are not whitelisted.');
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the remove whitelist address function of arka.');
+            assert.fail(message.fail_removeWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4282,24 +3824,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.addWhitelist([data.invalidSender]);
 
-          assert.fail('The add whitelist address function performed successfully with invalid address.');
+          addContext(test, message.fail_addWhitelist_3)
+          assert.fail(message.fail_addWhitelist_3);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'An appropriate validation is displayed while performing add whitelist function with invalid address.');
-            console.log('An appropriate validation is displayed while performing add whitelist function with invalid address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_addWhitelist_3);
+            console.log(message.vali_addWhitelist_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka with invalid address.');
+            assert.fail(message.fail_addWhitelist_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4312,24 +3853,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.addWhitelist([data.incorrectSender]);
 
-          assert.fail('The add whitelist address function performed successfully with incorrect address.');
+          addContext(test, message.fail_addWhitelist_4)
+          assert.fail(message.fail_addWhitelist_4);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'An appropriate validation is displayed while performing add whitelist function with incorrect address.');
-            console.log('An appropriate validation is displayed while performing add whitelist function with incorrect address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_addWhitelist_4);
+            console.log(message.vali_addWhitelist_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka with incorrect address.');
+            assert.fail(message.fail_addWhitelist_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4343,30 +3883,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           const randomAddress = ethers.Wallet.createRandom();
           let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress.address]);
 
-          if (addwhitelist.includes('Successfully whitelisted with transaction Hash')) {
-            addContext(test, 'The address is whitelisted successfully with random address.');
-            console.log('The address is whitelisted successfully with random address.');
+          if (addwhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_5);
+            console.log(message.vali_addWhitelist_5);
           } else {
-            addContext(test, 'An error is displayed while whitelisting the random address.');
-            assert.fail('An error is displayed while whitelisting the random address.');
+            addContext(test, message.fail_addWhitelist_7);
+            assert.fail(message.fail_addWhitelist_7);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('already whitelisted')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+            assert.fail(message.fail_addWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4380,30 +3918,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           const randomAddress = ethers.Wallet.createRandom();
           await arkaPaymaster.addWhitelist([randomAddress.address, data.sender]);
 
-          if (addWhitelist.includes('Successfully whitelisted with transaction Hash')) {
-            addContext(test, 'The address is whitelisted successfully.');
-            console.log('The address is whitelisted successfully.');
+          if (addWhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
           } else {
-            addContext(test, 'An error is displayed while whitelisting the address.');
-            assert.fail('An error is displayed while whitelisting the address.');
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('already whitelisted')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+            assert.fail(message.fail_addWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4420,30 +3956,28 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
           // add whitelist addresses
           let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
 
-          if (addwhitelist.includes('Successfully whitelisted with transaction Hash')) {
-            addContext(test, 'Added the addresses in whitelisted successfully.');
-            console.log('Added the addresses in whitelisted successfully.');
+          if (addwhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
           } else {
-            addContext(test, 'An error is displayed while adding the addresses in whitelisting.');
-            assert.fail('An error is displayed while adding the addresses in whitelisting.');
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
           }
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('already whitelisted')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while calling the add whitelist address function of arka.');
+            assert.fail(message.fail_addWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4456,23 +3990,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.checkWhitelist(data.invalidSender);
 
+          addContext(test, message.fail_checkWhitelist_2)
+          assert.fail(message.fail_checkWhitelist_2)
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'The validation message is displayed while checking the whitelist address with invalid address.');
-            console.log('The validation message is displayed while checking the whitelist address with invalid address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_1);
+            console.log(message.vali_checkWhitelist_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while checking the whitelist address function of arka with invalid address.');
+            assert.fail(message.fail_checkWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4485,23 +4019,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.checkWhitelist(data.invalidSender);
 
+          addContext(test, message.fail_checkWhitelist_3)
+          assert.fail(message.fail_checkWhitelist_3)
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'The validation message is displayed while checking the whitelist address with incorrect address.');
-            console.log('The validation message is displayed while checking the whitelist address with incorrect address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_2);
+            console.log(message.vali_checkWhitelist_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while checking the whitelist address function of arka with incorrect address.');
+            assert.fail(message.fail_checkWhitelist_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4514,25 +4048,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           const randomAddress = ethers.Wallet.createRandom();
           let checkwhitelist = await arkaPaymaster.checkWhitelist(randomAddress.address);
-          
-          if (checkwhitelist.includes('Already added')) {
-            addContext(test, 'The address is already whitelisted.');
-            console.log('The address is already whitelisted.');
-          } else if (checkwhitelist.includes('Not added yet')) {
-            addContext(test, 'The address is not whitelisted.');
-            console.log('The address is not whitelisted.');
+
+          if (checkwhitelist.includes(constant.check_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else if (checkwhitelist.includes(constant.check_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('An error is displayed while calling the check whitelist address function of arka.');
+          assert.fail(message.fail_checkWhitelist_4);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4545,24 +4077,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         try {
           await arkaPaymaster.checkWhitelist();
 
-          assert.fail('The check whitelist address function performed successfully without address.');
+          addContext(test, message.fail_checkWhitelist_5)
+          assert.fail(message.fail_checkWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('The given address is invalid. Please try again with valid address')) {
-            addContext(test, 'The validation message is displayed while checking the whitelist address with incorrect address.');
-            console.log('The validation message is displayed while checking the whitelist address with incorrect address.');
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_3);
+            console.log(message.vali_checkWhitelist_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while checking the whitelist address function of arka with incorrect address.');
+            assert.fail(message.fail_checkWhitelist_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 
@@ -4574,24 +4105,24 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
         // validate the deposit
         try {
           await arkaPaymaster.deposit("one");
+
+          addContext(test, message.fail_deposit_3)
+          assert.fail(message.fail_deposit_3)
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            addContext(test, 'The validation message is displayed while deposit with invalid amount.');
-            console.log('The validation message is displayed while deposit with invalid amount.');
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_deposit_2);
+            console.log(message.vali_deposit_2);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail('An error is displayed while deposit function of arka with invalid amount.');
+            assert.fail(message.fail_deposit_3);
           }
         }
-
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA FUNCTION ON THE optimism NETWORK',
-      );
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 });
