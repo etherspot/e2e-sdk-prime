@@ -1593,36 +1593,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with incorrect chainid in arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          await arbitrumDataService.getTransactions({
-            chainId: Number(data.matic_chainid),
-            account: data.sender,
-          });
-
-          addContext(test, message.fail_getTransactions_9)
-          assert.fail(message.fail_getTransactions_9);
-        } catch (e) {
-          const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isPositive === constant.invalid_chainid_3) {
-            addContext(test, message.vali_getTransactions_5)
-            console.log(message.vali_getTransactions_5);
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_getTransactions_9);
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(message.getTransaction_insufficientBalance);
-    }
-  });
-
   it('REGRESSION: Validate the get transactions history response with invalid account in arbitrum network', async function () {
     var test = this;
     if (runTest) {

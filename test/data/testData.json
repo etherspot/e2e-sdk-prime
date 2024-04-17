@@ -115,7 +115,7 @@
   "minimum_native_balance": 0.001,
   "exchange_offer_value": "10000000000",
   "exchange_offer_decimal_value": "0.1",
-  "exchange_offer_big_value": "100000000000000000000",
+  "exchange_offer_big_value": "1000000000000000000000000000000000000000000000000000000000000000000000",
   "paymaster_arka": "https://arka.etherspot.io",
   "invalid_paymaster_arka": "http://arka.etherspot.io",
   "usdc_token": "USDC",

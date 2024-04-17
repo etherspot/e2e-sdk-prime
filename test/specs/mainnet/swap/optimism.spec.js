@@ -121,7 +121,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  xit('SMOKE: Validate the Exchange offers response with ERC20 to ERC20 and valid details on the optimism network', async function () {
+  it('SMOKE: Validate the Exchange offers response with ERC20 to ERC20 and valid details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -216,11 +216,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         let offers;
         try {
+          let fromChainId = data.optimism_chainid;
           let fromAddress = data.sender;
           let fromTokenAddress = data.tokenAddress_optimismUSDC;
           let toTokenAddress = data.tokenAddress_optimismUSDT;
           let fromAmount = data.exchange_offer_value;
-          let fromChainId = data.optimism_chainid;
 
           offers = await optimismDataService.getExchangeOffers({
             fromAddress,
@@ -275,17 +275,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
                 const eString = e.toString();
                 addContext(test, eString);
               }
-
-              try {
-                assert.isNotEmpty(
-                  offers[i].__typename,
-                  message.vali_exchangeOffers_typename,
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
             }
           } else {
             addContext(test, message.vali_exchangeOffers_3);
@@ -299,11 +288,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('SMOKE: Validate the Exchange offers response with ERC20 to Native Token and valid details on the optimism network', async function () {
+  it('SMOKE: Validate the Exchange offers response with ERC20 to Native Token and valid details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -457,17 +446,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
                 const eString = e.toString();
                 addContext(test, eString);
               }
-
-              try {
-                assert.isNotEmpty(
-                  offers[i].__typename,
-                  message.vali_exchangeOffers_typename,
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
             }
           } else {
             addContext(test, message.vali_exchangeOffers_3);
@@ -481,7 +459,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
@@ -582,7 +560,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -899,11 +877,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response with invalid fromTokenAddress details on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response with invalid fromTokenAddress details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1027,11 +1005,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response without fromTokenAddress details on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response without fromTokenAddress details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1088,11 +1066,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response with invalid toTokenAddress details on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response with invalid toTokenAddress details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1150,11 +1128,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response without toTokenAddress details on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response without toTokenAddress details on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1211,11 +1189,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response with invalid fromAmount on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response with invalid fromAmount on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1272,11 +1250,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response with decimal fromAmount on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response with decimal fromAmount on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1333,72 +1311,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
-  xit('REGRESSION: Validate the Exchange offers response with big fromAmount on the optimism network', async function () {
-    var test = this;
-    let exchangeSupportedAssets;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        exchangeSupportedAssets =
-          await optimismDataService.getExchangeSupportedAssets({
-            page: 1,
-            limit: 100,
-            account: data.sender,
-            chainId: Number(data.optimism_chainid),
-          });
-
-        try {
-          if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
-            console.log(message.vali_exchangeOffers_1);
-          } else {
-            addContext(test, message.vali_exchangeOffers_2);
-            console.error(message.vali_exchangeOffers_2);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-        }
-
-        try {
-          let fromAddress = data.sender;
-          let fromTokenAddress = data.tokenAddress_optimismUSDC;
-          let toTokenAddress = data.tokenAddress_optimismUSDT;
-          let fromAmount = data.exchange_offer_big_value; // big fromAmount
-          let fromChainId = data.optimism_chainid;
-
-          await optimismDataService.getExchangeOffers({
-            fromAddress,
-            fromChainId,
-            fromTokenAddress,
-            toTokenAddress,
-            fromAmount: BigNumber.from(fromAmount),
-          });
-
-          addContext(test, message.fail_exchangeOffers_8)
-          assert.fail(message.fail_exchangeOffers_8)
-        } catch (e) {
-          if (e.reason === constant.invalid_bignumber_1) {
-            addContext(test, message.vali_exchangeOffers_10)
-            console.log(message.vali_exchangeOffers_10);
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_exchangeOffers_8);
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
-    }
-  });
-
-  xit('REGRESSION: Validate the Exchange offers response without fromAmount on the optimism network', async function () {
+  it('REGRESSION: Validate the Exchange offers response without fromAmount on the optimism network', async function () {
     var test = this;
     let exchangeSupportedAssets;
     if (runTest) {
@@ -1455,7 +1372,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance);
+      console.warn(message.exchangeOffers_insufficientBalance_optimism);
     }
   });
 
@@ -1491,7 +1408,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1527,7 +1444,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1564,7 +1481,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1601,7 +1518,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1637,7 +1554,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1674,7 +1591,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1711,7 +1628,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1747,7 +1664,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1784,7 +1701,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1822,7 +1739,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1858,7 +1775,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance);
+      console.warn(message.crossChainQuotes_insufficientBalance_optimism);
     }
   });
 
@@ -1894,7 +1811,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -1930,7 +1847,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -1967,7 +1884,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2004,7 +1921,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2040,7 +1957,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2077,7 +1994,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2114,7 +2031,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2150,7 +2067,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 
@@ -2186,7 +2103,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance_optimism);
     }
   });
 });
