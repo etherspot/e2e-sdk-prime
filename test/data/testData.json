@@ -129,5 +129,8 @@
   "arka_whitelist": "https://arka.etherspot.io/whitelist",
   "arka_checkwhitelist": "https://arka.etherspot.io/checkWhitelist",
   "arka_pimlico": "https://arka.etherspot.io/pimlicoAddress",
-  "txCount": 50
+  "txCount": 50,
+  "transactionHash": "0x639d74d9a681f19bc3a32ae4b5ee4b2562cec8458508babe0ac727d96b153360",
+  "invalid_transactionHash": "0x639d74d9a681f19bc3a32ae4b5ee4b2562cec8458508babe0ac727d96b15336",
+  "incorrect_transactionHash": "0x639d24d9a682f19bc3a32a14b5ee4b2562cec8458508ba1e0ac727d96b153160"
 }

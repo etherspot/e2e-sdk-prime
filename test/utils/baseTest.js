@@ -1,3 +1,5 @@
+import helper from "./helper.js";
+
 function customRetryAsync(fn, maxRetries) {
   return new Promise((resolve, reject) => {
     let retries = 0;
@@ -17,6 +19,7 @@ function customRetryAsync(fn, maxRetries) {
           await new Promise((resolve) => setTimeout(resolve, retryDelay));
           retries++;
           run(); // Retry the test
+          helper.wait(10000);
         } else {
           reject(error); // Reject the promise if all retries fail
         }
