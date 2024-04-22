@@ -5,6 +5,7 @@ import { utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
@@ -20,6 +21,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         arbitrumMainNetSdk = new PrimeSdk(
@@ -124,6 +128,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let nfts;
         try {
           nfts = await arbitrumDataService.getNftList({
@@ -231,6 +238,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let tokenLists;
         let tokenListTokens;
         let name;
@@ -435,6 +445,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let rates;
         let requestPayload;
@@ -520,6 +533,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           await arbitrumDataService.getNftList({
             chainId: Number(data.arbitrum_chainid),
@@ -550,6 +566,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           await arbitrumDataService.getNftList({
             chainId: Number(data.arbitrum_chainid),
@@ -580,6 +599,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let tokenLists;
         let tokenListTokens;
         let endpoint;
@@ -783,6 +805,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let requestPayload;
         try {
@@ -814,6 +839,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let requestPayload;
         try {
@@ -853,6 +881,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let requestPayload;
 
@@ -893,6 +924,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           let TOKEN_LIST = [];
 
@@ -927,6 +961,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let requestPayload;
 
@@ -961,6 +998,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let TOKEN_LIST;
         let requestPayload;
 

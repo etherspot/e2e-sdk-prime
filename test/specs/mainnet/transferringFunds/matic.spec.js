@@ -3,10 +3,10 @@ dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils, providers } from 'ethers';
 import { assert } from 'chai';
-import Helper from '../../../utils/helper.js';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import abi from '../../../data/nftabi.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
@@ -23,6 +23,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         maticMainNetSdk = new PrimeSdk(
@@ -125,6 +128,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -351,6 +357,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -636,6 +645,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         let erc721Data;
@@ -869,6 +881,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1099,6 +1114,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
 
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         const provider = new providers.JsonRpcProvider();
 
         // clear the transaction batch
@@ -1205,7 +1223,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
           while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            Helper.wait(2000)
+            helper.wait(2000)
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
@@ -1239,6 +1257,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1299,6 +1320,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1359,6 +1383,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1398,6 +1425,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1437,6 +1467,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1484,6 +1517,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1545,6 +1581,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1606,6 +1645,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await maticMainNetSdk.clearUserOpsFromBatch();
@@ -1654,6 +1696,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1708,6 +1753,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1760,6 +1808,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1815,6 +1866,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1868,6 +1922,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1921,6 +1978,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1960,6 +2020,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2027,6 +2090,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2094,6 +2160,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2138,7 +2207,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
             ethers.utils.parseUnits(data.smallValue, decimals), // very small value
           ]);
 
-          addContext(test, message.fail_erc20Transfer_6)  
+          addContext(test, message.fail_erc20Transfer_6)
           assert.fail(message.fail_erc20Transfer_6);
         } catch (e) {
           if (e.reason === constant.invalid_value_2) {
@@ -2147,7 +2216,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           } else {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);  
+            addContext(test, eString);
             assert.fail(message.fail_erc20Transfer_6);
           }
         }
@@ -2161,6 +2230,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2226,6 +2298,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2294,6 +2369,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2362,6 +2440,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2428,6 +2509,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2529,6 +2613,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2605,7 +2692,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         // estimate transactions added to the batch
         try {
           await maticMainNetSdk.estimate();
-          
+
           addContext(test, message.fail_estimateTransaction_17)
           assert.fail(message.fail_estimateTransaction_17);
         } catch (e) {
@@ -2630,6 +2717,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2730,6 +2820,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2829,6 +2922,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -2915,6 +3011,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -2949,6 +3048,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -2983,6 +3085,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3016,6 +3121,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3050,6 +3158,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3084,6 +3195,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3117,6 +3231,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3151,6 +3268,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3184,6 +3304,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3251,6 +3374,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
 
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         const provider = new providers.JsonRpcProvider();
 
         // clear the transaction batch
@@ -3316,7 +3442,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
           while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            Helper.wait(2000)
+            helper.wait(2000)
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
@@ -3353,6 +3479,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
 
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         const provider = new providers.JsonRpcProvider();
 
         // clear the transaction batch
@@ -3419,7 +3548,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
           while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            Helper.wait(2000)
+            helper.wait(2000)
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
@@ -3454,6 +3583,9 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
 
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         const provider = new providers.JsonRpcProvider();
 
         try {

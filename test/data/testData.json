@@ -1,6 +1,6 @@
 {
   "shortTimeout": 1000,
-  "mediumTimeout": 3000,
+  "mediumTimeout": 5000,
   "longTimeout": 10000,
   "retry": 5,
   "eoaAddress": "0xa5494Ed2eB09F37b4b0526a8e4789565c226C84f",

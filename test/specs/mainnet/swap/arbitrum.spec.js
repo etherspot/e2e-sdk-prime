@@ -5,6 +5,7 @@ import { utils, constants, BigNumber } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
@@ -20,6 +21,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         arbitrumMainNetSdk = new PrimeSdk(
@@ -126,6 +130,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -297,6 +304,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -467,6 +477,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         let quotes;
         try {
@@ -568,6 +581,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         let quotes;
         let stepTransaction;
@@ -886,6 +902,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1014,6 +1033,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1075,6 +1097,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1137,6 +1162,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1198,6 +1226,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1259,6 +1290,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1320,6 +1354,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         exchangeSupportedAssets =
           await arbitrumDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1380,6 +1417,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1416,6 +1456,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1452,6 +1495,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1489,6 +1535,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1526,6 +1575,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1562,6 +1614,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1599,6 +1654,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1636,6 +1694,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1672,6 +1733,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1709,6 +1773,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1747,6 +1814,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1783,6 +1853,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1819,6 +1892,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1855,6 +1931,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1892,6 +1971,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1929,6 +2011,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1965,6 +2050,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2002,6 +2090,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2039,6 +2130,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2075,6 +2169,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {

@@ -4,6 +4,7 @@ import { Factory, PrimeSdk, EtherspotBundler } from '@etherspot/prime-sdk';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
@@ -18,6 +19,9 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
@@ -75,6 +79,9 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
@@ -132,6 +139,9 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
