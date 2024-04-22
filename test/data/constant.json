@@ -5,12 +5,22 @@
     "invalid_address_4": "invalid address",
     "invalid_address_5": "The given address is invalid. Please try again with valid address", 
     "invalid_address_6": "bad address checksum", 
+    "invalid_address_7": "fromAddress must be an address",
+    "invalid_address_8": "toAddress must be an address",
+    "invalid_address_9": "querystring must have required property 'fromChainId'",
+    "invalid_address_10": "querystring must have required property 'toChainId'",
+    "invalid_address_11": "fromToken must be an address",
+    "invalid_address_12": "toToken must be an address",
+    "invalid_address_13": "querystring must have required property 'slippage'",
     "contract_address_1": "provider is required to use ENS name as contract address",
     "contract_address_2": "invalid contract address or ENS name",
 
     "invalid_chainid_1": "fromChainId",
     "invalid_chainid_2": "toChainId",
     "invalid_chainid_3": "chainId must be a positive number",
+    "invalid_chainid_4": "fromChainId must be a positive number",
+    "invalid_chainid_5": "toChainId must be a positive number",
+    "invalid_chainid_6": "Chain not supported",
 
     "property_undefined": "Cannot set properties of undefined",
     "remove_whitelist_1": "is not whitelisted",
@@ -39,6 +49,8 @@
     "empty_batch": "cannot sign empty transaction batch",
     "no_function": "no matching function",
     "not_found": "Not Found",
+    "exceed_slippage": "invalid json response body",
+    "transactionHash_32hex": "transactionHash must be hex with 32 size",
     
     "invalid_apiKey": "Invalid Api Key",
     "invalid_data": "Invalid data provided"
