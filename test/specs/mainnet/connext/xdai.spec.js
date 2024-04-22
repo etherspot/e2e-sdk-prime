@@ -17,11 +17,14 @@ let xdaiNativeAddress = null;
 let xdaiDataService;
 let runTest;
 
-describe('The PrimeSDK, Validate the connect endpoints with xdai network on the MainNet', function () {
+describe('The PrimeSDK, Validate the connext endpoints with xdai network on the MainNet', function () {
   before(async function () {
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
@@ -128,6 +131,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let allSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           allSupportedAssets =
             await xdaiDataService.getSupportedAssets({});
@@ -203,6 +209,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           supportedAssets =
             await xdaiDataService.getSupportedAssets({
@@ -282,6 +291,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -342,6 +354,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await xdaiMainNetSdk.clearUserOpsFromBatch();
@@ -472,6 +487,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           supportedAssets =
             await xdaiDataService.getSupportedAssets({
@@ -503,6 +521,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.invalidSender,
@@ -539,6 +560,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             toAddress: data.recipient,
@@ -574,6 +598,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.incorrectSender,
@@ -610,6 +637,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -646,6 +676,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -681,6 +714,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -717,6 +753,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -752,6 +791,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -787,6 +829,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -823,6 +868,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -859,6 +907,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -894,6 +945,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -930,6 +984,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -966,6 +1023,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -1001,6 +1061,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           quotes = await xdaiDataService.getQuotes({
             fromAddress: data.sender,
@@ -1035,6 +1098,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1067,6 +1133,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1099,6 +1168,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1132,6 +1204,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1165,6 +1240,9 @@ describe('The PrimeSDK, Validate the connect endpoints with xdai network on the 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // validate the transaction status
         let transactionStatus;
         try {

@@ -22,6 +22,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         optimismMainNetSdk = new PrimeSdk(
@@ -128,6 +131,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -460,6 +466,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // Fetching historical transactions
         let transactions;
         let randomTransaction;
@@ -678,6 +687,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1072,6 +1084,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get the respective provider details
         let provider;
         try {
@@ -1507,6 +1522,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // Fetching a single transaction
         let transaction;
         try {
@@ -1538,6 +1556,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // Fetching a single transaction
         try {
           await optimismDataService.getTransaction({
@@ -1568,6 +1589,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           let transactions = await optimismDataService.getTransactions({
             chainId: Number(data.invalid_optimism_chainid),
@@ -1597,6 +1621,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           let a = await optimismDataService.getTransactions({
             chainId: Number(data.optimism_chainid),
@@ -1627,6 +1654,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         try {
           await optimismDataService.getTransactions({
             chainId: Number(data.optimism_chainid),

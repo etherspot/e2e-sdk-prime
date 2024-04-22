@@ -6,6 +6,7 @@ import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
@@ -23,6 +24,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         optimismMainNetSdk = new PrimeSdk(
@@ -139,6 +143,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -375,6 +382,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let balance;
         // get balance of the account address
         try {
@@ -854,6 +864,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let balance;
         let transactionBatch;
         let op;
@@ -1107,6 +1120,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // get the metadata
         try {
           let metadata = await arkaPaymaster.metadata();
@@ -1167,6 +1183,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the get token paymaster address
         try {
           let getTokenPaymasterAddress = await arkaPaymaster.getTokenPaymasterAddress("USDC");
@@ -1196,6 +1215,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the remove whitelist address
         try {
@@ -1231,6 +1253,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the add whitelist address
         try {
           let addWhitelist = await arkaPaymaster.addWhitelist([data.sender]);
@@ -1265,6 +1290,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the whilelist address
         try {
           let checkWhitelist = await arkaPaymaster.checkWhitelist(data.sender);
@@ -1293,6 +1321,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the deposit
         try {
           let deposit = await arkaPaymaster.deposit(data.value);
@@ -1320,6 +1351,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1381,11 +1415,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
       console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
-  
+
   it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the optimism network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1452,6 +1489,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1518,6 +1558,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1588,6 +1631,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -1637,6 +1683,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1681,6 +1730,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let queryString = `?chainId=${Number(data.optimism_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1727,6 +1779,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1771,6 +1826,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         try {
           returnedValue = await fetch(
@@ -1817,6 +1875,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1862,6 +1923,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1911,6 +1975,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1957,6 +2024,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -2030,6 +2100,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -2103,6 +2176,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2177,6 +2253,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2251,6 +2330,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2374,6 +2456,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2513,6 +2598,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
       }&chainId=${Number(data.optimism_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2651,6 +2739,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let invalid_queryString = `?chainId=${Number(data.optimism_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2791,6 +2882,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2929,6 +3023,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -3066,6 +3163,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await optimismMainNetSdk.getNativeBalance();
@@ -3155,6 +3255,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
       }&chainId=${Number(data.optimism_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await optimismMainNetSdk.getNativeBalance();
@@ -3242,6 +3345,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let invalid_queryString = `?chainId=${Number(data.optimism_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await optimismMainNetSdk.getNativeBalance();
@@ -3331,6 +3437,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await optimismMainNetSdk.getNativeBalance();
@@ -3419,6 +3528,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await optimismMainNetSdk.getNativeBalance();
@@ -3506,6 +3618,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the get token paymaster address
         try {
           await arkaPaymaster.getTokenPaymasterAddress(data.invalid_usdc_token);
@@ -3534,6 +3649,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the get token paymaster address
         try {
@@ -3564,6 +3682,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the remove whitelist address
         try {
           await arkaPaymaster.removeWhitelist([data.invalidSender]);
@@ -3593,6 +3714,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the remove whitelist address
         try {
           await arkaPaymaster.removeWhitelist([data.incorrectSender]);
@@ -3621,6 +3745,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the remove whitelist address
         try {
@@ -3652,6 +3779,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the remove whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
@@ -3681,6 +3811,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the remove whitelist address
         try {
@@ -3723,6 +3856,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the remove whitelist address
         try {
           const randomAddress1 = ethers.Wallet.createRandom();
@@ -3754,6 +3890,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the add whitelist address
         try {
           await arkaPaymaster.addWhitelist([data.invalidSender]);
@@ -3783,6 +3922,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the add whitelist address
         try {
           await arkaPaymaster.addWhitelist([data.incorrectSender]);
@@ -3811,6 +3953,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the add whitelist address
         try {
@@ -3847,6 +3992,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the add whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
@@ -3881,6 +4029,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the add whitelist address
         try {
@@ -3920,6 +4071,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the whilelist address
         try {
           await arkaPaymaster.checkWhitelist(data.invalidSender);
@@ -3948,6 +4102,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the whilelist address
         try {
@@ -3978,6 +4135,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the whilelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
@@ -4007,6 +4167,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     if (runTest) {
       await customRetryAsync(async function () {
 
+        helper.wait(data.mediumTimeout);
+
+
         // validate the whilelist address
         try {
           await arkaPaymaster.checkWhitelist();
@@ -4035,6 +4198,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with o
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
 
         // validate the deposit
         try {
