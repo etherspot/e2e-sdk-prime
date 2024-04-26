@@ -11,13 +11,13 @@ import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let goerliTestNetSdk;
-let goerliEtherspotWalletAddress;
-let goerliNativeAddress = null;
-let goerliDataService;
+let sepoliaTestNetSdk;
+let sepoliaEtherspotWalletAddress;
+let sepoliaNativeAddress = null;
+let sepoliaDataService;
 let runTest;
 
-describe('The PrimeSDK, when get the single transaction and multiple transaction details with goerli network on the TestNet', function () {
+describe('The PrimeSDK, when get the single transaction and multiple transaction details with sepolia network on the TestNet', function () {
   before(async function () {
     var test = this;
 
@@ -27,16 +27,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // initializating sdk
       try {
-        goerliTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.goerli_chainid)
+            chainId: Number(data.sepolia_chainid)
           },
         );
 
         try {
           assert.strictEqual(
-            goerliTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address);
         } catch (e) {
@@ -53,12 +53,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // get EtherspotWallet address
       try {
-        goerliEtherspotWalletAddress =
-          await goerliTestNetSdk.getCounterFactualAddress();
+        sepoliaEtherspotWalletAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            goerliEtherspotWalletAddress,
+            sepoliaEtherspotWalletAddress,
             data.sender,
             message.vali_smart_address);
         } catch (e) {
@@ -77,7 +77,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // initializating Data service...
       try {
-        goerliDataService = new DataUtils(
+        sepoliaDataService = new DataUtils(
           process.env.DATA_API_KEY
         );
       } catch (e) {
@@ -89,9 +89,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
       // validate the balance of the wallet
       try {
-        let output = await goerliDataService.getAccountBalances({
+        let output = await sepoliaDataService.getAccountBalances({
           account: data.sender,
-          chainId: Number(data.goerli_chainid),
+          chainId: Number(data.sepolia_chainid),
         });
         let native_balance;
         let usdc_balance;
@@ -100,10 +100,10 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         for (let i = 0; i < output.items.length; i++) {
           let tokenAddress = output.items[i].token;
-          if (tokenAddress === goerliNativeAddress) {
+          if (tokenAddress === sepoliaNativeAddress) {
             native_balance = output.items[i].balance;
             native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_goerliUSDC) {
+          } else if (tokenAddress === data.tokenAddress_sepoliaUSDC) {
             usdc_balance = output.items[i].balance;
             usdc_final = utils.formatUnits(usdc_balance, 6);
           }
@@ -126,7 +126,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Validate the transaction history of the native token transaction on the goerli network', async function () {
+  it('SMOKE: Validate the transaction history of the native token transaction on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -135,7 +135,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // clear the transaction batch
         try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -145,7 +145,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // add transactions to the batch
         try {
-          await goerliTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -158,7 +158,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // get balance of the account address
         try {
-          await goerliTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -169,7 +169,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await goerliTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -180,7 +180,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await goerliTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -195,7 +195,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             await helper.wait(5000);
-            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
+            userOpsReceipt = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -211,9 +211,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         if (!(userOpsReceipt === null)) {
           try {
             transactionHash = userOpsReceipt.receipt.transactionHash;
-            singleTransaction = await goerliDataService.getTransaction({
+            singleTransaction = await sepoliaDataService.getTransaction({
               hash: transactionHash,
-              chainId: Number(data.goerli_chainid),
+              chainId: Number(data.sepolia_chainid),
             });
 
             try {
@@ -461,7 +461,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the get transactions history response with random transaction in goerli network', async function () {
+  it('SMOKE: Validate the get transactions history response with random transaction in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -473,8 +473,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let randomTransaction;
 
         try {
-          transactions = await goerliDataService.getTransactions({
-            chainId: Number(data.goerli_chainid),
+          transactions = await sepoliaDataService.getTransactions({
+            chainId: Number(data.sepolia_chainid),
             account: data.sender
           });
 
@@ -682,7 +682,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the get transactions history response of the native transaction in goerli network', async function () {
+  it('SMOKE: Validate the get transactions history response of the native transaction in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -691,7 +691,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // clear the transaction batch
         try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -701,7 +701,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // add transactions to the batch
         try {
-          await goerliTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -714,7 +714,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // get balance of the account address
         try {
-          await goerliTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -725,7 +725,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await goerliTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -736,7 +736,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await goerliTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -751,7 +751,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             await helper.wait(5000);
-            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
+            userOpsReceipt = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -766,8 +766,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching historical transactions
         let transactions;
         try {
-          transactions = await goerliDataService.getTransactions({
-            chainId: Number(data.goerli_chainid),
+          transactions = await sepoliaDataService.getTransactions({
+            chainId: Number(data.sepolia_chainid),
             account: data.sender,
             page: 1,
             limit: 10
@@ -1079,7 +1079,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('SMOKE: Validate the get transactions history response of the erc20 transaction in goerli network', async function () {
+  it('SMOKE: Validate the get transactions history response of the erc20 transaction in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1090,7 +1090,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_goerli);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1102,7 +1102,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_goerliUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1138,7 +1138,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // clear the transaction batch
         try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1149,8 +1149,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await goerliTestNetSdk.addUserOpsToBatch({
-            to: data.tokenAddress_goerliUSDC,
+          userOpsBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
+            to: data.tokenAddress_sepoliaUSDC,
             data: transactionData,
           });
         } catch (e) {
@@ -1163,7 +1163,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await goerliTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1174,7 +1174,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await goerliTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1189,7 +1189,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             await helper.wait(5000);
-            userOpsReceipt = await goerliTestNetSdk.getUserOpReceipt(uoHash);
+            userOpsReceipt = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -1204,8 +1204,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching historical transactions
         let transactions;
         try {
-          transactions = await goerliDataService.getTransactions({
-            chainId: Number(data.goerli_chainid),
+          transactions = await sepoliaDataService.getTransactions({
+            chainId: Number(data.sepolia_chainid),
             account: data.sender,
             page: 1,
             limit: 10
@@ -1517,7 +1517,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response with invalid hash on goerli network', async function () {
+  it('REGRESSION: Validate the get transaction history response with invalid hash on sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1527,9 +1527,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         // Fetching a single transaction
         let transaction;
         try {
-          transaction = await goerliDataService.getTransaction({
+          transaction = await sepoliaDataService.getTransaction({
             hash: data.incorrect_hash, // Incorrect Transaction Hash
-            chainId: Number(data.goerli_chainid),
+            chainId: Number(data.sepolia_chainid),
           });
 
           if (transaction === null || Object.keys(transaction).length === 0) {
@@ -1551,7 +1551,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on goerli network', async function () {
+  it('REGRESSION: Validate the get transaction history response when hash hex is not with 32 size on sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1560,9 +1560,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
         // Fetching a single transaction
         try {
-          await goerliDataService.getTransaction({
+          await sepoliaDataService.getTransaction({
             hash: data.invalid_hash, // Invalid Transaction Hash
-            chainId: Number(data.goerli_chainid),
+            chainId: Number(data.sepolia_chainid),
           });
 
           addContext(test, message.fail_getTransactions_7)
@@ -1584,7 +1584,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with invalid chainid in goerli network', async function () {
+  it('REGRESSION: Validate the get transactions history response with invalid chainid in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1592,8 +1592,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         helper.wait(data.mediumTimeout);
 
         try {
-          let transactions = await goerliDataService.getTransactions({
-            chainId: Number(data.invalid_goerli_chainid),
+          let transactions = await sepoliaDataService.getTransactions({
+            chainId: Number(data.invalid_sepolia_chainid),
             account: data.sender,
           });
 
@@ -1616,7 +1616,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with invalid account in goerli network', async function () {
+  it('REGRESSION: Validate the get transactions history response with invalid account in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1624,8 +1624,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         helper.wait(data.mediumTimeout);
 
         try {
-          let a = await goerliDataService.getTransactions({
-            chainId: Number(data.goerli_chainid),
+          let a = await sepoliaDataService.getTransactions({
+            chainId: Number(data.sepolia_chainid),
             account: data.invalidSender,
           });
 
@@ -1649,7 +1649,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with incorrect account in goerli network', async function () {
+  it('REGRESSION: Validate the get transactions history response with incorrect account in sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1657,8 +1657,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         helper.wait(data.mediumTimeout);
 
         try {
-          await goerliDataService.getTransactions({
-            chainId: Number(data.goerli_chainid),
+          await sepoliaDataService.getTransactions({
+            chainId: Number(data.sepolia_chainid),
             account: data.incorrectSender,
           });
 

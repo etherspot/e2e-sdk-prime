@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
@@ -10,13 +10,13 @@ import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let xdaiMainNetSdk;
-let xdaiEtherspotWalletAddress;
-let xdaiNativeAddress = null;
-let xdaiDataService;
+let sepoliaTestNetSdk;
+let sepoliaEtherspotWalletAddress;
+let sepoliaNativeAddress = null;
+let sepoliaDataService;
 let runTest;
 
-describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with xdai network on the MainNet', function () {
+describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with sepolia network on the TestNet', function () {
   before(async function () {
     var test = this;
 
@@ -26,17 +26,16 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       // initializating sdk
       try {
-        xdaiMainNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.xdai_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
+            chainId: Number(data.sepolia_chainid)
           },
         );
 
         try {
           assert.strictEqual(
-            xdaiMainNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address);
         } catch (e) {
@@ -53,12 +52,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       // get EtherspotWallet address
       try {
-        xdaiEtherspotWalletAddress =
-          await xdaiMainNetSdk.getCounterFactualAddress();
+        sepoliaEtherspotWalletAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            xdaiEtherspotWalletAddress,
+            sepoliaEtherspotWalletAddress,
             data.sender,
             message.vali_smart_address);
         } catch (e) {
@@ -75,7 +74,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       // initializating Data service...
       try {
-        xdaiDataService = new DataUtils(
+        sepoliaDataService = new DataUtils(
           process.env.DATA_API_KEY
         );
       } catch (e) {
@@ -87,9 +86,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       // validate the balance of the wallet
       try {
-        let output = await xdaiDataService.getAccountBalances({
+        let output = await sepoliaDataService.getAccountBalances({
           account: data.sender,
-          chainId: Number(data.xdai_chainid),
+          chainId: Number(data.sepolia_chainid),
         });
         let native_balance;
         let usdc_balance;
@@ -98,10 +97,10 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
         for (let i = 0; i < output.items.length; i++) {
           let tokenAddress = output.items[i].token;
-          if (tokenAddress === xdaiNativeAddress) {
+          if (tokenAddress === sepoliaNativeAddress) {
             native_balance = output.items[i].balance;
             native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
+          } else if (tokenAddress === data.tokenAddress_sepoliaUSDC) {
             usdc_balance = output.items[i].balance;
             usdc_final = utils.formatUnits(usdc_balance, 6);
           }
@@ -124,7 +123,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Validate the NFT List on the xdai network', async function () {
+  it('SMOKE: Validate the NFT List on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -133,8 +132,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
         let nfts;
         try {
-          nfts = await xdaiDataService.getNftList({
-            chainId: Number(data.xdai_chainid),
+          nfts = await sepoliaDataService.getNftList({
+            chainId: Number(data.sepolia_chainid),
             account: data.sender,
           });
 
@@ -234,7 +233,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('SMOKE: Validate the Token List on the xdai network', async function () {
+  it('SMOKE: Validate the Token List on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -244,7 +243,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let tokenLists;
         let tokenListTokens;
         try {
-          tokenLists = await xdaiDataService.getTokenLists({ chainId: data.xdai_chainid });
+          tokenLists = await sepoliaDataService.getTokenLists({ chainId: data.sepolia_chainid });
 
           if (tokenLists.length > 0) {
             console.log(message.pass_tokenList_1);
@@ -276,7 +275,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             console.log(message.pass_tokenList_2);
           }
 
-          tokenListTokens = await xdaiDataService.getTokenListTokens({ chainId: data.xdai_chainid });
+          tokenListTokens = await sepoliaDataService.getTokenListTokens({ chainId: data.sepolia_chainid });
 
           if (tokenListTokens.length > 0) {
             console.log(message.pass_tokenList_3);
@@ -356,8 +355,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
             const { name } = tokenLists[0];
 
-            tokenListTokens = await xdaiDataService.getTokenListTokens({
-              chainId: data.xdai_chainid,
+            tokenListTokens = await sepoliaDataService.getTokenListTokens({
+              chainId: data.sepolia_chainid,
               name,
             });
 
@@ -450,7 +449,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('SMOKE: Validate the Exchange Rates on the xdai network', async function () {
+  it('SMOKE: Validate the Exchange Rates on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -461,14 +460,14 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let rates;
         let requestPayload;
         try {
-          TOKEN_LIST = [data.tokenAddress_xdaiUSDC, data.tokenAddress_xdaiUSDT];
+          TOKEN_LIST = [data.tokenAddress_sepoliaUSDC, data.tokenAddress_sepoliaUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.xdai_chainid),
+            chainId: Number(data.sepolia_chainid),
           };
 
-          rates = await xdaiDataService.fetchExchangeRates(requestPayload);
+          rates = await sepoliaDataService.fetchExchangeRates(requestPayload);
 
           for (let i = 0; i < rates.items.length; i++) {
             try {
@@ -538,7 +537,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the NFT List with invalid account address on the xdai network', async function () {
+  it('REGRESSION: Validate the NFT List with invalid account address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -546,8 +545,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         helper.wait(data.mediumTimeout);
 
         try {
-          await xdaiDataService.getNftList({
-            chainId: Number(data.xdai_chainid),
+          await sepoliaDataService.getNftList({
+            chainId: Number(data.sepolia_chainid),
             account: data.invalidSender,
           });
 
@@ -571,7 +570,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the NFT List with incorrect account address on the xdai network', async function () {
+  it('REGRESSION: Validate the NFT List with incorrect account address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -579,8 +578,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         helper.wait(data.mediumTimeout);
 
         try {
-          await xdaiDataService.getNftList({
-            chainId: Number(data.xdai_chainid),
+          await sepoliaDataService.getNftList({
+            chainId: Number(data.sepolia_chainid),
             account: data.incorrectSender,
           });
 
@@ -604,7 +603,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with other token address on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates with other token address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -615,17 +614,17 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
         try {
           TOKEN_LIST = [
-            data.tokenAddress_xdaiUSDC,
-            data.tokenAddress_xdaiUSDT,
+            data.tokenAddress_sepoliaUSDC,
+            data.tokenAddress_sepoliaUSDT,
             data.tokenAddress_maticUSDC,
           ];
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.xdai_chainid),
+            chainId: Number(data.sepolia_chainid),
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -638,7 +637,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid token address on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid token address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -649,16 +648,16 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
         try {
           TOKEN_LIST = [
-            data.invalidTokenAddress_xdaiUSDC,
-            data.tokenAddress_xdaiUSDT,
+            data.invalidTokenAddress_sepoliaUSDC,
+            data.tokenAddress_sepoliaUSDT,
           ];
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.xdai_chainid),
+            chainId: Number(data.sepolia_chainid),
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
 
           addContext(test, message.fail_exchangeRates_3)
           assert.fail(message.fail_exchangeRates_3);
@@ -680,7 +679,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates with incorrect token address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -692,16 +691,16 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
         try {
           TOKEN_LIST = [
-            data.incorrectTokenAddress_xdaiUSDC,
-            data.tokenAddress_xdaiUSDT,
+            data.incorrectTokenAddress_sepoliaUSDC,
+            data.tokenAddress_sepoliaUSDT,
           ];
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.xdai_chainid),
+            chainId: Number(data.sepolia_chainid),
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
 
           addContext(test, message.fail_exchangeRates_4)
           assert.fail(message.fail_exchangeRates_4);
@@ -723,7 +722,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates without token address on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates without token address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -735,10 +734,10 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           let requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.xdai_chainid),
+            chainId: Number(data.sepolia_chainid),
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
 
           addContext(test, message.fail_exchangeRates_5)
           assert.fail(message.fail_exchangeRates_5);
@@ -760,7 +759,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates with invalid chainid on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -771,14 +770,14 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
 
         try {
-          TOKEN_LIST = [data.tokenAddress_xdaiUSDC, data.tokenAddress_xdaiUSDT];
+          TOKEN_LIST = [data.tokenAddress_sepoliaUSDC, data.tokenAddress_sepoliaUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
-            chainId: Number(data.invalid_xdai_chainid),
+            chainId: Number(data.invalid_sepolia_chainid),
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.property_undefined)) {
@@ -797,7 +796,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     }
   });
 
-  it('REGRESSION: Validate the Exchange Rates without chainid on the xdai network', async function () {
+  it('REGRESSION: Validate the Exchange Rates without chainid on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -808,13 +807,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         let requestPayload;
 
         try {
-          TOKEN_LIST = [data.tokenAddress_xdaiUSDC, data.tokenAddress_xdaiUSDT];
+          TOKEN_LIST = [data.tokenAddress_sepoliaUSDC, data.tokenAddress_sepoliaUSDT];
 
           requestPayload = {
             tokens: TOKEN_LIST,
           };
 
-          await xdaiDataService.fetchExchangeRates(requestPayload);
+          await sepoliaDataService.fetchExchangeRates(requestPayload);
 
           addContext(test, message.fail_exchangeRates_7)
           assert.fail(message.fail_exchangeRates_7);

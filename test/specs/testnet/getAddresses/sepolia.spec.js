@@ -8,14 +8,14 @@ import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let mumbaiTestNetSdk;
-let mumbaiAccountAddress;
-let mumbaiTestNetSdk1;
-let mumbaiAccountAddress1;
-let mumbaiSimpleAccountAddress;
+let sepoliaTestNetSdk;
+let sepoliaAccountAddress;
+let sepoliaTestNetSdk1;
+let sepoliaAccountAddress1;
+let sepoliaSimpleAccountAddress;
 
-describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with mumbai network on the TestNet', function () {
-  it('SMOKE: Validate the ZeroDev address on the mumbai network', async function () {
+describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with sepolia network on the TestNet', function () {
+  it('SMOKE: Validate the ZeroDev address on the sepolia network', async function () {
     var test = this;
 
     await customRetryAsync(async function () {
@@ -24,17 +24,17 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // initializating sdk
       try {
-        mumbaiTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid),
+            chainId: Number(data.sepolia_chainid),
             factoryWallet: Factory.ZERO_DEV
           },
         );
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address
           );
@@ -52,12 +52,12 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // get ZeroDev address
       try {
-        mumbaiSimpleAccountAddress =
-          await mumbaiTestNetSdk.getCounterFactualAddress();
+        sepoliaSimpleAccountAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiSimpleAccountAddress,
+            sepoliaSimpleAccountAddress,
             data.zerodev_address,
             message.vali_zero_dev
           );
@@ -75,7 +75,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Validate the SimpleAccount address on the mumbai network', async function () {
+  it('SMOKE: Validate the SimpleAccount address on the sepolia network', async function () {
     var test = this;
 
     await customRetryAsync(async function () {
@@ -84,17 +84,17 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // initializating sdk
       try {
-        mumbaiTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid),
+            chainId: Number(data.sepolia_chainid),
             factoryWallet: Factory.SIMPLE_ACCOUNT
           },
         );
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address
           );
@@ -112,12 +112,12 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // get SimpleAccount address
       try {
-        mumbaiSimpleAccountAddress =
-          await mumbaiTestNetSdk.getCounterFactualAddress();
+        sepoliaSimpleAccountAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiSimpleAccountAddress,
+            sepoliaSimpleAccountAddress,
             data.simpleaccount_address,
             message.vali_simple_account,
           );
@@ -135,7 +135,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Validate the get multiple accounts on the mumbai network', async function () {
+  it('SMOKE: Validate the get multiple accounts on the sepolia network', async function () {
     var test = this;
 
     await customRetryAsync(async function () {
@@ -144,16 +144,16 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // initializating sdk
       try {
-        mumbaiTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid)
+            chainId: Number(data.sepolia_chainid)
           },
         );
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address
           );
@@ -171,12 +171,12 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // get account address
       try {
-        mumbaiAccountAddress =
-          await mumbaiTestNetSdk.getCounterFactualAddress();
+        sepoliaAccountAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiAccountAddress,
+            sepoliaAccountAddress,
             data.sender,
             message.vali_account_address,
           );
@@ -194,16 +194,16 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // initializating sdk for index 1...
       try {
-        mumbaiTestNetSdk1 = new PrimeSdk(
+        sepoliaTestNetSdk1 = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid),
+            chainId: Number(data.sepolia_chainid),
             projectKey: process.env.PROJECT_KEY, index: 1
           });
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk1.state.EOAAddress,
+            sepoliaTestNetSdk1.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address
           );
@@ -221,12 +221,12 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // get account address
       try {
-        mumbaiAccountAddress1 =
-          await mumbaiTestNetSdk1.getCounterFactualAddress();
+        sepoliaAccountAddress1 =
+          await sepoliaTestNetSdk1.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiAccountAddress1,
+            sepoliaAccountAddress1,
             data.sender1,
             message.vali_account_address,
           );
