@@ -12,13 +12,13 @@ import abi from '../../../data/nftabi.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let mumbaiTestNetSdk;
-let mumbaiEtherspotWalletAddress;
-let mumbaiNativeAddress = null;
-let mumbaiDataService;
+let sepoliaTestNetSdk;
+let sepoliaEtherspotWalletAddress;
+let sepoliaNativeAddress = null;
+let sepoliaDataService;
 let runTest;
 
-describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet', function () {
+describe('The PrimeSDK, when transfer a token with sepolia network on the TestNet', function () {
   before(async function () {
     var test = this;
 
@@ -28,15 +28,15 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
       // initializating sdk
       try {
-        mumbaiTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid),
+            chainId: Number(data.sepolia_chainid),
           });
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address);
         } catch (e) {
@@ -53,12 +53,12 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
       // get EtherspotWallet address
       try {
-        mumbaiEtherspotWalletAddress =
-          await mumbaiTestNetSdk.getCounterFactualAddress();
+        sepoliaEtherspotWalletAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiEtherspotWalletAddress,
+            sepoliaEtherspotWalletAddress,
             data.sender,
             message.vali_smart_address);
         } catch (e) {
@@ -75,7 +75,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
       // initializating Data service...
       try {
-        mumbaiDataService = new DataUtils(
+        sepoliaDataService = new DataUtils(
           process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
@@ -86,9 +86,9 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
       // validate the balance of the wallet
       try {
-        let output = await mumbaiDataService.getAccountBalances({
+        let output = await sepoliaDataService.getAccountBalances({
           account: data.sender,
-          chainId: data.mumbai_chainid,
+          chainId: data.sepolia_chainid,
         });
         let native_balance;
         let usdc_balance;
@@ -97,10 +97,10 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         for (let i = 0; i < output.items.length; i++) {
           let tokenAddress = output.items[i].token;
-          if (tokenAddress === mumbaiNativeAddress) {
+          if (tokenAddress === sepoliaNativeAddress) {
             native_balance = output.items[i].balance;
             native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_mumbaiUSDC) {
+          } else if (tokenAddress === data.tokenAddress_sepoliaUSDC) {
             usdc_balance = output.items[i].balance;
             usdc_final = utils.formatUnits(usdc_balance, 6);
           }
@@ -123,7 +123,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Perform the transfer native token with valid details on the mumbai network', async function () {
+  it('SMOKE: Perform the transfer native token with valid details on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -132,7 +132,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -143,7 +143,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -187,7 +187,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -208,7 +208,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mumbaiTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -329,7 +329,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -352,7 +352,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('SMOKE: Perform the transfer ERC20 token with valid details on the mumbai network', async function () {
+  it('SMOKE: Perform the transfer ERC20 token with valid details on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -363,7 +363,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
 
           try {
             assert.isTrue(
@@ -385,7 +385,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -441,7 +441,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -452,8 +452,8 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
-            to: data.tokenAddress_mumbaiUSDC,
+          userOpsBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
+            to: data.tokenAddress_sepoliaUSDC,
             data: transactionData,
           });
 
@@ -496,7 +496,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mumbaiTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -617,7 +617,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -640,7 +640,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the mumbai network', async function () {
+  it('SMOKE: Perform the transfer ERC721 NFT token with valid details on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -677,7 +677,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -688,7 +688,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          userOpsBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.nft_tokenAddress,
             data: erc721Data,
           });
@@ -732,7 +732,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch
         let op;
         try {
-          op = await mumbaiTestNetSdk.estimate();
+          op = await sepoliaTestNetSdk.estimate();
 
           try {
             assert.isNotEmpty(
@@ -853,7 +853,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // sending to the bundler
         let uoHash;
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -876,7 +876,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  xit('SMOKE: Perform the transfer native token by passing callGasLimit with valid details on the mumbai network', async function () {
+  xit('SMOKE: Perform the transfer native token by passing callGasLimit with valid details on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -885,7 +885,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -896,7 +896,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -940,7 +940,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -962,7 +962,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // passing callGasLimit as 40000 to manually set it
         let op;
         try {
-          op = await mumbaiTestNetSdk.estimate({ callGasLimit: 40000 });
+          op = await sepoliaTestNetSdk.estimate({ callGasLimit: 40000 });
 
           try {
             assert.isNotEmpty(
@@ -1083,7 +1083,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -1106,7 +1106,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('SMOKE: Perform the concurrent userops with valid details on the mumbai network', async function () {
+  it('SMOKE: Perform the concurrent userops with valid details on the sepolia network', async function () {
     // NOTE: assume the sender wallet is deployed
 
     var test = this;
@@ -1120,7 +1120,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1131,7 +1131,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1175,7 +1175,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -1201,13 +1201,13 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await mumbaiTestNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await sepoliaTestNetSdk.estimate({ key: concurrentUseropsCount });
             userops.push(op);
           }
 
           console.log("Sending userops...");
           for (const op of userops) {
-            const uoHash = await mumbaiTestNetSdk.send(op);
+            const uoHash = await sepoliaTestNetSdk.send(op);
             uoHashes.push(uoHash);
           }
         } catch (e) {
@@ -1226,7 +1226,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await mumbaiTestNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
@@ -1252,7 +1252,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the incorrect To Address while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1261,7 +1261,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1270,7 +1270,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.incorrectRecipient, // incorrect to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1283,7 +1283,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1293,7 +1293,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_9)
           assert.fail(message.fail_estimateTransaction_9);
@@ -1315,7 +1315,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1324,7 +1324,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1333,7 +1333,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.invalidRecipient, // invalid to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1346,7 +1346,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1356,7 +1356,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_10)
           assert.fail(message.fail_estimateTransaction_10);
@@ -1378,7 +1378,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the invalid Value while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1387,7 +1387,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1396,7 +1396,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseUnits(data.invalidValue), // invalid value
           });
@@ -1420,7 +1420,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with the very small Value while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1429,7 +1429,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1438,7 +1438,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseUnits(data.smallValue), // very small value
           });
@@ -1462,7 +1462,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token without adding transaction to the batch while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1471,7 +1471,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1481,7 +1481,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1491,7 +1491,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_13)
           assert.fail(message.fail_estimateTransaction_13);
@@ -1512,7 +1512,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token by passing callGasLimit with the incorrect To Address while estimate the added transactions to the batch on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer native token by passing callGasLimit with the incorrect To Address while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1521,7 +1521,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1530,7 +1530,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.incorrectRecipient, // incorrect to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1543,7 +1543,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1554,7 +1554,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await mumbaiTestNetSdk.estimate({ callGasLimit: 40000 });
+          await sepoliaTestNetSdk.estimate({ callGasLimit: 40000 });
 
           addContext(test, message.fail_estimateTransaction_9)
           assert.fail(message.fail_estimateTransaction_9);
@@ -1576,7 +1576,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token by passing callGasLimit with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer native token by passing callGasLimit with the invalid To Address i.e. missing character while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1585,7 +1585,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1594,7 +1594,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.invalidRecipient, // invalid to address
             value: ethers.utils.parseEther(data.value),
           });
@@ -1607,7 +1607,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1618,7 +1618,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await mumbaiTestNetSdk.estimate({ callGasLimit: 40000 });
+          await sepoliaTestNetSdk.estimate({ callGasLimit: 40000 });
 
           addContext(test, message.fail_estimateTransaction_10)
           assert.fail(message.fail_estimateTransaction_10);
@@ -1640,7 +1640,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  xit('REGRESSION: Perform the transfer native token by passing callGasLimit without adding transaction to the batch while estimate the added transactions to the batch on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer native token by passing callGasLimit without adding transaction to the batch while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1649,7 +1649,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1659,7 +1659,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1670,7 +1670,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // estimate transactions added to the batch
         // passing callGasLimit as 40000 to manually set it
         try {
-          await mumbaiTestNetSdk.estimate({ callGasLimit: 40000 });
+          await sepoliaTestNetSdk.estimate({ callGasLimit: 40000 });
 
           addContext(test, message.fail_estimateTransaction_13)
           assert.fail(message.fail_estimateTransaction_13);
@@ -1691,7 +1691,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid provider netowrk details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1702,7 +1702,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.invalidProviderNetwork_mumbai, // invalid provider
+            data.invalidProviderNetwork_sepolia, // invalid provider
           );
         } catch (e) {
           console.error(e);
@@ -1715,7 +1715,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1748,7 +1748,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without provider netowrk details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1770,7 +1770,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1803,7 +1803,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with other provider netowrk details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1814,7 +1814,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.otherProviderNetwork_mumbai, // other provider
+            data.otherProviderNetwork_sepolia, // other provider
           );
         } catch (e) {
           console.error(e);
@@ -1827,7 +1827,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1861,7 +1861,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect Token Address details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1872,7 +1872,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1884,7 +1884,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.incorrectTokenAddress_mumbaiUSDC, // incorrect token address
+            data.incorrectTokenAddress_sepoliaUSDC, // incorrect token address
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1917,7 +1917,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid Token Address i.e. missing character details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1928,7 +1928,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1940,7 +1940,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.invalidTokenAddress_mumbaiUSDC, // invalid token address
+            data.invalidTokenAddress_sepoliaUSDC, // invalid token address
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -1973,7 +1973,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with null Token Address details while Getting the Decimal from ERC20 Contract on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1984,7 +1984,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2015,7 +2015,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect transfer method name while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2026,7 +2026,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2038,7 +2038,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2085,7 +2085,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid value while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2096,7 +2096,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2108,7 +2108,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2155,7 +2155,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with very small value while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2166,7 +2166,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2178,7 +2178,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2225,7 +2225,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without value while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2236,7 +2236,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2248,7 +2248,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2293,7 +2293,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with incorrect recipient while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2304,7 +2304,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2316,7 +2316,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2364,7 +2364,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with invalid recipient i.e. missing character while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2375,7 +2375,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2387,7 +2387,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2435,7 +2435,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without recipient while Getting the transferFrom encoded data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2446,7 +2446,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2458,7 +2458,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2504,7 +2504,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the incorrect Token Address while adding transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2515,7 +2515,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2527,7 +2527,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2563,7 +2563,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2573,8 +2573,8 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
-            to: data.incorrectTokenAddress_mumbaiUSDC, // Incorrect Token Address
+          await sepoliaTestNetSdk.addUserOpsToBatch({
+            to: data.incorrectTokenAddress_sepoliaUSDC, // Incorrect Token Address
             data: transactionData,
           });
         } catch (e) {
@@ -2586,7 +2586,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_16)
           assert.fail(message.fail_estimateTransaction_16);
@@ -2608,7 +2608,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the invalid Token Address i.e. missing character while adding transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2619,7 +2619,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2631,7 +2631,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2667,7 +2667,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2677,8 +2677,8 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
-            to: data.invalidTokenAddress_mumbaiUSDC, // Invalid Token Address
+          await sepoliaTestNetSdk.addUserOpsToBatch({
+            to: data.invalidTokenAddress_sepoliaUSDC, // Invalid Token Address
             data: transactionData,
           });
         } catch (e) {
@@ -2690,7 +2690,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_17)
           assert.fail(message.fail_estimateTransaction_17);
@@ -2712,7 +2712,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token with the null Token Address while adding transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2723,7 +2723,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2735,7 +2735,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2771,7 +2771,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2781,7 +2781,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: null, // Null Token Address
             data: transactionData,
           });
@@ -2794,7 +2794,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_18)
           assert.fail(message.fail_estimateTransaction_18);
@@ -2815,7 +2815,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without Token Address while adding transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2826,7 +2826,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2838,7 +2838,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2874,7 +2874,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2884,7 +2884,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             data: transactionData, // without tokenAddress
           });
         } catch (e) {
@@ -2896,7 +2896,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_19)
           assert.fail(message.fail_estimateTransaction_19);
@@ -2917,7 +2917,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC20 token without adding transaction to the batch while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2928,7 +2928,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_mumbai);
+            data.providerNetwork_sepolia);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2940,7 +2940,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         let erc20Instance;
         try {
           erc20Instance = new ethers.Contract(
-            data.tokenAddress_mumbaiUSDC,
+            data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
             provider);
         } catch (e) {
@@ -2976,7 +2976,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2986,7 +2986,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           assert.fail(message.fail_estimateTransaction_13);
         } catch (e) {
@@ -3006,7 +3006,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Sender Address while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3043,7 +3043,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Sender Address i.e. missing character while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3080,7 +3080,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Sender Address while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3116,7 +3116,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect Recipient Address while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3153,7 +3153,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with invalid Recipient Address i.e. missing character while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3190,7 +3190,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without Recipient Address while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3226,7 +3226,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token with incorrect tokenId while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3263,7 +3263,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT token without tokenId while creating the NFT Data on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3299,7 +3299,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer ERC721 NFT Token without adding transaction to the batch while estimate the added transactions to the batch on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3325,7 +3325,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3335,7 +3335,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3345,7 +3345,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // estimate transactions added to the batch
         try {
-          await mumbaiTestNetSdk.estimate();
+          await sepoliaTestNetSdk.estimate();
 
           addContext(test, message.fail_estimateTransaction_13)
           assert.fail(message.fail_estimateTransaction_13);
@@ -3366,7 +3366,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the concurrent userops with invalid concurrentUseropsCount on the mumbai network', async function () {
+  it('REGRESSION: Perform the concurrent userops with invalid concurrentUseropsCount on the sepolia network', async function () {
     // NOTE: assume the sender wallet is deployed
 
     var test = this;
@@ -3380,7 +3380,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3391,7 +3391,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3405,7 +3405,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
         } catch (e) {
           console.error(e);
@@ -3422,13 +3422,13 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await mumbaiTestNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await sepoliaTestNetSdk.estimate({ key: concurrentUseropsCount });
             userops.push(op);
           }
 
           console.log("Sending userops...");
           for (const op of userops) {
-            const uoHash = await mumbaiTestNetSdk.send(op);
+            const uoHash = await sepoliaTestNetSdk.send(op);
             uoHashes.push(uoHash);
           }
         } catch (e) {
@@ -3445,7 +3445,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await mumbaiTestNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
@@ -3471,7 +3471,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the concurrent userops without concurrentUseropsCount on the mumbai network', async function () {
+  it('REGRESSION: Perform the concurrent userops without concurrentUseropsCount on the sepolia network', async function () {
     // NOTE: assume the sender wallet is deployed
 
     var test = this;
@@ -3485,7 +3485,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3496,7 +3496,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3511,7 +3511,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
         } catch (e) {
           console.error(e);
@@ -3528,13 +3528,13 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await mumbaiTestNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await sepoliaTestNetSdk.estimate({ key: concurrentUseropsCount });
             userops.push(op);
           }
 
           console.log("Sending userops...");
           for (const op of userops) {
-            const uoHash = await mumbaiTestNetSdk.send(op);
+            const uoHash = await sepoliaTestNetSdk.send(op);
             uoHashes.push(uoHash);
           }
         } catch (e) {
@@ -3551,7 +3551,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await mumbaiTestNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] = await sepoliaTestNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
@@ -3577,7 +3577,7 @@ describe('The PrimeSDK, when transfer a token with mumbai network on the TestNet
     }
   });
 
-  it('REGRESSION: Perform the concurrent userops with non deployed address on the mumbai network', async function () {
+  it('REGRESSION: Perform the concurrent userops with non deployed address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
 

@@ -35,6 +35,8 @@
     "pass_tokenList_2": "The items are not available in the tokenLists list.",
     "pass_tokenList_3": "The tokens are available in the token list tokens.",
     "pass_tokenList_4": "The Tokens are not available in the tokenListTokens list.",
+    "pass_tokenList_5": "The tokens are available in the token list tokens with selected provider.",
+    "pass_tokenList_6": "The Tokens are not available in the tokenListTokens list with selected provider.",
     "fail_tokenList_1": "The get token list is not performed correctly.",
     "vali_tokenList_name": "The name value is empty in the token list response.",
     "vali_tokenList_endpoint": "The endpoint value is empty in the token list response.",

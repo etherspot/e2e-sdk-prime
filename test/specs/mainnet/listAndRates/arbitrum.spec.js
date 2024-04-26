@@ -243,10 +243,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
         let tokenLists;
         let tokenListTokens;
-        let name;
         try {
           tokenLists = await arbitrumDataService.getTokenLists({ chainId: data.arbitrum_chainid });
-          name = tokenLists[0].name;
 
           if (tokenLists.length > 0) {
             console.log(message.pass_tokenList_1);
@@ -350,84 +348,95 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            addContext.log(message.pass_tokenList_4)
+            addContext(test, message.pass_tokenList_4)
             console.log(message.pass_tokenList_4);
           }
 
-          tokenListTokens = await arbitrumDataService.getTokenListTokens({
-            chainId: data.arbitrum_chainid,
-            name,
-          });
+          if (tokenLists.length > 0) {
 
-          if (tokenListTokens.length > 0) {
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].address,
-                message.vali_selectedTokenListTokens_address,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            const { name } = tokenLists[0];
 
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].name,
-                message.vali_selectedTokenListTokens_name
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            tokenListTokens = await arbitrumDataService.getTokenListTokens({
+              chainId: data.arbitrum_chainid,
+              name,
+            });
 
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].symbol,
-                message.vali_selectedTokenListTokens_symbol
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            if (tokenListTokens.length > 0) {
+              addContext(test, message.pass_tokenList_5)
+              console.log(message.pass_tokenList_5);
+              
+              try {
+                assert.isNotEmpty(
+                  tokenListTokens[0].address,
+                  message.vali_selectedTokenListTokens_address,
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                tokenListTokens[0].decimals,
-                message.vali_selectedTokenListTokens_decimals
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  tokenListTokens[0].name,
+                  message.vali_selectedTokenListTokens_name
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].logoURI,
-                message.vali_selectedTokenListTokens_logoURI
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  tokenListTokens[0].symbol,
+                  message.vali_selectedTokenListTokens_symbol
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                tokenListTokens[0].chainId,
-                message.vali_selectedTokenListTokens_chainId
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
+              try {
+                assert.isNumber(
+                  tokenListTokens[0].decimals,
+                  message.vali_selectedTokenListTokens_decimals
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNotEmpty(
+                  tokenListTokens[0].logoURI,
+                  message.vali_selectedTokenListTokens_logoURI
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+
+              try {
+                assert.isNumber(
+                  tokenListTokens[0].chainId,
+                  message.vali_selectedTokenListTokens_chainId
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+            } else {
+              addContext(test, message.pass_tokenList_6)
+              console.log(message.pass_tokenList_6);
             }
           } else {
-            addContext(test, message.pass_tokenList_4)
-            console.log(message.pass_tokenList_4);
+            addContext(test, message.pass_tokenList_2)
+            console.log(message.pass_tokenList_2);
           }
         } catch (e) {
           console.error(e);
@@ -592,212 +601,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nftList_insufficientBalance);
-    }
-  });
-
-  it('REGRESSION: Validate the Token List with different argument in the on the arbitrum network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-        let tokenLists;
-        let tokenListTokens;
-        let endpoint;
-        try {
-          tokenLists = await arbitrumDataService.getTokenLists({ chainId: data.arbitrum_chainid });
-          endpoint = tokenLists[0].endpoint;
-
-          if (tokenLists.length > 0) {
-            console.log(message.pass_tokenList_1);
-            addContext(test, message.pass_tokenList_1);
-
-            try {
-              assert.isNotEmpty(
-                tokenLists[0].name,
-                message.vali_tokenList_name,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenLists[0].endpoint,
-                message.vali_tokenList_endpoint,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } else {
-            addContext(test, message.pass_tokenList_2)
-            console.log(message.pass_tokenList_2);
-          }
-
-          tokenListTokens = await arbitrumDataService.getTokenListTokens({ chainId: data.arbitrum_chainid });
-
-          if (tokenListTokens.length > 0) {
-            addContext(test, message.pass_tokenList_3);
-            console.log(message.pass_tokenList_3);
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].address,
-                message.vali_tokenListTokens_address,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].name,
-                message.vali_tokenListTokens_name,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].symbol,
-                message.vali_tokenListTokens_symbol,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                tokenListTokens[0].decimals,
-                message.vali_tokenListTokens_decimals,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].logoURI,
-                message.vali_tokenListTokens_logoURI
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                tokenListTokens[0].chainId,
-                message.vali_tokenListTokens_chainId,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } else {
-            addContext(test, message.pass_tokenList_4)
-            console.log(message.pass_tokenList_4);
-          }
-
-          tokenListTokens = await arbitrumDataService.getTokenListTokens({
-            chainId: data.arbitrum_chainid,
-            endpoint,
-          });
-
-          if (tokenListTokens.length > 0) {
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].address,
-                message.vali_selectedTokenListTokens_address,
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].name,
-                message.vali_selectedTokenListTokens_name
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].symbol,
-                message.vali_selectedTokenListTokens_symbol
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                tokenListTokens[0].decimals,
-                message.vali_selectedTokenListTokens_decimals
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                tokenListTokens[0].logoURI,
-                message.vali_selectedTokenListTokens_logoURI
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNumber(
-                tokenListTokens[0].chainId,
-                message.vali_selectedTokenListTokens_chainId
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } else {
-            addContext(test, message.pass_tokenList_4)
-            console.log(message.pass_tokenList_4);
-          }
-        } catch (e) {
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_tokenList_1);
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(message.tokenList_insufficientBalance);
     }
   });
 

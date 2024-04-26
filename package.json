@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/connext/xdai.spec.js --reporter mochawesome --require mochawesome/register --reporter-options charts=true,code=false,showHooks=always",
+    "test": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/paymaster/sepolia.spec.js --reporter mochawesome --require mochawesome/register --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/*/xdai.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-transfertoken-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/transferringFunds/arbitrum.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-transfertoken-matic": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/transferringFunds/matic.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
@@ -37,7 +37,7 @@
     "test-mainnet-getaddresses-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/getAddresses/optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-getaddresses-xdai": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/getAddresses/xdai.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-getaddresses": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/getAddresses/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
-    "test-testnet": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/*/mumbai.spec.js --spec test/specs/testnet/*/goerli.spec.js --spec test/specs/mainnet/swap/mumbai.spec.js --spec test/specs/mainnet/swap/xdai.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
+    "test-testnet": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/*/sepolia.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-testnet-transfertoken-mumbai": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/transferringFunds/mumbai.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-testnet-transfertoken-goerli": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/transferringFunds/goerli.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-testnet-transfertoken": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/transferringFunds/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",

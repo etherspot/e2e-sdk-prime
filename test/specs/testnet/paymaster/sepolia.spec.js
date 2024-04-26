@@ -11,15 +11,14 @@ import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let mumbaiTestNetSdk;
-let mumbaiEtherspotWalletAddress;
-let mumbaiNativeAddress = null;
-let mumbaiDataService;
+let sepoliaTestNetSdk;
+let sepoliaEtherspotWalletAddress;
+let sepoliaNativeAddress = null;
+let sepoliaDataService;
 let arkaPaymaster;
 let runTest;
 
-/* eslint-disable prettier/prettier */
-describe('The PrimeSDK, when transaction with arka and pimlico paymasters with mumbai network on the TestNet.', function () {
+describe('The PrimeSDK, when transaction with arka and pimlico paymasters with sepolia network on the TestNet.', function () {
   before(async function () {
     var test = this;
 
@@ -29,16 +28,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // initializating sdk
       try {
-        mumbaiTestNetSdk = new PrimeSdk(
+        sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.mumbai_chainid)
+            chainId: Number(data.sepolia_chainid)
           },
         );
 
         try {
           assert.strictEqual(
-            mumbaiTestNetSdk.state.EOAAddress,
+            sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address);
         } catch (e) {
@@ -55,12 +54,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // get EtherspotWallet address
       try {
-        mumbaiEtherspotWalletAddress =
-          await mumbaiTestNetSdk.getCounterFactualAddress();
+        sepoliaEtherspotWalletAddress =
+          await sepoliaTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            mumbaiEtherspotWalletAddress,
+            sepoliaEtherspotWalletAddress,
             data.sender,
             message.vali_smart_address);
         } catch (e) {
@@ -79,7 +78,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // initializating Data service...
       try {
-        mumbaiDataService = new DataUtils(
+        sepoliaDataService = new DataUtils(
           process.env.DATA_API_KEY
         );
       } catch (e) {
@@ -91,7 +90,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // initializating ArkaPaymaster...
       try {
-        arkaPaymaster = new ArkaPaymaster(Number(data.mumbai_chainid), process.env.API_KEY, data.paymaster_arka);
+        arkaPaymaster = new ArkaPaymaster(Number(data.sepolia_chainid), process.env.API_KEY, data.paymaster_arka);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -101,9 +100,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // validate the balance of the wallet
       try {
-        let output = await mumbaiDataService.getAccountBalances({
+        let output = await sepoliaDataService.getAccountBalances({
           account: data.sender,
-          chainId: Number(data.mumbai_chainid),
+          chainId: Number(data.sepolia_chainid),
         });
         let native_balance;
         let usdc_balance;
@@ -112,10 +111,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         for (let i = 0; i < output.items.length; i++) {
           let tokenAddress = output.items[i].token;
-          if (tokenAddress === mumbaiNativeAddress) {
+          if (tokenAddress === sepoliaNativeAddress) {
             native_balance = output.items[i].balance;
             native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_mumbaiUSDC) {
+          } else if (tokenAddress === data.tokenAddress_sepoliaUSDC) {
             usdc_balance = output.items[i].balance;
             usdc_final = utils.formatUnits(usdc_balance, 6);
           }
@@ -138,7 +137,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Perform the transfer native token on arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Perform the transfer native token on arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -147,7 +146,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -158,7 +157,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -202,7 +201,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // get balance of the account address
         let balance;
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -223,10 +222,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mumbaiTestNetSdk.estimate({
+          op = await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `https://arka.etherspot.io?apiKey=${process.env.API_KEY
-                }&chainId=${Number(data.mumbai_chainid)}`,
+                }&chainId=${Number(data.sepolia_chainid)}`,
               context: { mode: 'sponsor' },
             }
           });
@@ -350,7 +349,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -373,11 +372,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the mumbai network', async function () {
+  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -387,7 +386,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         let balance;
         // get balance of the account address
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -459,7 +458,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           let contract;
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
@@ -467,8 +466,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
               [paymasterAddress, ethers.constants.MaxUint256],
             );
 
-            contract = await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            contract = await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
 
@@ -500,7 +499,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get estimation of transaction
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
 
             try {
               assert.isNotEmpty(
@@ -620,7 +619,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            uoHash1 = await mumbaiTestNetSdk.send(approveOp);
+            uoHash1 = await sepoliaTestNetSdk.send(approveOp);
 
             try {
               assert.isNotEmpty(
@@ -640,7 +639,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -650,7 +649,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+            transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -683,7 +682,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get balance of the account address
           try {
-            balance = await mumbaiTestNetSdk.getNativeBalance();
+            balance = await sepoliaTestNetSdk.getNativeBalance();
 
             try {
               assert.isNotEmpty(
@@ -703,7 +702,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            op = await mumbaiTestNetSdk.estimate({
+            op = await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -828,7 +827,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // sign the UserOp and sending to the bundler...
           try {
-            uoHash = await mumbaiTestNetSdk.send(op);
+            uoHash = await sepoliaTestNetSdk.send(op);
 
             try {
               assert.isNotEmpty(
@@ -855,11 +854,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the mumbai network', async function () {
+  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -873,7 +872,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -893,7 +892,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -903,7 +902,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          transactionBatch = await mumbaiTestNetSdk.addUserOpsToBatch({
+          transactionBatch = await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -936,7 +935,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          balance = await mumbaiTestNetSdk.getNativeBalance();
+          balance = await sepoliaTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(
@@ -962,7 +961,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          op = await mumbaiTestNetSdk.estimate({
+          op = await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${queryString}`,
               context: {
@@ -1091,7 +1090,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // sign the UserOp and sending to the bundler...
         try {
-          uoHash = await mumbaiTestNetSdk.send(op);
+          uoHash = await sepoliaTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(
@@ -1114,7 +1113,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the metadata of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the metadata of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1177,7 +1176,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1210,7 +1209,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1247,7 +1246,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1284,7 +1283,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the check whitelist function of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the check whitelist function of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1315,13 +1314,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('SMOKE: Validate the deposit function of the arka paymaster on the mumbai network', async function () {
+  it('SMOKE: Validate the deposit function of the arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
 
         helper.wait(data.mediumTimeout);
-
 
         // validate the deposit
         try {
@@ -1346,7 +1344,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1355,7 +1353,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1365,7 +1363,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1378,7 +1376,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1388,7 +1386,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: data.invalid_paymaster_arka, // invalid URL
               api_key: process.env.API_KEY,
@@ -1415,7 +1413,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1424,7 +1422,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1434,7 +1432,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1447,7 +1445,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1457,7 +1455,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               api_key: process.env.INVALID_API_KEY,
@@ -1484,7 +1482,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1493,7 +1491,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1503,7 +1501,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1516,7 +1514,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1526,7 +1524,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               api_key: process.env.INCORRECT_API_KEY,
@@ -1553,7 +1551,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1562,7 +1560,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1572,7 +1570,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1585,7 +1583,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1595,7 +1593,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               // without api_key
@@ -1622,11 +1620,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the sepolia network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1674,11 +1672,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1723,10 +1721,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
+    let queryString = `?chainId=${Number(data.sepolia_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
 
@@ -1770,11 +1768,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_mumbai_chainid,
+      data.invalid_sepolia_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1819,7 +1817,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -1866,11 +1864,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1914,11 +1912,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1966,11 +1964,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2015,11 +2013,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2058,15 +2056,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.incorrectTokenAddress_mumbaiUSDC, // incorrect token address
+              data.incorrectTokenAddress_sepoliaUSDC, // incorrect token address
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2091,11 +2089,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2134,15 +2132,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.invalidTokenAddress_mumbaiUSDC, // invalid token address
+              data.invalidTokenAddress_sepoliaUSDC, // invalid token address
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2167,11 +2165,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2211,15 +2209,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [data.invalid_paymasterAddress, ethers.constants.MaxUint256], // invalid paymaster address
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2244,11 +2242,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2288,15 +2286,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [data.incorrect_paymasterAddress, ethers.constants.MaxUint256], // incorrect paymaster address
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2321,11 +2319,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2367,15 +2365,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2387,7 +2385,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2397,7 +2395,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2407,7 +2405,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2417,7 +2415,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.invalidValue),
             });
@@ -2446,12 +2444,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2493,15 +2491,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2513,7 +2511,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2523,7 +2521,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2533,7 +2531,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2543,7 +2541,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2556,7 +2554,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await mumbaiTestNetSdk.estimate({
+            await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${invalid_arka_url}${queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -2587,14 +2585,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
-      }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
+      }&chainId=${Number(data.sepolia_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
 
@@ -2635,15 +2633,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2655,7 +2653,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2665,7 +2663,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2675,7 +2673,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2685,7 +2683,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2698,7 +2696,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await mumbaiTestNetSdk.estimate({
+            await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -2729,13 +2727,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
-    let invalid_queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.sepolia_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
 
@@ -2776,15 +2774,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2796,7 +2794,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2806,7 +2804,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2816,7 +2814,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2826,7 +2824,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2839,7 +2837,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await mumbaiTestNetSdk.estimate({
+            await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -2870,14 +2868,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_mumbai_chainid,
+      data.invalid_sepolia_chainid,
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2919,15 +2917,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -2939,7 +2937,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2949,7 +2947,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2959,7 +2957,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2969,7 +2967,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2982,7 +2980,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await mumbaiTestNetSdk.estimate({
+            await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -3013,11 +3011,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the mumbai network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
@@ -3060,15 +3058,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_mumbaiUSDC,
+              data.tokenAddress_sepoliaUSDC,
               ERC20_ABI,
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256],
             );
-            await mumbaiTestNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_mumbaiUSDC,
+            await sepoliaTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_sepoliaUSDC,
               data: encodedData,
             });
           } catch (e) {
@@ -3080,7 +3078,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await mumbaiTestNetSdk.estimate();
+            approveOp = await sepoliaTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3090,7 +3088,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await mumbaiTestNetSdk.send(approveOp);
+            await sepoliaTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3100,7 +3098,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // clear the transaction batch
           try {
-            await mumbaiTestNetSdk.clearUserOpsFromBatch();
+            await sepoliaTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3110,7 +3108,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await mumbaiTestNetSdk.addUserOpsToBatch({
+            await sepoliaTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -3123,7 +3121,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await mumbaiTestNetSdk.estimate({
+            await sepoliaTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
@@ -3154,11 +3152,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the sepolia network', async function () {
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.mumbai_chainid,
+      data.sepolia_chainid,
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3167,7 +3165,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3177,7 +3175,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3187,7 +3185,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3200,7 +3198,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3216,7 +3214,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${invalid_arka_url}${queryString}`,
               context: {
@@ -3247,11 +3245,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
-      }&chainId=${Number(data.mumbai_chainid)}`; // invalid API Key in queryString
+      }&chainId=${Number(data.sepolia_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
 
@@ -3259,7 +3257,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3269,7 +3267,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3279,7 +3277,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3292,7 +3290,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3308,7 +3306,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3338,10 +3336,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?chainId=${Number(data.mumbai_chainid)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.sepolia_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
 
@@ -3349,7 +3347,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3359,7 +3357,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3369,7 +3367,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3382,7 +3380,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3398,7 +3396,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3428,11 +3426,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_mumbai_chainid,
+      data.invalid_sepolia_chainid,
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3441,7 +3439,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3451,7 +3449,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3461,7 +3459,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3474,7 +3472,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3490,7 +3488,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3521,7 +3519,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the mumbai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the sepolia network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
@@ -3532,7 +3530,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3542,7 +3540,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await mumbaiTestNetSdk.clearUserOpsFromBatch();
+          await sepoliaTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3552,7 +3550,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await mumbaiTestNetSdk.addUserOpsToBatch({
+          await sepoliaTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3565,7 +3563,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await mumbaiTestNetSdk.getNativeBalance();
+          await sepoliaTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3581,7 +3579,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await mumbaiTestNetSdk.estimate({
+          await sepoliaTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3612,7 +3610,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the mumbai network', async function () {
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3644,7 +3642,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the mumbai network', async function () {
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3676,7 +3674,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3708,7 +3706,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3740,7 +3738,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3773,7 +3771,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3806,7 +3804,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3850,7 +3848,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the mumbai network', async function () {
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3884,7 +3882,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the mumbai network', async function () {
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3916,7 +3914,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the mumbai network', async function () {
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3948,7 +3946,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the mumbai network', async function () {
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3986,7 +3984,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the mumbai network', async function () {
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4024,7 +4022,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the mumbai network', async function () {
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4065,7 +4063,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the mumbai network', async function () {
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4097,7 +4095,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the mumbai network', async function () {
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4129,7 +4127,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the mumbai network', async function () {
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4161,7 +4159,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the mumbai network', async function () {
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4193,7 +4191,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }
   });
 
-  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the mumbai network', async function () {
+  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the sepolia network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {

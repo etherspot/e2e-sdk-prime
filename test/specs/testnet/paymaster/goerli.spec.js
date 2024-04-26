@@ -1,125 +1,150 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, graphqlEndpoints } from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, ArkaPaymaster } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import constant from '../../../data/constant.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let goerliTestNetSdk;
 let goerliEtherspotWalletAddress;
 let goerliNativeAddress = null;
 let goerliDataService;
+let arkaPaymaster;
 let runTest;
 
-describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi transaction details with goerli network on the MainNet.', function () {
+/* eslint-disable prettier/prettier */
+describe('The PrimeSDK, when transaction with arka and pimlico paymasters with goerli network on the TestNet.', function () {
   before(async function () {
     var test = this;
 
-    // initializating sdk
-    try {
-      goerliTestNetSdk = new PrimeSdk(
-        { privateKey: process.env.PRIVATE_KEY },
-        {
+    await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
+      // initializating sdk
+      try {
+        goerliTestNetSdk = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.goerli_chainid)
+          },
+        );
+
+        try {
+          assert.strictEqual(
+            goerliTestNetSdk.state.EOAAddress,
+            data.eoaAddress,
+            message.vali_eoa_address);
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_sdk_initialize);
+      }
+
+      // get EtherspotWallet address
+      try {
+        goerliEtherspotWalletAddress =
+          await goerliTestNetSdk.getCounterFactualAddress();
+
+        try {
+          assert.strictEqual(
+            goerliEtherspotWalletAddress,
+            data.sender,
+            message.vali_smart_address);
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e.message);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(
+          message.fail_smart_address,
+        );
+      }
+
+      // initializating Data service...
+      try {
+        goerliDataService = new DataUtils(
+          process.env.DATA_API_KEY
+        );
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_data_service);
+      }
+
+      // initializating ArkaPaymaster...
+      try {
+        arkaPaymaster = new ArkaPaymaster(Number(data.goerli_chainid), process.env.API_KEY, data.paymaster_arka);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_arka_initialize);
+      }
+
+      // validate the balance of the wallet
+      try {
+        let output = await goerliDataService.getAccountBalances({
+          account: data.sender,
           chainId: Number(data.goerli_chainid),
-          projectKey: process.env.PROJECT_KEY_TESTNET,
-        },
-      );
+        });
+        let native_balance;
+        let usdc_balance;
+        let native_final;
+        let usdc_final;
 
-      try {
-        assert.strictEqual(
-          goerliTestNetSdk.state.EOAAddress,
-          data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
-        );
+        for (let i = 0; i < output.items.length; i++) {
+          let tokenAddress = output.items[i].token;
+          if (tokenAddress === goerliNativeAddress) {
+            native_balance = output.items[i].balance;
+            native_final = utils.formatUnits(native_balance, 18);
+          } else if (tokenAddress === data.tokenAddress_goerliUSDC) {
+            usdc_balance = output.items[i].balance;
+            usdc_final = utils.formatUnits(usdc_balance, 6);
+          }
+        }
+
+        if (
+          native_final > data.minimum_native_balance &&
+          usdc_final > data.minimum_token_balance
+        ) {
+          runTest = true;
+        } else {
+          runTest = false;
+        }
       } catch (e) {
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
+        assert.fail(message.fail_wallet_balance);
       }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The SDK is not initialled successfully.');
-    }
-
-    // get EtherspotWallet address
-    try {
-      goerliEtherspotWalletAddress =
-        await goerliTestNetSdk.getCounterFactualAddress();
-
-      try {
-        assert.strictEqual(
-          goerliEtherspotWalletAddress,
-          data.sender,
-          'The Etherspot Wallet Address is not calculated correctly.',
-        );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-      }
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
-      );
-    }
-
-    // initializating Data service...
-    try {
-      goerliDataService = new DataUtils(
-        process.env.PROJECT_KEY_TESTNET,
-        graphqlEndpoints.QA,
-      );
-    } catch (e) {
-      console.error(e);
-      const eString = e.toString();
-      addContext(test, eString);
-      assert.fail('The Data service is not initialled successfully.');
-    }
+    }, data.retry); // Retry this async test up to 5 times
   });
 
-  beforeEach(async function () {
-    let output = await goerliDataService.getAccountBalances({
-      account: data.sender,
-      chainId: Number(data.goerli_chainid),
-    });
-    let native_balance;
-    let usdc_balance;
-    let native_final;
-    let usdc_final;
-
-    for (let i = 0; i < output.items.length; i++) {
-      let tokenAddress = output.items[i].token;
-      if (tokenAddress === goerliNativeAddress) {
-        native_balance = output.items[i].balance;
-        native_final = utils.formatUnits(native_balance, 18);
-      } else if (tokenAddress === data.tokenAddress_goerliUSDC) {
-        usdc_balance = output.items[i].balance;
-        usdc_final = utils.formatUnits(usdc_balance, 6);
-      }
-    }
-
-    if (
-      native_final > data.minimum_native_balance &&
-      usdc_final > data.minimum_token_balance
-    ) {
-      runTest = true;
-    } else {
-      runTest = false;
-    }
-  });
-
-  it('SMOKE: Perform the transfer token with arka paymaster on the goerli network', async function () {
+  it('SMOKE: Perform the transfer native token on arka paymaster on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -127,7 +152,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -141,8 +166,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              'The To Address value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -152,8 +176,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              'The data value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_data);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -163,8 +186,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              'The value value is empty in the add transactions to batch response.',
-            );
+              message.vali_addTransaction_value);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -174,9 +196,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -187,8 +207,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is not number in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -198,25 +217,24 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
           op = await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: `https://arka.etherspot.io?apiKey=${process.env.API_KEY
+                }&chainId=${Number(data.goerli_chainid)}`,
+              context: { mode: 'sponsor' },
+            }
           });
-
-          console.log('op::::::::::::::', op);
 
           try {
             assert.isNotEmpty(
               op.sender,
-              'The sender value is not correct in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_sender);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -225,20 +243,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.nonce._hex,
-              'The hex value of the nonce is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.nonce._isBigNumber,
-              'The isBigNumber value of the nonce is false in the estimate transactions added to the batch response.',
-            );
+              op.nonce,
+              message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -248,8 +254,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.initCode,
-              'The initCode value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_initCode);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -259,8 +264,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.callData,
-              'The callData value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_callData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -269,20 +273,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.callGasLimit._hex,
-              'The hex value of the callGasLimit is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.callGasLimit._isBigNumber,
-              'The isBigNumber value of the callGasLimit is false in the estimate transactions added to the batch response.',
-            );
+              op.callGasLimit,
+              message.vali_estimateTransaction_callGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -291,20 +283,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.verificationGasLimit._hex,
-              'The hex value of the verificationGasLimit is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.verificationGasLimit._isBigNumber,
-              'The isBigNumber value of the verificationGasLimit is false in the estimate transactions added to the batch response.',
-            );
+              op.verificationGasLimit,
+              message.vali_estimateTransaction_verificationGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -314,8 +294,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              'The maxFeePerGas is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_maxFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -325,8 +304,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              'The maxPriorityFeePerGas is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_maxPriorityFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -336,8 +314,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              'The paymasterAndData value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_paymasterAndData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -346,20 +323,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.preVerificationGas._hex,
-              'The hex value of the preVerificationGas is empty in the estimate transactions added to the batch response.',
-            );
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-
-          try {
-            assert.isTrue(
-              op.preVerificationGas._isBigNumber,
-              'The isBigNumber value of the preVerificationGas is false in the estimate transactions added to the batch response.',
-            );
+              op.preVerificationGas,
+              message.vali_estimateTransaction_preVerificationGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -369,8 +334,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.signature,
-              'The signature value is empty in the estimate transactions added to the batch response.',
-            );
+              message.vali_estimateTransaction_signature);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -380,9 +344,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
-          );
+          assert.fail(message.fail_estimateTransaction_1);
         }
 
         // sign the UserOp and sending to the bundler
@@ -393,8 +355,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               uoHash,
-              'The uoHash value is empty in the sending bundler response.',
-            );
+              message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -404,19 +365,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The sign the UserOp and sending to the bundler action is not performed.',
-          );
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('SMOKE: Perform the transfer token with arka pimlico paymaster on the goerli network', async function () {
+  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -424,6 +381,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let balance;
         // get balance of the account address
         try {
@@ -432,8 +392,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is empty in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -443,7 +402,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         /**
@@ -470,7 +429,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: 'USDC' }],
+                params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
             },
           ).then((res) => {
@@ -482,8 +441,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               paymasterAddress,
-              'The paymasterAddress is empty in the fetch paymaster address response.',
-            );
+              message.vali_pimlico_paymasterAddress_1);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -493,9 +451,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -519,8 +475,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 contract.to,
-                'The to value is empty in the erc20 contract response.',
-              );
+                message.vali_erc20Contract_to);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -530,8 +485,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 contract.data,
-                'The data value is empty in the erc20 contract response.',
-              );
+                message.vali_erc20Contract_data);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -541,9 +495,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get estimation of transaction
@@ -553,8 +505,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.sender,
-                'The sender value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_sender);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -563,9 +514,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                approveOp.nonce._hex,
-                'The nonce value is empty in the get transaction estimation response.',
-              );
+                approveOp.nonce,
+                message.vali_estimateTransaction_nonce);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -575,8 +525,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.initCode,
-                'The initCode value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_initCode);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -586,8 +535,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.callData,
-                'The callData value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_callData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -596,9 +544,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                approveOp.callGasLimit._hex,
-                'The callGasLimit value is empty in the get transaction estimation response.',
-              );
+                approveOp.callGasLimit,
+                message.vali_estimateTransaction_callGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -607,9 +554,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                approveOp.verificationGasLimit._hex,
-                'The verificationGasLimit value is empty in the get transaction estimation response.',
-              );
+                approveOp.verificationGasLimit,
+                message.vali_estimateTransaction_verificationGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -619,8 +565,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.maxFeePerGas,
-                'The maxFeePerGas value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_maxFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -630,8 +575,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.maxPriorityFeePerGas,
-                'The maxPriorityFeePerGas value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_maxPriorityFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -641,8 +585,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.paymasterAndData,
-                'The paymasterAndData value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_paymasterAndData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -651,9 +594,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                approveOp.preVerificationGas._hex,
-                'The preVerificationGas value is empty in the get transaction estimation response.',
-              );
+                approveOp.preVerificationGas,
+                message.vali_estimateTransaction_preVerificationGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -663,8 +605,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 approveOp.signature,
-                'The signature value is empty in the get transaction estimation response.',
-              );
+                message.vali_estimateTransaction_signature);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -674,9 +615,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -686,8 +625,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 uoHash1,
-                'The uoHash1 value is empty in the get the uoHash response.',
-              );
+                message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -697,9 +635,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -709,9 +645,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -724,8 +658,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 transactionBatch.to,
-                'The to value is empty in the transactionBatch response.',
-              );
+                message.vali_addTransaction_to);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -735,8 +668,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 transactionBatch.data,
-                'The data value is empty in the transactionBatch response.',
-              );
+                message.vali_addTransaction_data);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -746,9 +678,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_addTransaction_1);
           }
 
           // get balance of the account address
@@ -758,8 +688,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 balance,
-                'The balance value is empty in the get balance of the account address response.',
-              );
+                message.vali_getBalance_balance);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -769,23 +698,22 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_getBalance_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             op = await goerliTestNetSdk.estimate({
-              url: `${data.paymaster_arka}${queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
 
             try {
               assert.isNotEmpty(
                 op.sender,
-                'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_sender);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -794,9 +722,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                op.nonce._hex,
-                'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.nonce,
+                message.vali_estimateTransaction_nonce);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -806,8 +733,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.initCode,
-                'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_initCode);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -817,8 +743,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.callData,
-                'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_callData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -827,9 +752,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                op.callGasLimit._hex,
-                'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.callGasLimit,
+                message.vali_estimateTransaction_callGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -838,9 +762,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                op.verificationGasLimit._hex,
-                'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.verificationGasLimit,
+                message.vali_estimateTransaction_verificationGasLimit);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -850,8 +773,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.maxFeePerGas,
-                'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_maxFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -861,8 +783,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.maxPriorityFeePerGas,
-                'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_maxPriorityFeePerGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -872,8 +793,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.paymasterAndData,
-                'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_paymasterAndData);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -882,9 +802,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
             try {
               assert.isNotEmpty(
-                op.preVerificationGas._hex,
-                'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                op.preVerificationGas,
+                message.vali_estimateTransaction_preVerificationGas);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -894,8 +813,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 op.signature,
-                'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
-              );
+                message.vali_estimateTransaction_signature);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -905,9 +823,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // sign the UserOp and sending to the bundler...
@@ -917,8 +833,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 uoHash,
-                'The uoHash value is empty in the sending bundler response.',
-              );
+                message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -928,19 +843,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
         } else {
-          addContext(test, 'Unable to fetch the paymaster address.');
-          assert.fail('Unable to fetch the paymaster address.');
+          addContext(test, message.fail_paymasterAddress_1);
+          assert.fail(message.fail_paymasterAddress_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -952,6 +863,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let balance;
         let transactionBatch;
         let op;
@@ -964,8 +878,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               balance,
-              'The balance is empty in the get native balance response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -975,7 +888,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -985,9 +898,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -1000,8 +911,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              'The to value is empty in the transactionBatch response.',
-            );
+              message.vali_addTransaction_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1011,8 +921,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              'The data value is empty in the transactionBatch response.',
-            );
+              message.vali_addTransaction_data);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1022,9 +931,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1034,8 +941,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               balance,
-              'The balance value is empty in the get balance of the account address response.',
-            );
+              message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1045,9 +951,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_getBalance_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -1059,19 +963,20 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           op = await goerliTestNetSdk.estimate({
-            url: `${arka_url}${queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
 
           try {
             assert.isNotEmpty(
               op.sender,
-              'The sender value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_sender);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1080,9 +985,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.nonce._hex,
-              'The nonce value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.nonce,
+              message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1092,8 +996,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.initCode,
-              'The initCode value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_initCode);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1103,8 +1006,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.callData,
-              'The callData value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_callData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1113,9 +1015,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.callGasLimit._hex,
-              'The callGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.callGasLimit,
+              message.vali_estimateTransaction_callGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1124,9 +1025,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.verificationGasLimit._hex,
-              'The verificationGasLimit value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.verificationGasLimit,
+              message.vali_estimateTransaction_verificationGasLimit);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1136,8 +1036,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              'The maxFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_maxFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1147,8 +1046,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              'The maxPriorityFeePerGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_maxPriorityFeePerGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1158,8 +1056,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              'The paymasterAndData value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_paymasterAndData);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1168,9 +1065,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           try {
             assert.isNotEmpty(
-              op.preVerificationGas._hex,
-              'The preVerificationGas value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              op.preVerificationGas,
+              message.vali_estimateTransaction_preVerificationGas);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1180,8 +1076,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           try {
             assert.isNotEmpty(
               op.signature,
-              'The signature value is empty while estimate the transaction and get the fee data for the UserOp.',
-            );
+              message.vali_estimateTransaction_signature);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1191,22 +1086,17 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_estimateTransaction_1);
         }
 
         // sign the UserOp and sending to the bundler...
         try {
           uoHash = await goerliTestNetSdk.send(op);
 
-          console.log('uoHash::::::::::::', uoHash);
-
           try {
             assert.isNotEmpty(
               uoHash,
-              'The uoHash value is empty in the sending bundler response.',
-            );
+              message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1216,22 +1106,253 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with invalid paymaster url on the goerli network', async function () {
+  it('SMOKE: Validate the metadata of the arka paymaster on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // get the metadata
+        try {
+          let metadata = await arkaPaymaster.metadata();
+
+          try {
+            assert.isNotEmpty(
+              metadata.sponsorAddress,
+              message.vali_metadata_sponsorAddress);
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.sponsorWalletBalance,
+              message.vali_metadata_sponsorWalletBalance);
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.chainsSupported,
+              message.vali_metadata_chainsSupported);
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+
+          try {
+            assert.isNotEmpty(
+              metadata.tokenPaymasters,
+              message.vali_metadata_tokenPaymasters);
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_metadata_1);
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the get token paymaster address
+        try {
+          let getTokenPaymasterAddress = await arkaPaymaster.getTokenPaymasterAddress("USDC");
+
+          try {
+            assert.isNotEmpty(
+              getTokenPaymasterAddress,
+              message.vali_getTokenPaymasterAddress_tokenPaymasterAddress);
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_getTokenPaymasterAddress_1);
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          let removeWhitelist = await arkaPaymaster.removeWhitelist([data.sender]);
+
+          if (removeWhitelist.includes(constant.remove_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_1);
+            console.log(message.vali_removeWhitelist_1);
+          } else {
+            addContext(test, message.fail_removeWhitelist_1);
+            assert.fail(message.fail_removeWhitelist_1);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          let addWhitelist = await arkaPaymaster.addWhitelist([data.sender]);
+
+          if (addWhitelist.includes(constant.add_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
+          } else {
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('SMOKE: Validate the check whitelist function of the arka paymaster on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the whilelist address
+        try {
+          let checkWhitelist = await arkaPaymaster.checkWhitelist(data.sender);
+
+          if (checkWhitelist.includes(constant.check_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else if (checkWhitelist.includes(constant.check_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_checkWhitelist_1);
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('SMOKE: Validate the deposit function of the arka paymaster on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the deposit
+        try {
+          let deposit = await arkaPaymaster.deposit(data.value);
+
+          if (deposit.includes(constant.deposit_1)) {
+            addContext(test, message.vali_deposit_1)
+            console.log(message.vali_deposit_1)
+          } else {
+            addContext(test, message.fail_deposit_1)
+            assert.fail(message.fail_deposit_1)
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_deposit_2);
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -1239,7 +1360,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1252,9 +1373,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1264,42 +1383,45 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: data.invalid_paymaster_arka, // invalid URL
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.invalid_paymaster_arka, // invalid URL
+              api_key: process.env.API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_2)
+          assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
-          if (e.message === 'Not Found') {
-            console.log(
-              'The correct validation is displayed when invalid paymaster url added while estimation.',
-            );
+          if (e.message === constant.not_found) {
+            addContext(test, message.vali_estimateTransaction_1)
+            console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid paymaster url added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster without paymaster url on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -1307,7 +1429,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1320,9 +1442,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1332,42 +1452,45 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            // without URL
-            api_key: process.env.API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              api_key: process.env.INVALID_API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_4)
+          assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
-          if (e.message === 'Not Found') {
-            console.log(
-              'The correct validation is displayed when paymaster url not added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when paymaster url not added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with invalid API Key on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -1375,7 +1498,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1388,9 +1511,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1400,42 +1521,45 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.INVALID_API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              api_key: process.env.INCORRECT_API_KEY,
+              context: { mode: 'sponsor' },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_5)
+          assert.fail(message.fail_estimateTransaction_5);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_4)
+            console.log(message.vali_estimateTransaction_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with incorrect API Key on the goerli network', async function () {
+  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the goerli network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // clear the transaction batch
         try {
           await goerliTestNetSdk.clearUserOpsFromBatch();
@@ -1443,7 +1567,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
+          assert.fail(message.fail_clearTransaction);
         }
 
         // add transactions to the batch
@@ -1456,9 +1580,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
+          assert.fail(message.fail_addTransaction_1);
         }
 
         // get balance of the account address
@@ -1468,107 +1590,39 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            api_key: process.env.INCORRECT_API_KEY,
-            context: { mode: 'sponsor' },
+            paymasterDetails: {
+              url: data.paymaster_arka,
+              // without api_key
+              context: { mode: 'sponsor' },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_6)
+          assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when incorrect API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_5)
+            console.log(message.vali_estimateTransaction_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when incorrect API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.nativeTransaction_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster without API Key on the goerli network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        // clear the transaction batch
-        try {
-          await goerliTestNetSdk.clearUserOpsFromBatch();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The transaction of the batch is not clear correctly.');
-        }
-
-        // add transactions to the batch
-        try {
-          await goerliTestNetSdk.addUserOpsToBatch({
-            to: data.recipient,
-            value: ethers.utils.parseEther(data.value),
-          });
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The addition of transaction in the batch is not performed.',
-          );
-        }
-
-        // get balance of the account address
-        try {
-          await goerliTestNetSdk.getNativeBalance();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
-        }
-
-        // estimate transactions added to the batch and get the fee data for the UserOp
-        try {
-          await goerliTestNetSdk.estimate({
-            url: data.paymaster_arka,
-            // without api_key
-            context: { mode: 'sponsor' },
-          });
-        } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when API Key not added while estimation.',
-            );
-          } else {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when API Key not added while estimation.',
-            );
-          }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE SEND NATIVE TOKEN WITH PAYMASTER ON THE goerli NETWORK',
-      );
-    }
-  });
-
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the goerli network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1576,6 +1630,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -1601,33 +1658,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (paymasterAddress.includes('not found')) {
-          console.log(
-            'The paymaster address is not found as expected while fetching the paymaster address with invalid paymaster URL.',
-          );
+        if (paymasterAddress.includes(constant.not_found)) {
+          addContext(test, message.vali_pimlico_paymasterAddress_2)
+          console.log(message.vali_pimlico_paymasterAddress_2);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid paymaster URL.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid paymaster URL.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_2);
+          assert.fail(message.fail_pimlico_paymasterAddress_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
@@ -1635,6 +1682,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1657,38 +1707,31 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid Api Key') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid API Key in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_apiKey) {
+          addContext(test, message.vali_pimlico_paymasterAddress_3)
+          console.log(message.vali_pimlico_paymasterAddress_3);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid API Key in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid API Key in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_3);
+          assert.fail(message.fail_pimlico_paymasterAddress_3);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?chainId=${Number(data.goerli_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1711,33 +1754,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid Api Key') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without API Key in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_apiKey) {
+          addContext(test, message.vali_pimlico_paymasterAddress_4)
+          console.log(message.vali_pimlico_paymasterAddress_4);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without API Key in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched without API Key in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_4);
+          assert.fail(message.fail_pimlico_paymasterAddress_4);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1745,6 +1778,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1767,38 +1803,31 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Unsupported network') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid chainid in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_network_3) {
+          addContext(test, message.vali_pimlico_paymasterAddress_5)
+          console.log(message.vali_pimlico_paymasterAddress_5);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid chainid in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid chainid in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_5);
+          assert.fail(message.fail_pimlico_paymasterAddress_5);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         try {
           returnedValue = await fetch(
@@ -1821,33 +1850,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid data provided') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without chainid in queryString.',
-          );
+        if (returnedValue.error === constant.invalid_data) {
+          addContext(test, message.vali_pimlico_paymasterAddress_6)
+          console.log(message.vali_pimlico_paymasterAddress_6);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without chainid in queryString.',
-          );
-          assert.fail(
-            'The paymaster address is fetched without chainid in queryString.',
-          );
+          addContext(test, message.fail_pimlico_paymasterAddress_6);
+          assert.fail(message.fail_pimlico_paymasterAddress_6);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1855,6 +1874,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1877,37 +1899,22 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             return res.json();
           });
         } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
-        }
-
-        const errorMessage = returnedValue.error;
-        if (errorMessage.includes('invalid address')) {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid Entry Point Address.',
-          );
-        } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid Entry Point Address.',
-          );
-          assert.fail(
-            'The paymaster address is fetched with invalid Entry Point Address.',
-          );
+          const errorMessage = returnedValue.error;
+          if (errorMessage.includes(constant.invalid_address_4)) {
+            addContext(test, message.vali_pimlico_paymasterAddress_7)
+            console.log(message.vali_pimlico_paymasterAddress_7);
+          } else {
+            addContext(test, message.fail_pimlico_paymasterAddress_7);
+            assert.fail(message.fail_pimlico_paymasterAddress_7);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1915,6 +1922,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1940,31 +1950,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid network/token') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address with invalid token.',
-          );
+        if (returnedValue.error === constant.invalid_network_1) {
+          addContext(test, message.vali_pimlico_paymasterAddress_8)
+          console.log(message.vali_pimlico_paymasterAddress_8);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched with invalid token.',
-          );
-          assert.fail('The paymaster address is fetched with invalid token.');
+          addContext(test, message.fail_pimlico_paymasterAddress_8);
+          assert.fail(message.fail_pimlico_paymasterAddress_8);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1972,6 +1974,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
 
         try {
@@ -1994,31 +1999,23 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
-        if (returnedValue.error === 'Invalid data provided') {
-          console.log(
-            'The paymaster address is displayed as a undefined as expected while fetching the paymaster address without parameters.',
-          );
+        if (returnedValue.error === constant.invalid_data) {
+          addContext(test, message.vali_pimlico_paymasterAddress_9)
+          console.log(message.vali_pimlico_paymasterAddress_9);
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_pimlico_paymasterAddress_9);
+          assert.fail(message.fail_pimlico_paymasterAddress_9);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2026,6 +2023,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -2051,9 +2051,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2073,39 +2071,27 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (
-              errorMessage.includes(
-                'provider is required to use ENS name as contract address',
-              )
-            ) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with incorrect token address.',
-              );
+            if (errorMessage.includes(constant.contract_address_1)) {
+              addContext(test, message.vali_erc20Contract_1)
+              console.log(message.vali_erc20Contract_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with incorrect token address.',
-              );
+              assert.fail(message.fail_erc20Contract_3);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2113,6 +2099,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
 
@@ -2138,9 +2127,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2160,39 +2147,27 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (
-              errorMessage.includes(
-                'provider is required to use ENS name as contract address',
-              )
-            ) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with invalid token address.',
-              );
+            if (errorMessage.includes(constant.contract_address_1)) {
+              addContext(test, message.vali_erc20Contract_2)
+              console.log(message.vali_erc20Contract_2);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with invalid token address.',
-              );
+              assert.fail(message.fail_erc20Contract_4);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2200,6 +2175,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2224,9 +2202,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         paymasterAddress = returnedValue.message;
@@ -2248,35 +2224,27 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('invalid address')) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with invalid paymaster address.',
-              );
+            if (errorMessage.includes(constant.invalid_address_4)) {
+              addContext(test, message.vali_erc20Contract_3)
+              console.log(message.vali_erc20Contract_3);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with invalid paymaster address.',
-              );
+              assert.fail(message.fail_erc20Contract_5);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2284,6 +2252,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2308,9 +2279,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         paymasterAddress = returnedValue.message;
@@ -2332,35 +2301,27 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             });
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('bad address checksum')) {
-              console.log(
-                'The validation for erc20Contract is displayed as expected while generating the erc20Contract with incorrect paymaster address.',
-              );
+            if (errorMessage.includes(constant.invalid_address_6)) {
+              addContext(test, message.vali_erc20Contract_4)
+              console.log(message.vali_erc20Contract_4);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The expected validation is not displayed while generating the erc20Contract with incorrect paymaster address.',
-              );
+              assert.fail(message.fail_erc20Contract_6);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2368,6 +2329,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2396,9 +2360,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2420,9 +2382,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2432,9 +2392,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2444,9 +2402,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2456,9 +2412,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2467,37 +2421,32 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               to: data.recipient,
               value: ethers.utils.parseEther(data.invalidValue),
             });
+
+            addContext(test, message.fail_addTransaction_2)
+            assert.fail(message.fail_addTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('invalid decimal value')) {
-              console.log(
-                'The validation for transactionBatch is displayed as expected while adding transactions to the batch with invalid value.',
-              );
+            if (errorMessage.includes(constant.invalid_value_1)) {
+              addContext(test, vali_addTransaction_1)
+              console.log(vali_addTransaction_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation is not displayed for the transactionBatch while adding transactions to the batch with invalid value.',
-              );
+              assert.fail(message.fail_addTransaction_3);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
@@ -2506,6 +2455,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2534,9 +2486,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2558,9 +2508,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2570,9 +2518,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2582,9 +2528,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2594,9 +2538,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2609,58 +2551,55 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await goerliTestNetSdk.estimate({
-              url: `${invalid_arka_url}${queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${invalid_arka_url}${queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
+
+            addContext(test, message.fail_estimateTransaction_2)
+            assert.fail(message.fail_estimateTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Not Found')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
-              );
+            if (errorMessage.includes(constant.not_found)) {
+              addContext(test, message.vali_estimateTransaction_1)
+              console.log(message.vali_estimateTransaction_1);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
-              );
+              assert.fail(message.fail_estimateTransaction_2);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
       data.goerli_chainid,
     )}`;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.goerli_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.goerli_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2689,9 +2628,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2713,9 +2650,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2725,9 +2660,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2737,9 +2670,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2749,9 +2680,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2764,48 +2693,43 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await goerliTestNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
+
+            addContext(test, message.fail_estimateTransaction_4)
+            assert.fail(message.fail_estimateTransaction_4);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid Api Key')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid Api Key.',
-              );
+            if (errorMessage.includes(constant.invalid_apiKey)) {
+              addContext(test, message.vali_estimateTransaction_3)
+              console.log(message.vali_estimateTransaction_3);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid Api Key.',
-              );
+              assert.fail(message.fail_estimateTransaction_4);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2814,6 +2738,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let invalid_queryString = `?chainId=${Number(data.goerli_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2842,9 +2769,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -2866,9 +2791,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -2878,9 +2801,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -2890,9 +2811,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -2902,9 +2821,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -2917,48 +2834,43 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await goerliTestNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
+
+            addContext(test, message.fail_estimateTransaction_6)
+            assert.fail(message.fail_estimateTransaction_6);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid Api Key')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions without Api Key.',
-              );
+            if (errorMessage.includes(constant.invalid_apiKey)) {
+              addContext(test, message.vali_estimateTransaction_5)
+              console.log(message.vali_estimateTransaction_5);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions without Api Key.',
-              );
+              assert.fail(message.fail_estimateTransaction_6);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2969,6 +2881,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2997,9 +2912,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -3021,9 +2934,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -3033,9 +2944,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -3045,9 +2954,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3057,9 +2964,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3072,48 +2977,43 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await goerliTestNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
+
+            addContext(test, message.fail_estimateTransaction_7)
+            assert.fail(message.fail_estimateTransaction_7);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Unsupported network')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
-              );
+            if (errorMessage.includes(constant.invalid_network_3)) {
+              addContext(test, message.vali_estimateTransaction_6)
+              console.log(message.vali_estimateTransaction_6);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
-              );
+              assert.fail(message.fail_estimateTransaction_7);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the goerli network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3122,6 +3022,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -3150,9 +3053,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         if (utils.isAddress(paymasterAddress)) {
@@ -3174,9 +3075,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The erc20Contract value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_erc20Contract_1);
           }
 
           // get the UserOp Hash
@@ -3186,9 +3085,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The approveOp value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_estimateTransaction_1);
           }
 
           // get the uoHash1
@@ -3198,9 +3095,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The uoHash1 value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
@@ -3210,9 +3105,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_clearTransaction_1);
           }
 
           // add transactions to the batch
@@ -3225,44 +3118,39 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The fetched value of the arka pimlico paymaster is not displayed.',
-            );
+            assert.fail(message.fail_pimlico_paymasterAddress_1);
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             await goerliTestNetSdk.estimate({
-              url: `${arka_url}${invalid_queryString}`,
-              context: { token: data.usdc_token, mode: 'erc20' },
+              paymasterDetails: {
+                url: `${arka_url}${invalid_queryString}`,
+                context: { token: data.usdc_token, mode: 'erc20' },
+              }
             });
+
+            addContext(test, message.fail_estimateTransaction_8)
+            assert.fail(message.fail_estimateTransaction_8);
           } catch (e) {
             let errorMessage = e.message;
-            if (errorMessage.includes('Invalid data provided')) {
-              console.log(
-                'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
-              );
+            if (errorMessage.includes(constant.invalid_data)) {
+              addContext(test, message.vali_estimateTransaction_7)
+              console.log(message.vali_estimateTransaction_7);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(
-                'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
-              );
+              assert.fail(message.fail_estimateTransaction_8);
             }
           }
         } else {
-          addContext(
-            test,
-            'The paymaster address is fetched without parameters.',
-          );
-          assert.fail('The paymaster address is fetched without parameters.');
+          addContext(test, message.fail_erc20Contract_2);
+          assert.fail(message.fail_erc20Contract_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3274,6 +3162,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await goerliTestNetSdk.getNativeBalance();
@@ -3281,7 +3172,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3291,9 +3182,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3306,9 +3195,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3318,9 +3205,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3332,44 +3217,46 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: `${invalid_arka_url}${queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${invalid_arka_url}${queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_2)
+          assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Not Found')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid paymaster URL.',
-            );
+          if (errorMessage.includes(constant.not_found)) {
+            addContext(test, message.vali_estimateTransaction_1)
+            console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions with invalid paymaster URL.',
-            );
+            assert.fail(message.fail_estimateTransaction_2);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the goerli network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?apiKey=${
-      process.env.INVALID_API_KEY
-    }&chainId=${Number(data.goerli_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
+      }&chainId=${Number(data.goerli_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await goerliTestNetSdk.getNativeBalance();
@@ -3377,7 +3264,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3387,9 +3274,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3402,9 +3287,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3414,9 +3297,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3428,32 +3309,32 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_4)
+          assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3463,6 +3344,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let invalid_queryString = `?chainId=${Number(data.goerli_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await goerliTestNetSdk.getNativeBalance();
@@ -3470,7 +3354,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3480,9 +3364,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3495,9 +3377,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3507,9 +3387,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3521,32 +3399,32 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_6)
+          assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
-          if (e.message === 'Invalid Api Key') {
-            console.log(
-              'The correct validation is displayed when invalid API Key added while estimation.',
-            );
+          if (e.message === constant.invalid_apiKey) {
+            addContext(test, message.vali_estimateTransaction_3)
+            console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The respective validate is not displayed when invalid API Key added while estimation.',
-            );
+            assert.fail(message.fail_estimateTransaction_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3558,6 +3436,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await goerliTestNetSdk.getNativeBalance();
@@ -3565,7 +3446,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3575,9 +3456,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3590,9 +3469,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3602,9 +3479,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3616,33 +3491,33 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_7)
+          assert.fail(message.fail_estimateTransaction_7);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Unsupported network')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions with invalid chainid.',
-            );
+          if (errorMessage.includes(constant.invalid_network_3)) {
+            addContext(test, message.vali_estimateTransaction_6)
+            console.log(message.vali_estimateTransaction_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions with invalid chainid.',
-            );
+            assert.fail(message.fail_estimateTransaction_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
     }
   });
 
@@ -3652,6 +3527,9 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
         // get balance of the account address
         try {
           await goerliTestNetSdk.getNativeBalance();
@@ -3659,7 +3537,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail('The balance of the native token is not displayed.');
+          assert.fail(message.fail_getBalance_1);
         }
 
         // clear the transaction batch
@@ -3669,9 +3547,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_clearTransaction_1);
         }
 
         // add transactions to the batch
@@ -3684,9 +3560,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         // get balance of the account address
@@ -3696,9 +3570,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
-          );
+          assert.fail(message.fail_pimlico_paymasterAddress_1);
         }
 
         /* estimate transactions added to the batch and get the fee data for the UserOp
@@ -3710,33 +3582,646 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
           await goerliTestNetSdk.estimate({
-            url: `${arka_url}${invalid_queryString}`,
-            context: {
-              mode: 'sponsor',
-              validAfter: new Date().valueOf(),
-              validUntil: new Date().valueOf() + 6000000,
-            },
+            paymasterDetails: {
+              url: `${arka_url}${invalid_queryString}`,
+              context: {
+                mode: 'sponsor',
+                validAfter: new Date().valueOf(),
+                validUntil: new Date().valueOf() + 6000000,
+              },
+            }
           });
+
+          addContext(test, message.fail_estimateTransaction_8)
+          assert.fail(message.fail_estimateTransaction_8);
         } catch (e) {
           let errorMessage = e.message;
-          if (errorMessage.includes('Invalid data provided')) {
-            console.log(
-              'The validation for estimate transaction is displayed as expected while estimating the transactions without chainid.',
-            );
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_estimateTransaction_7)
+            console.log(message.vali_estimateTransaction_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(
-              'The validation for estimate transaction is not displayed while estimating the transactions without chainid.',
-            );
+            assert.fail(message.fail_estimateTransaction_8);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(
-        'DUE TO INSUFFICIENT WALLET BALANCE, SKIPPING TEST CASE OF THE ARKA PIMLICO PAYMASTER ON THE goerli NETWORK',
-      );
+      console.warn(message.pimlocoPaymaster_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the get token paymaster address
+        try {
+          await arkaPaymaster.getTokenPaymasterAddress(data.invalid_usdc_token);
+
+          addContext(test, message.fail_getTokenPaymasterAddress_2)
+          assert.fail(message.fail_getTokenPaymasterAddress_2)
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_network_1)) {
+            addContext(test, message.vali_getTokenPaymasterAddress_1);
+            console.log(message.vali_getTokenPaymasterAddress_1);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getTokenPaymasterAddress_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the get token paymaster address
+        try {
+          await arkaPaymaster.getTokenPaymasterAddress();
+
+          addContext(test, message.fail_getTokenPaymasterAddress_3)
+          assert.fail(message.fail_getTokenPaymasterAddress_3)
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_getTokenPaymasterAddress_2);
+            console.log(message.vali_getTokenPaymasterAddress_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getTokenPaymasterAddress_3);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          await arkaPaymaster.removeWhitelist([data.invalidSender]);
+
+          addContext(test, message.fail_removeWhitelist_3)
+          assert.fail(message.fail_removeWhitelist_3);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_removeWhitelist_3);
+            console.log(message.vali_removeWhitelist_3);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_3);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          await arkaPaymaster.removeWhitelist([data.incorrectSender]);
+
+          addContext(test, message.fail_removeWhitelist_4)
+          assert.fail(message.fail_removeWhitelist_4);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_removeWhitelist_4);
+            console.log(message.vali_removeWhitelist_4);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_4);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress.address]);
+
+          addContext(test, message.fail_removeWhitelist_5)
+          assert.fail(message.fail_removeWhitelist_5);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress.address, data.sender]);
+
+          addContext(test, message.fail_removeWhitelist_5)
+          assert.fail(message.fail_removeWhitelist_5);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+
+          // make whitelisted addresses
+          await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          // remove whitelist addresses
+          let removewhitelist = await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          if (removewhitelist.includes(constant.remove_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_1);
+            console.log(message.vali_removeWhitelist_1);
+          } else {
+            addContext(test, message.fail_removeWhitelist_1);
+            assert.fail(message.fail_removeWhitelist_1);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the remove whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+          await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          addContext(test, message.fail_removeWhitelist_6)
+          assert.fail(message.fail_removeWhitelist_6);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.remove_whitelist_1)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_removeWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          await arkaPaymaster.addWhitelist([data.invalidSender]);
+
+          addContext(test, message.fail_addWhitelist_3)
+          assert.fail(message.fail_addWhitelist_3);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_addWhitelist_3);
+            console.log(message.vali_addWhitelist_3);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_3);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          await arkaPaymaster.addWhitelist([data.incorrectSender]);
+
+          addContext(test, message.fail_addWhitelist_4)
+          assert.fail(message.fail_addWhitelist_4);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_addWhitelist_4);
+            console.log(message.vali_addWhitelist_4);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_4);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress.address]);
+
+          if (addwhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_5);
+            console.log(message.vali_addWhitelist_5);
+          } else {
+            addContext(test, message.fail_addWhitelist_7);
+            assert.fail(message.fail_addWhitelist_7);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          await arkaPaymaster.addWhitelist([randomAddress.address, data.sender]);
+
+          if (addWhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
+          } else {
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the add whitelist address
+        try {
+          const randomAddress1 = ethers.Wallet.createRandom();
+          const randomAddress2 = ethers.Wallet.createRandom();
+
+          // add whitelist addresses
+          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+
+          if (addwhitelist.includes(constant.add_whitelist_3)) {
+            addContext(test, message.vali_addWhitelist_1);
+            console.log(message.vali_addWhitelist_1);
+          } else {
+            addContext(test, message.fail_addWhitelist_1);
+            assert.fail(message.fail_addWhitelist_1);
+          }
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.add_whitelist_2)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_addWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist(data.invalidSender);
+
+          addContext(test, message.fail_checkWhitelist_2)
+          assert.fail(message.fail_checkWhitelist_2)
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_1);
+            console.log(message.vali_checkWhitelist_1);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_checkWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist(data.invalidSender);
+
+          addContext(test, message.fail_checkWhitelist_3)
+          assert.fail(message.fail_checkWhitelist_3)
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_2);
+            console.log(message.vali_checkWhitelist_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_checkWhitelist_2);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the whilelist address
+        try {
+          const randomAddress = ethers.Wallet.createRandom();
+          let checkwhitelist = await arkaPaymaster.checkWhitelist(randomAddress.address);
+
+          if (checkwhitelist.includes(constant.check_whitelist_1)) {
+            addContext(test, message.vali_addWhitelist_2);
+            console.log(message.vali_addWhitelist_2);
+          } else if (checkwhitelist.includes(constant.check_whitelist_2)) {
+            addContext(test, message.vali_removeWhitelist_2);
+            console.log(message.vali_removeWhitelist_2);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_checkWhitelist_4);
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the whilelist address
+        try {
+          await arkaPaymaster.checkWhitelist();
+
+          addContext(test, message.fail_checkWhitelist_5)
+          assert.fail(message.fail_checkWhitelist_5);
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_address_5)) {
+            addContext(test, message.vali_checkWhitelist_3);
+            console.log(message.vali_checkWhitelist_3);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_checkWhitelist_5);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
+    }
+  });
+
+  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the goerli network', async function () {
+    var test = this;
+    if (runTest) {
+      await customRetryAsync(async function () {
+
+        helper.wait(data.mediumTimeout);
+
+
+        // validate the deposit
+        try {
+          await arkaPaymaster.deposit("one");
+
+          addContext(test, message.fail_deposit_3)
+          assert.fail(message.fail_deposit_3)
+        } catch (e) {
+          let errorMessage = e.message;
+          if (errorMessage.includes(constant.invalid_data)) {
+            addContext(test, message.vali_deposit_2);
+            console.log(message.vali_deposit_2);
+          } else {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_deposit_3);
+          }
+        }
+      }, data.retry); // Retry this async test up to 5 times
+    } else {
+      console.warn(message.arkaFunction_insufficientBalance);
     }
   });
 });

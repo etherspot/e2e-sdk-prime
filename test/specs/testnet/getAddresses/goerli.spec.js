@@ -4,24 +4,31 @@ import { Factory, PrimeSdk } from '@etherspot/prime-sdk';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
+import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
+import message from '../../../data/messages.json' assert { type: 'json' };
 
 let goerliTestNetSdk;
+let goerliAccountAddress;
+let goerliTestNetSdk1;
+let goerliAccountAddress1;
 let goerliSimpleAccountAddress;
 
-describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with goerli network on the MainNet', function () {
+describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address details with goerli network on the TestNet', function () {
   it('SMOKE: Validate the ZeroDev address on the goerli network', async function () {
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         goerliTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.goerli_chainid),
-            projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.ZERO_DEV,
+            factoryWallet: Factory.ZERO_DEV
           },
         );
 
@@ -29,7 +36,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             goerliTestNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -40,7 +47,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get ZeroDev address
@@ -52,7 +59,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             goerliSimpleAccountAddress,
             data.zerodev_address,
-            'The Zero Dev Address is not calculated correctly.',
+            message.vali_zero_dev
           );
         } catch (e) {
           console.error(e);
@@ -63,7 +70,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The Zero Dev Address is not displayed successfully.');
+        assert.fail(message.fail_zero_dev);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
@@ -72,14 +79,16 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
       // initializating sdk
       try {
         goerliTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.goerli_chainid),
-            projectKey: process.env.PROJECT_KEY,
-            factoryWallet: Factory.SIMPLE_ACCOUNT,
+            factoryWallet: Factory.SIMPLE_ACCOUNT
           },
         );
 
@@ -87,7 +96,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             goerliTestNetSdk.state.EOAAddress,
             data.eoaAddress,
-            'The EOA Address is not calculated correctly.',
+            message.vali_eoa_address
           );
         } catch (e) {
           console.error(e);
@@ -98,7 +107,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SDK is not initialled successfully.');
+        assert.fail(message.fail_sdk_initialize);
       }
 
       // get SimpleAccount address
@@ -110,7 +119,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             goerliSimpleAccountAddress,
             data.simpleaccount_address,
-            'The SimpleAccount Address is not calculated correctly.',
+            message.vali_simple_account,
           );
         } catch (e) {
           console.error(e);
@@ -121,7 +130,116 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail('The SimpleAccount Address is not displayed successfully.');
+        assert.fail(message.fail_simple_account);
+      }
+    }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('SMOKE: Validate the get multiple accounts on the goerli network', async function () {
+    var test = this;
+
+    await customRetryAsync(async function () {
+
+      helper.wait(data.mediumTimeout);
+
+      // initializating sdk
+      try {
+        goerliTestNetSdk = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.goerli_chainid)
+          },
+        );
+
+        try {
+          assert.strictEqual(
+            goerliTestNetSdk.state.EOAAddress,
+            data.eoaAddress,
+            message.vali_eoa_address
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_sdk_initialize);
+      }
+
+      // get account address
+      try {
+        goerliAccountAddress =
+          await goerliTestNetSdk.getCounterFactualAddress();
+
+        try {
+          assert.strictEqual(
+            goerliAccountAddress,
+            data.sender,
+            message.vali_account_address,
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_account_address);
+      }
+
+      // initializating sdk for index 1...
+      try {
+        goerliTestNetSdk1 = new PrimeSdk(
+          { privateKey: process.env.PRIVATE_KEY },
+          {
+            chainId: Number(data.goerli_chainid),
+            projectKey: process.env.PROJECT_KEY, index: 1
+          });
+
+        try {
+          assert.strictEqual(
+            goerliTestNetSdk1.state.EOAAddress,
+            data.eoaAddress,
+            message.vali_eoa_address
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_sdk_initialize);
+      }
+
+      // get account address
+      try {
+        goerliAccountAddress1 =
+          await goerliTestNetSdk1.getCounterFactualAddress();
+
+        try {
+          assert.strictEqual(
+            goerliAccountAddress1,
+            data.sender1,
+            message.vali_account_address,
+          );
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_account_address);
       }
     }, data.retry); // Retry this async test up to 5 times
   });
