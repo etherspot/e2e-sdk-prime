@@ -22,7 +22,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -129,7 +129,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         let nfts;
         try {
@@ -239,7 +239,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         let tokenLists;
         let tokenListTokens;
@@ -455,7 +455,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         let TOKEN_LIST;
         let rates;

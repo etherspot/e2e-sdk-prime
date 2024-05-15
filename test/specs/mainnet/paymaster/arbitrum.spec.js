@@ -25,7 +25,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -144,7 +144,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
@@ -383,7 +383,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         let balance;
         // get balance of the account address
@@ -865,7 +865,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         let balance;
         let transactionBatch;
@@ -1120,7 +1120,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // get the metadata
@@ -1183,7 +1183,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // validate the get token paymaster address
@@ -1216,7 +1216,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // validate the remove whitelist address
@@ -1253,7 +1253,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // validate the add whitelist address
@@ -1290,7 +1290,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // validate the whilelist address
@@ -1321,7 +1321,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
 
         // validate the deposit
