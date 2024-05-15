@@ -20,7 +20,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -80,7 +80,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -140,7 +140,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {

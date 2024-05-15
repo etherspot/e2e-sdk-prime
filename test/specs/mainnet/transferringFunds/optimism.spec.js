@@ -24,7 +24,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -129,7 +129,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
@@ -358,7 +358,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // get the respective provider details
         let provider;
@@ -646,7 +646,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // get erc721 Contract Interface
         let erc721Interface;
@@ -882,7 +882,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
@@ -1115,7 +1115,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         const provider = new providers.JsonRpcProvider();
 

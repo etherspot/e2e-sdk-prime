@@ -23,7 +23,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -132,7 +132,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
@@ -467,7 +467,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // Fetching historical transactions
         let transactions;
@@ -688,7 +688,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
@@ -1085,7 +1085,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // get the respective provider details
         let provider;

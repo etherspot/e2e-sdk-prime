@@ -23,7 +23,7 @@ describe('The PrimeSDK, Validate the connext endpoints with matic network on the
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.mediumTimeout);
+      helper.wait(data.longTimeout);
 
       // initializating sdk
       try {
@@ -132,7 +132,7 @@ describe('The PrimeSDK, Validate the connext endpoints with matic network on the
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         try {
           allSupportedAssets =
@@ -210,7 +210,7 @@ describe('The PrimeSDK, Validate the connext endpoints with matic network on the
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         try {
           supportedAssets =
@@ -292,7 +292,7 @@ describe('The PrimeSDK, Validate the connext endpoints with matic network on the
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         try {
           quotes = await maticDataService.getQuotes({
@@ -355,7 +355,7 @@ describe('The PrimeSDK, Validate the connext endpoints with matic network on the
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.mediumTimeout);
+        helper.wait(data.longTimeout);
 
         // clear the transaction batch
         try {
