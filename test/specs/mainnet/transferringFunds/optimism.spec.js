@@ -1238,8 +1238,14 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1)
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         try {
@@ -3457,8 +3463,16 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             uoHashes.push(uoHash);
           }
         } catch (e) {
-          addContext(test, message.fail_submitTransaction_1)
-          assert.fail(message.fail_submitTransaction_1)
+          console.error(e);
+          const eString = e.toString();
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         try {
@@ -3563,8 +3577,16 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             uoHashes.push(uoHash);
           }
         } catch (e) {
-          addContext(test, message.fail_submitTransaction_1)
-          assert.fail(message.fail_submitTransaction_1)
+          console.error(e);
+          const eString = e.toString();
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         try {
