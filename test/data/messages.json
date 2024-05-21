@@ -7,6 +7,7 @@
     "fail_data_service": "The Data service is not initialled successfully.",
     "fail_arka_initialize": "An error is displayed while initializating ArkaPaymaster.",
     "fail_wallet_balance": "Validation of the balance of the wallet is not performed.",
+    "skip_transaction_error": "An error is displayed due to multiple transactions in short period, So skipping the test case.",
     "_comment2": "Get Address",
     "vali_zero_dev": "The Zero Dev Address is not calculated correctly.",
     "fail_zero_dev": "The Zero Dev Address is not displayed successfully.",

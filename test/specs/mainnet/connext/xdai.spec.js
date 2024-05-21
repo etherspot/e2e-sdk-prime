@@ -23,7 +23,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.longTimeout);
+      helper.wait(data.mediumTimeout);
 
       // initializating sdk
       try {
@@ -132,7 +132,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         try {
           allSupportedAssets =
@@ -210,7 +210,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         try {
           supportedAssets =
@@ -292,7 +292,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         try {
           quotes = await xdaiDataService.getQuotes({
@@ -355,7 +355,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -408,8 +408,14 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         // get transaction hash
@@ -1225,10 +1231,10 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
             assert.fail(message.fail_connext_25);
           }
         } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_connext_25);
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_connext_25);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {

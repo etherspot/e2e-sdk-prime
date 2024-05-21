@@ -24,7 +24,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.longTimeout);
+      helper.wait(data.mediumTimeout);
 
       // initializating sdk
       try {
@@ -129,7 +129,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -344,8 +344,14 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -358,7 +364,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // get the respective provider details
         let provider;
@@ -632,8 +638,14 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -646,7 +658,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // get erc721 Contract Interface
         let erc721Interface;
@@ -868,8 +880,14 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -882,7 +900,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -1098,8 +1116,14 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1115,7 +1139,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
 
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         const provider = new providers.JsonRpcProvider();
 

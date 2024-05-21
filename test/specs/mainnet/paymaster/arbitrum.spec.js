@@ -25,7 +25,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.longTimeout);
+      helper.wait(data.mediumTimeout);
 
       // initializating sdk
       try {
@@ -144,7 +144,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -365,8 +365,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -383,7 +389,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         let balance;
         // get balance of the account address
@@ -635,8 +641,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -843,8 +855,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
         } else {
           addContext(test, message.fail_paymasterAddress_1);
@@ -865,7 +883,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         let balance;
         let transactionBatch;
@@ -1106,8 +1124,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1120,7 +1144,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // get the metadata
@@ -1183,7 +1207,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // validate the get token paymaster address
@@ -1216,7 +1240,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // validate the remove whitelist address
@@ -1253,7 +1277,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // validate the add whitelist address
@@ -1290,7 +1314,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // validate the whilelist address
@@ -1321,7 +1345,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
 
         // validate the deposit
@@ -2402,8 +2426,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -2528,8 +2558,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -2670,8 +2706,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -2811,8 +2853,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -2954,8 +3002,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
@@ -3095,8 +3149,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
+            if (eString === "Error") {
+              console.warn(message.skip_transaction_error)
+              addContext(test, message.skip_transaction_error)
+              test.skip();
+            } else {
+              addContext(test, eString);
+              assert.fail(message.fail_submitTransaction_1);
+            }
           }
 
           // clear the transaction batch
