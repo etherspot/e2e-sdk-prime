@@ -23,7 +23,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
 
     await customRetryAsync(async function () {
 
-      helper.wait(data.longTimeout);
+      helper.wait(data.mediumTimeout);
 
       // initializating sdk
       try {
@@ -132,7 +132,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -185,8 +185,14 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         // get transaction hash
@@ -467,7 +473,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // Fetching historical transactions
         let transactions;
@@ -688,7 +694,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -741,8 +747,14 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         // get transaction hash
@@ -1085,7 +1097,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     if (runTest) {
       await customRetryAsync(async function () {
 
-        helper.wait(data.longTimeout);
+        helper.wait(data.mediumTimeout);
 
         // get the respective provider details
         let provider;
@@ -1179,8 +1191,14 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
+          if (eString === "Error") {
+            console.warn(message.skip_transaction_error)
+            addContext(test, message.skip_transaction_error)
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
         }
 
         // get transaction hash

@@ -2,3 +2,4 @@ node_modules
 etherspot-prime-sdk
 .eslintrc.json
 .prettierrc
+mochawesome-report
