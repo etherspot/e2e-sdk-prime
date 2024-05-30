@@ -22,7 +22,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -31,7 +30,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.sepolia_chainid),
-          },
+          }
         );
 
         try {
@@ -61,7 +60,8 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
           assert.strictEqual(
             sepoliaEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -76,9 +76,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
 
       // initializating Data service...
       try {
-        sepoliaDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        sepoliaDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -130,12 +128,10 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let allSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
-          allSupportedAssets =
-            await sepoliaDataService.getSupportedAssets({});
+          allSupportedAssets = await sepoliaDataService.getSupportedAssets({});
 
           try {
             assert.isNotEmpty(
@@ -208,15 +204,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
-          supportedAssets =
-            await sepoliaDataService.getSupportedAssets({
-              chainId: data.sepolia_chainid,
-              provider: BridgingProvider.Connext,
-            });
+          supportedAssets = await sepoliaDataService.getSupportedAssets({
+            chainId: data.sepolia_chainid,
+            provider: BridgingProvider.Connext,
+          });
 
           try {
             assert.isNotEmpty(
@@ -290,7 +284,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
@@ -317,10 +310,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
           }
 
           try {
-            assert.isNotEmpty(
-              quotes[0].to,
-              message.vali_connext_getQuotes_to
-            );
+            assert.isNotEmpty(quotes[0].to, message.vali_connext_getQuotes_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -353,7 +343,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -486,22 +475,18 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
-          supportedAssets =
-            await sepoliaDataService.getSupportedAssets({
-              chainId: data.invalid_sepolia_chainid,
-              provider: BridgingProvider.Connext,
-            });
+          supportedAssets = await sepoliaDataService.getSupportedAssets({
+            chainId: data.invalid_sepolia_chainid,
+            provider: BridgingProvider.Connext,
+          });
 
           if (supportedAssets.length === 0) {
-            addContext(test, message.vali_connext_1)
-            console.log(message.vali_connext_1)
+            addContext(test, message.vali_connext_1);
+            console.log(message.vali_connext_1);
           } else {
-            addContext(test, message.fail_connext_5)
-            assert.fail(message.fail_connext_5)
+            addContext(test, message.fail_connext_5);
+            assert.fail(message.fail_connext_5);
           }
         } catch (e) {
           console.error(e);
@@ -520,9 +505,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.invalidSender,
@@ -535,11 +517,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_7)
+          addContext(test, message.fail_connext_7);
           assert.fail(message.fail_connext_7);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_2)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_2);
             console.log(message.vali_connext_2);
           } else {
             console.error(e);
@@ -559,9 +543,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             toAddress: data.recipient,
@@ -573,11 +554,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_8)
+          addContext(test, message.fail_connext_8);
           assert.fail(message.fail_connext_8);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_3)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_3);
             console.log(message.vali_connext_3);
           } else {
             console.error(e);
@@ -597,9 +580,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.incorrectSender,
@@ -612,11 +592,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_9)
+          addContext(test, message.fail_connext_9);
           assert.fail(message.fail_connext_9);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_4)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_4);
             console.log(message.vali_connext_4);
           } else {
             console.error(e);
@@ -636,9 +618,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -651,11 +630,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_10)
+          addContext(test, message.fail_connext_10);
           assert.fail(message.fail_connext_10);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_5)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_5);
             console.log(message.vali_connext_5);
           } else {
             console.error(e);
@@ -675,9 +656,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -689,11 +667,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_11)
+          addContext(test, message.fail_connext_11);
           assert.fail(message.fail_connext_11);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_6)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_6);
             console.log(message.vali_connext_6);
           } else {
             console.error(e);
@@ -713,9 +693,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -728,11 +705,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_12)
+          addContext(test, message.fail_connext_12);
           assert.fail(message.fail_connext_12);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_7)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_7);
             console.log(message.vali_connext_7);
           } else {
             console.error(e);
@@ -752,9 +731,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -766,11 +742,11 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_13)
+          addContext(test, message.fail_connext_13);
           assert.fail(message.fail_connext_13);
         } catch (e) {
           if (e.message === constant.invalid_address_9) {
-            addContext(test, message.vali_connext_8)
+            addContext(test, message.vali_connext_8);
             console.log(message.vali_connext_8);
           } else {
             console.error(e);
@@ -790,9 +766,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -804,11 +777,11 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_14)
+          addContext(test, message.fail_connext_14);
           assert.fail(message.fail_connext_14);
         } catch (e) {
           if (e.message === constant.invalid_address_10) {
-            addContext(test, message.vali_connext_9)
+            addContext(test, message.vali_connext_9);
             console.log(message.vali_connext_9);
           } else {
             console.error(e);
@@ -828,9 +801,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -843,11 +813,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_15)
+          addContext(test, message.fail_connext_15);
           assert.fail(message.fail_connext_15);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_10)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_10);
             console.log(message.vali_connext_10);
           } else {
             console.error(e);
@@ -867,9 +839,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -882,11 +851,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_16)
+          addContext(test, message.fail_connext_16);
           assert.fail(message.fail_connext_16);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_11)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_11);
             console.log(message.vali_connext_11);
           } else {
             console.error(e);
@@ -906,9 +877,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -920,11 +888,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_17)
+          addContext(test, message.fail_connext_17);
           assert.fail(message.fail_connext_17);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_12)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_12);
             console.log(message.vali_connext_12);
           } else {
             console.error(e);
@@ -944,9 +914,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -959,11 +926,11 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_18)
+          addContext(test, message.fail_connext_18);
           assert.fail(message.fail_connext_18);
         } catch (e) {
           if (e.reason === constant.invalid_value_1) {
-            addContext(test, message.vali_connext_13)
+            addContext(test, message.vali_connext_13);
             console.log(message.vali_connext_13);
           } else {
             console.error(e);
@@ -983,9 +950,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -998,11 +962,11 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_19)
+          addContext(test, message.fail_connext_19);
           assert.fail(message.fail_connext_19);
         } catch (e) {
           if (e.reason === constant.invalid_value_2) {
-            addContext(test, message.vali_connext_14)
+            addContext(test, message.vali_connext_14);
             console.log(message.vali_connext_14);
           } else {
             console.error(e);
@@ -1022,9 +986,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -1036,11 +997,14 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_20)
+          addContext(test, message.fail_connext_20);
           assert.fail(message.fail_connext_20);
         } catch (e) {
-          if (e.errors[0].constraints.IsBigNumberish === constant.invalid_bignumber_2) {
-            addContext(test, message.vali_connext_15)
+          if (
+            e.errors[0].constraints.IsBigNumberish ===
+            constant.invalid_bignumber_2
+          ) {
+            addContext(test, message.vali_connext_15);
             console.log(message.vali_connext_15);
           } else {
             console.error(e);
@@ -1060,9 +1024,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await sepoliaDataService.getQuotes({
             fromAddress: data.sender,
@@ -1074,11 +1035,11 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_21)
+          addContext(test, message.fail_connext_21);
           assert.fail(message.fail_connext_21);
         } catch (e) {
           if (e.message === constant.invalid_address_13) {
-            addContext(test, message.vali_connext_16)
+            addContext(test, message.vali_connext_16);
             console.log(message.vali_connext_16);
           } else {
             console.error(e);
@@ -1097,9 +1058,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1109,11 +1067,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_22)
+          addContext(test, message.fail_connext_22);
           assert.fail(message.fail_connext_22);
         } catch (e) {
-          if (e.errors[0].constraints.isPositive === constant.invalid_chainid_4) {
-            addContext(test, message.vali_connext_17)
+          if (
+            e.errors[0].constraints.isPositive === constant.invalid_chainid_4
+          ) {
+            addContext(test, message.vali_connext_17);
             console.log(message.vali_connext_17);
           } else {
             console.error(e);
@@ -1132,9 +1092,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1144,11 +1101,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_23)
+          addContext(test, message.fail_connext_23);
           assert.fail(message.fail_connext_23);
         } catch (e) {
-          if (e.errors[0].constraints.isPositive === constant.invalid_chainid_5) {
-            addContext(test, message.vali_connext_18)
+          if (
+            e.errors[0].constraints.isPositive === constant.invalid_chainid_5
+          ) {
+            addContext(test, message.vali_connext_18);
             console.log(message.vali_connext_18);
           } else {
             console.error(e);
@@ -1167,9 +1126,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1180,11 +1136,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_24)
+          addContext(test, message.fail_connext_24);
           assert.fail(message.fail_connext_24);
         } catch (e) {
-          if (e.errors[0].constraints.isHex === constant.transactionHash_32hex) {
-            addContext(test, message.vali_connext_19)
+          if (
+            e.errors[0].constraints.isHex === constant.transactionHash_32hex
+          ) {
+            addContext(test, message.vali_connext_19);
             console.log(message.vali_connext_19);
           } else {
             console.error(e);
@@ -1203,9 +1161,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1217,17 +1172,17 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
           });
 
           if (transactionStatus.status === constant.invalid_chainid_6) {
-            addContext(test, message.vali_connext_20)
+            addContext(test, message.vali_connext_20);
             console.log(message.vali_connext_20);
           } else {
             addContext(test, eString);
             assert.fail(message.fail_connext_25);
           }
         } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_connext_25);
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_connext_25);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1239,9 +1194,6 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1251,11 +1203,13 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_26)
+          addContext(test, message.fail_connext_26);
           assert.fail(message.fail_connext_26);
         } catch (e) {
-          if (e.errors[0].constraints.isHex === constant.transactionHash_32hex) {
-            addContext(test, message.vali_connext_21)
+          if (
+            e.errors[0].constraints.isHex === constant.transactionHash_32hex
+          ) {
+            addContext(test, message.vali_connext_21);
             console.log(message.vali_connext_21);
           } else {
             console.error(e);

@@ -22,7 +22,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -31,8 +30,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-          },
+            bundlerProvider: new EtherspotBundler(
+              Number(data.arbitrum_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
@@ -62,7 +64,8 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
           assert.strictEqual(
             arbitrumEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -77,9 +80,7 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
 
       // initializating Data service...
       try {
-        arbitrumDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        arbitrumDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -131,12 +132,10 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let allSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
-          allSupportedAssets =
-            await arbitrumDataService.getSupportedAssets({});
+          allSupportedAssets = await arbitrumDataService.getSupportedAssets({});
 
           try {
             assert.isNotEmpty(
@@ -209,15 +208,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
-          supportedAssets =
-            await arbitrumDataService.getSupportedAssets({
-              chainId: data.arbitrum_chainid,
-              provider: BridgingProvider.Connext,
-            });
+          supportedAssets = await arbitrumDataService.getSupportedAssets({
+            chainId: data.arbitrum_chainid,
+            provider: BridgingProvider.Connext,
+          });
 
           try {
             assert.isNotEmpty(
@@ -291,7 +288,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         try {
@@ -318,10 +314,7 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
           }
 
           try {
-            assert.isNotEmpty(
-              quotes[0].to,
-              message.vali_connext_getQuotes_to
-            );
+            assert.isNotEmpty(quotes[0].to, message.vali_connext_getQuotes_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -354,7 +347,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -408,9 +400,9 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -493,22 +485,18 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let supportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
-          supportedAssets =
-            await arbitrumDataService.getSupportedAssets({
-              chainId: data.invalid_arbitrum_chainid,
-              provider: BridgingProvider.Connext,
-            });
+          supportedAssets = await arbitrumDataService.getSupportedAssets({
+            chainId: data.invalid_arbitrum_chainid,
+            provider: BridgingProvider.Connext,
+          });
 
           if (supportedAssets.length === 0) {
-            addContext(test, message.vali_connext_1)
-            console.log(message.vali_connext_1)
+            addContext(test, message.vali_connext_1);
+            console.log(message.vali_connext_1);
           } else {
-            addContext(test, message.fail_connext_5)
-            assert.fail(message.fail_connext_5)
+            addContext(test, message.fail_connext_5);
+            assert.fail(message.fail_connext_5);
           }
         } catch (e) {
           console.error(e);
@@ -527,9 +515,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.invalidSender,
@@ -542,11 +527,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_7)
+          addContext(test, message.fail_connext_7);
           assert.fail(message.fail_connext_7);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_2)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_2);
             console.log(message.vali_connext_2);
           } else {
             console.error(e);
@@ -566,9 +553,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             toAddress: data.recipient,
@@ -580,11 +564,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_8)
+          addContext(test, message.fail_connext_8);
           assert.fail(message.fail_connext_8);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_3)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_3);
             console.log(message.vali_connext_3);
           } else {
             console.error(e);
@@ -604,9 +590,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.incorrectSender,
@@ -619,11 +602,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_9)
+          addContext(test, message.fail_connext_9);
           assert.fail(message.fail_connext_9);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_7) {
-            addContext(test, message.vali_connext_4)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_7
+          ) {
+            addContext(test, message.vali_connext_4);
             console.log(message.vali_connext_4);
           } else {
             console.error(e);
@@ -643,9 +628,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -658,11 +640,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_10)
+          addContext(test, message.fail_connext_10);
           assert.fail(message.fail_connext_10);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_5)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_5);
             console.log(message.vali_connext_5);
           } else {
             console.error(e);
@@ -682,9 +666,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -696,11 +677,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_11)
+          addContext(test, message.fail_connext_11);
           assert.fail(message.fail_connext_11);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_6)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_6);
             console.log(message.vali_connext_6);
           } else {
             console.error(e);
@@ -720,9 +703,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -735,11 +715,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_12)
+          addContext(test, message.fail_connext_12);
           assert.fail(message.fail_connext_12);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_8) {
-            addContext(test, message.vali_connext_7)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_8
+          ) {
+            addContext(test, message.vali_connext_7);
             console.log(message.vali_connext_7);
           } else {
             console.error(e);
@@ -759,9 +741,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -773,11 +752,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_13)
+          addContext(test, message.fail_connext_13);
           assert.fail(message.fail_connext_13);
         } catch (e) {
           if (e.message === constant.invalid_address_9) {
-            addContext(test, message.vali_connext_8)
+            addContext(test, message.vali_connext_8);
             console.log(message.vali_connext_8);
           } else {
             console.error(e);
@@ -797,9 +776,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -811,11 +787,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_14)
+          addContext(test, message.fail_connext_14);
           assert.fail(message.fail_connext_14);
         } catch (e) {
           if (e.message === constant.invalid_address_10) {
-            addContext(test, message.vali_connext_9)
+            addContext(test, message.vali_connext_9);
             console.log(message.vali_connext_9);
           } else {
             console.error(e);
@@ -835,9 +811,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -850,11 +823,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_15)
+          addContext(test, message.fail_connext_15);
           assert.fail(message.fail_connext_15);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_10)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_10);
             console.log(message.vali_connext_10);
           } else {
             console.error(e);
@@ -874,9 +849,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -889,11 +861,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_16)
+          addContext(test, message.fail_connext_16);
           assert.fail(message.fail_connext_16);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_11)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_11);
             console.log(message.vali_connext_11);
           } else {
             console.error(e);
@@ -913,9 +887,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -927,11 +898,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_17)
+          addContext(test, message.fail_connext_17);
           assert.fail(message.fail_connext_17);
         } catch (e) {
-          if (e.errors[0].constraints.isAddress === constant.invalid_address_11) {
-            addContext(test, message.vali_connext_12)
+          if (
+            e.errors[0].constraints.isAddress === constant.invalid_address_11
+          ) {
+            addContext(test, message.vali_connext_12);
             console.log(message.vali_connext_12);
           } else {
             console.error(e);
@@ -951,9 +924,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -966,11 +936,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_18)
+          addContext(test, message.fail_connext_18);
           assert.fail(message.fail_connext_18);
         } catch (e) {
           if (e.reason === constant.invalid_value_1) {
-            addContext(test, message.vali_connext_13)
+            addContext(test, message.vali_connext_13);
             console.log(message.vali_connext_13);
           } else {
             console.error(e);
@@ -990,9 +960,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -1005,11 +972,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_19)
+          addContext(test, message.fail_connext_19);
           assert.fail(message.fail_connext_19);
         } catch (e) {
           if (e.reason === constant.invalid_value_2) {
-            addContext(test, message.vali_connext_14)
+            addContext(test, message.vali_connext_14);
             console.log(message.vali_connext_14);
           } else {
             console.error(e);
@@ -1029,9 +996,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -1043,11 +1007,14 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_20)
+          addContext(test, message.fail_connext_20);
           assert.fail(message.fail_connext_20);
         } catch (e) {
-          if (e.errors[0].constraints.IsBigNumberish === constant.invalid_bignumber_2) {
-            addContext(test, message.vali_connext_15)
+          if (
+            e.errors[0].constraints.IsBigNumberish ===
+            constant.invalid_bignumber_2
+          ) {
+            addContext(test, message.vali_connext_15);
             console.log(message.vali_connext_15);
           } else {
             console.error(e);
@@ -1067,9 +1034,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     let quotes;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           quotes = await arbitrumDataService.getQuotes({
             fromAddress: data.sender,
@@ -1081,11 +1045,11 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_21)
+          addContext(test, message.fail_connext_21);
           assert.fail(message.fail_connext_21);
         } catch (e) {
           if (e.message === constant.invalid_address_13) {
-            addContext(test, message.vali_connext_16)
+            addContext(test, message.vali_connext_16);
             console.log(message.vali_connext_16);
           } else {
             console.error(e);
@@ -1104,9 +1068,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1116,11 +1077,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_22)
+          addContext(test, message.fail_connext_22);
           assert.fail(message.fail_connext_22);
         } catch (e) {
-          if (e.errors[0].constraints.isPositive === constant.invalid_chainid_4) {
-            addContext(test, message.vali_connext_17)
+          if (
+            e.errors[0].constraints.isPositive === constant.invalid_chainid_4
+          ) {
+            addContext(test, message.vali_connext_17);
             console.log(message.vali_connext_17);
           } else {
             console.error(e);
@@ -1139,9 +1102,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1151,11 +1111,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_23)
+          addContext(test, message.fail_connext_23);
           assert.fail(message.fail_connext_23);
         } catch (e) {
-          if (e.errors[0].constraints.isPositive === constant.invalid_chainid_5) {
-            addContext(test, message.vali_connext_18)
+          if (
+            e.errors[0].constraints.isPositive === constant.invalid_chainid_5
+          ) {
+            addContext(test, message.vali_connext_18);
             console.log(message.vali_connext_18);
           } else {
             console.error(e);
@@ -1174,9 +1136,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1187,11 +1146,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_24)
+          addContext(test, message.fail_connext_24);
           assert.fail(message.fail_connext_24);
         } catch (e) {
-          if (e.errors[0].constraints.isHex === constant.transactionHash_32hex) {
-            addContext(test, message.vali_connext_19)
+          if (
+            e.errors[0].constraints.isHex === constant.transactionHash_32hex
+          ) {
+            addContext(test, message.vali_connext_19);
             console.log(message.vali_connext_19);
           } else {
             console.error(e);
@@ -1210,9 +1171,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1224,7 +1182,7 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
           });
 
           if (transactionStatus.status === constant.invalid_chainid_6) {
-            addContext(test, message.vali_connext_20)
+            addContext(test, message.vali_connext_20);
             console.log(message.vali_connext_20);
           } else {
             addContext(test, eString);
@@ -1246,9 +1204,6 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // validate the transaction status
         let transactionStatus;
         try {
@@ -1258,11 +1213,13 @@ describe('The PrimeSDK, Validate the connext endpoints with arbitrum network on 
             provider: BridgingProvider.Connext,
           });
 
-          addContext(test, message.fail_connext_26)
+          addContext(test, message.fail_connext_26);
           assert.fail(message.fail_connext_26);
         } catch (e) {
-          if (e.errors[0].constraints.isHex === constant.transactionHash_32hex) {
-            addContext(test, message.vali_connext_21)
+          if (
+            e.errors[0].constraints.isHex === constant.transactionHash_32hex
+          ) {
+            addContext(test, message.vali_connext_21);
             console.log(message.vali_connext_21);
           } else {
             console.error(e);

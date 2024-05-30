@@ -22,7 +22,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -30,15 +29,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.sepolia_chainid)
-          },
+            chainId: Number(data.sepolia_chainid),
+          }
         );
 
         try {
           assert.strictEqual(
             sepoliaTestNetSdk.state.EOAAddress,
             data.eoaAddress,
-            message.vali_eoa_address);
+            message.vali_eoa_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -60,7 +60,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           assert.strictEqual(
             sepoliaEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -70,16 +71,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         console.error(e.message);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail(
-          message.fail_smart_address
-        );
+        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
       try {
-        sepoliaDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        sepoliaDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -130,7 +127,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -219,7 +215,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.chainId,
-                message.vali_getTransaction_chainId);
+                message.vali_getTransaction_chainId
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -229,7 +226,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.hash,
-                message.vali_getTransaction_hash);
+                message.vali_getTransaction_hash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -239,7 +237,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.nonce,
-                message.vali_getTransaction_nonce);
+                message.vali_getTransaction_nonce
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -249,7 +248,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.blockHash,
-                message.vali_getTransaction_blockHash);
+                message.vali_getTransaction_blockHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -259,7 +259,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.blockNumber,
-                message.vali_getTransaction_blockNumber);
+                message.vali_getTransaction_blockNumber
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -269,7 +270,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.from,
-                message.vali_getTransaction_from);
+                message.vali_getTransaction_from
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -279,7 +281,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.to,
-                message.vali_getTransaction_to);
+                message.vali_getTransaction_to
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -289,7 +292,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.value,
-                message.vali_getTransaction_value);
+                message.vali_getTransaction_value
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -299,7 +303,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.gasPrice,
-                message.vali_getTransaction_gasPrice);
+                message.vali_getTransaction_gasPrice
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -309,7 +314,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.gasLimit,
-                message.vali_getTransaction_gasLimit);
+                message.vali_getTransaction_gasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -319,7 +325,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.input,
-                message.vali_getTransaction_input);
+                message.vali_getTransaction_input
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -329,7 +336,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.status,
-                message.vali_getTransaction_status);
+                message.vali_getTransaction_status
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -339,7 +347,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.blockExplorerUrl,
-                message.vali_getTransaction_blockExplorerUrl);
+                message.vali_getTransaction_blockExplorerUrl
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -349,7 +358,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.transactionIndex,
-                message.vali_getTransaction_transactionIndex);
+                message.vali_getTransaction_transactionIndex
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -359,7 +369,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.gasUsed,
-                message.vali_getTransaction_gasUsed);
+                message.vali_getTransaction_gasUsed
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -369,7 +380,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.logs[0].transactionIndex,
-                message.vali_getTransaction_log_transactionIndex);
+                message.vali_getTransaction_log_transactionIndex
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -379,7 +391,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.logs[0].blockNumber,
-                message.vali_getTransaction_log_blockNumber);
+                message.vali_getTransaction_log_blockNumber
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -389,7 +402,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.logs[0].transactionHash,
-                message.vali_getTransaction_log_transactionHash);
+                message.vali_getTransaction_log_transactionHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -399,7 +413,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.logs[0].address,
-                message.vali_getTransaction_log_address);
+                message.vali_getTransaction_log_address
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -409,7 +424,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.logs[0].topics,
-                message.vali_getTransaction_log_topics);
+                message.vali_getTransaction_log_topics
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -419,7 +435,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.logs[0].data,
-                message.vali_getTransaction_log_data);
+                message.vali_getTransaction_log_data
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -429,7 +446,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 singleTransaction.logs[0].logIndex,
-                message.vali_getTransaction_log_logIndex);
+                message.vali_getTransaction_log_logIndex
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -439,7 +457,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 singleTransaction.logs[0].blockHash,
-                message.vali_getTransaction_log_blockHash);
+                message.vali_getTransaction_log_blockHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -452,7 +471,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             assert.fail(message.fail_getTransaction_1);
           }
         } else {
-          addContext(test, message.vali_getTransaction_1)
+          addContext(test, message.vali_getTransaction_1);
           console.log(message.vali_getTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -465,7 +484,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // Fetching historical transactions
@@ -475,16 +493,18 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         try {
           transactions = await sepoliaDataService.getTransactions({
             chainId: Number(data.sepolia_chainid),
-            account: data.sender
+            account: data.sender,
           });
 
           randomTransaction =
-            Math.floor(Math.random() * (transactions.transactions.length - 1)) + 1;
+            Math.floor(Math.random() * (transactions.transactions.length - 1)) +
+            1;
 
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].chainId,
-              message.vali_getTransactions_chainId);
+              message.vali_getTransactions_chainId
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -494,7 +514,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].sender,
-              message.vali_getTransactions_sender);
+              message.vali_getTransactions_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -504,7 +525,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].transactionHash,
-              message.vali_getTransactions_transactionHash);
+              message.vali_getTransactions_transactionHash
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -514,7 +536,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].userOpHash,
-              message.vali_getTransactions_userOpHash);
+              message.vali_getTransactions_userOpHash
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -524,7 +547,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].actualGasCost,
-              message.vali_getTransactions_actualGasCost);
+              message.vali_getTransactions_actualGasCost
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -534,7 +558,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].actualGasUsed,
-              message.vali_getTransactions_actualGasUsed);
+              message.vali_getTransactions_actualGasUsed
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -544,7 +569,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].success,
-              message.vali_getTransactions_success);
+              message.vali_getTransactions_success
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -554,7 +580,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].timestamp,
-              message.vali_getTransactions_timestamp);
+              message.vali_getTransactions_timestamp
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -564,7 +591,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].paymaster,
-              message.vali_getTransactions_paymaster);
+              message.vali_getTransactions_paymaster
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -574,7 +602,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].value,
-              message.vali_getTransactions_value);
+              message.vali_getTransactions_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -584,7 +613,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].blockExplorerUrl,
-              message.vali_getTransactions_blockExplorerUrl);
+              message.vali_getTransactions_blockExplorerUrl
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -594,7 +624,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].input,
-              message.vali_getTransactions_input);
+              message.vali_getTransactions_input
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -604,7 +635,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNumber(
               transactions.transactions[randomTransaction].nonce,
-              message.vali_getTransactions_nonce);
+              message.vali_getTransactions_nonce
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -614,7 +646,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].initCode,
-              message.vali_getTransactions_initCode);
+              message.vali_getTransactions_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -624,7 +657,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].callData,
-              message.vali_getTransactions_callData);
+              message.vali_getTransactions_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -634,7 +668,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].verificationGasLimit,
-              message.vali_getTransactions_verificationGasLimit);
+              message.vali_getTransactions_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -644,7 +679,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].preVerificationGas,
-              message.vali_getTransactions_preVerificationGas);
+              message.vali_getTransactions_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -654,7 +690,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].maxFeePerGas,
-              message.vali_getTransactions_maxFeePerGas);
+              message.vali_getTransactions_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -664,7 +701,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           try {
             assert.isNotEmpty(
               transactions.transactions[randomTransaction].maxPriorityFeePerGas,
-              message.vali_getTransactions_maxPriorityFeePerGas);
+              message.vali_getTransactions_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -686,7 +724,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -761,7 +798,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         }
 
         // wait for the 10 seconds
-        helper.wait(10000)
+        helper.wait(10000);
 
         // Fetching historical transactions
         let transactions;
@@ -770,14 +807,15 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             chainId: Number(data.sepolia_chainid),
             account: data.sender,
             page: 1,
-            limit: 10
+            limit: 10,
           });
 
           if (userOpsReceipt != null) {
             try {
               assert.isNumber(
                 transactions.transactions[0].chainId,
-                message.vali_getTransactions_chainId);
+                message.vali_getTransactions_chainId
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -787,7 +825,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].blockNumber,
-                message.vali_getTransactions_blockNumber);
+                message.vali_getTransactions_blockNumber
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -797,7 +836,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].sender,
-                message.vali_getTransactions_sender);
+                message.vali_getTransactions_sender
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -807,7 +847,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].target,
-                message.vali_getTransactions_target);
+                message.vali_getTransactions_target
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -817,7 +858,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].transactionHash,
-                message.vali_getTransactions_transactionHash);
+                message.vali_getTransactions_transactionHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -827,7 +869,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].userOpHash,
-                message.vali_getTransactions_userOpHash);
+                message.vali_getTransactions_userOpHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -837,7 +880,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].actualGasCost,
-                message.vali_getTransactions_actualGasCost);
+                message.vali_getTransactions_actualGasCost
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -847,7 +891,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].actualGasUsed,
-                message.vali_getTransactions_actualGasUsed);
+                message.vali_getTransactions_actualGasUsed
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -857,7 +902,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].success,
-                message.vali_getTransactions_success);
+                message.vali_getTransactions_success
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -867,7 +913,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].timestamp,
-                message.vali_getTransactions_timestamp);
+                message.vali_getTransactions_timestamp
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -877,7 +924,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].paymaster,
-                message.vali_getTransactions_paymaster);
+                message.vali_getTransactions_paymaster
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -887,7 +935,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].value,
-                message.vali_getTransactions_value);
+                message.vali_getTransactions_value
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -897,7 +946,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].blockExplorerUrl,
-                message.vali_getTransactions_blockExplorerUrl);
+                message.vali_getTransactions_blockExplorerUrl
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -907,7 +957,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].input,
-                message.vali_getTransactions_input);
+                message.vali_getTransactions_input
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -917,7 +968,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].nonce,
-                message.vali_getTransactions_nonce);
+                message.vali_getTransactions_nonce
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -927,7 +979,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].initCode,
-                message.vali_getTransactions_initCode);
+                message.vali_getTransactions_initCode
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -937,7 +990,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].callData,
-                message.vali_getTransactions_callData);
+                message.vali_getTransactions_callData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -947,7 +1001,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].verificationGasLimit,
-                message.vali_getTransactions_verificationGasLimit);
+                message.vali_getTransactions_verificationGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -957,7 +1012,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].preVerificationGas,
-                'The preVerificationGas value is empty in the get transactions response.');
+                'The preVerificationGas value is empty in the get transactions response.'
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -967,7 +1023,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxFeePerGas,
-                message.vali_getTransactions_maxFeePerGas);
+                message.vali_getTransactions_maxFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -977,7 +1034,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxPriorityFeePerGas,
-                message.vali_getTransactions_maxPriorityFeePerGas);
+                message.vali_getTransactions_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -987,7 +1045,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxPriorityFeePerGas,
-                message.vali_getTransactions_maxPriorityFeePerGas);
+                message.vali_getTransactions_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -997,7 +1056,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].from,
-                message.vali_getTransactions_nativeTransfers_from);
+                message.vali_getTransactions_nativeTransfers_from
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1007,7 +1067,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].to,
-                message.vali_getTransactions_nativeTransfers_to);
+                message.vali_getTransactions_nativeTransfers_to
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1017,7 +1078,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].value,
-                message.vali_getTransactions_nativeTransfers_value);
+                message.vali_getTransactions_nativeTransfers_value
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1027,7 +1089,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].asset,
-                message.vali_getTransactions_nativeTransfers_asset);
+                message.vali_getTransactions_nativeTransfers_asset
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1037,7 +1100,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].address,
-                message.vali_getTransactions_nativeTransfers_address);
+                message.vali_getTransactions_nativeTransfers_address
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1047,7 +1111,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].nativeTransfers[0].decimal,
-                message.vali_getTransactions_nativeTransfers_decimal);
+                message.vali_getTransactions_nativeTransfers_decimal
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1057,15 +1122,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].nativeTransfers[0].data,
-                message.vali_getTransactions_nativeTransfers_data);
+                message.vali_getTransactions_nativeTransfers_data
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.vali_getTransactions_1)
-            console.log(message.vali_getTransactions_1)
+            addContext(test, message.vali_getTransactions_1);
+            console.log(message.vali_getTransactions_1);
           }
         } catch (e) {
           console.error(e);
@@ -1083,14 +1149,14 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_sepolia);
+            data.providerNetwork_sepolia
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1104,7 +1170,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           erc20Instance = new ethers.Contract(
             data.tokenAddress_sepoliaUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1128,7 +1195,11 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1199,7 +1270,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         }
 
         // wait for the 10 seconds
-        helper.wait(10000)
+        helper.wait(10000);
 
         // Fetching historical transactions
         let transactions;
@@ -1208,14 +1279,15 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             chainId: Number(data.sepolia_chainid),
             account: data.sender,
             page: 1,
-            limit: 10
+            limit: 10,
           });
 
           if (userOpsReceipt != null) {
             try {
               assert.isNumber(
                 transactions.transactions[0].chainId,
-                message.vali_getTransactions_chainId);
+                message.vali_getTransactions_chainId
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1225,7 +1297,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].blockNumber,
-                message.vali_getTransactions_blockNumber);
+                message.vali_getTransactions_blockNumber
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1235,7 +1308,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].sender,
-                message.vali_getTransactions_sender);
+                message.vali_getTransactions_sender
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1245,7 +1319,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].target,
-                message.vali_getTransactions_target);
+                message.vali_getTransactions_target
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1255,7 +1330,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].transactionHash,
-                message.vali_getTransactions_transactionHash);
+                message.vali_getTransactions_transactionHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1265,7 +1341,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].userOpHash,
-                message.vali_getTransactions_userOpHash);
+                message.vali_getTransactions_userOpHash
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1275,7 +1352,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].actualGasCost,
-                message.vali_getTransactions_actualGasCost);
+                message.vali_getTransactions_actualGasCost
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1285,7 +1363,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].actualGasUsed,
-                message.vali_getTransactions_actualGasUsed);
+                message.vali_getTransactions_actualGasUsed
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1295,7 +1374,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].success,
-                message.vali_getTransactions_success);
+                message.vali_getTransactions_success
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1305,7 +1385,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].timestamp,
-                message.vali_getTransactions_timestamp);
+                message.vali_getTransactions_timestamp
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1315,7 +1396,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].paymaster,
-                message.vali_getTransactions_paymaster);
+                message.vali_getTransactions_paymaster
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1325,7 +1407,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].value,
-                message.vali_getTransactions_value);
+                message.vali_getTransactions_value
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1335,7 +1418,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].blockExplorerUrl,
-                message.vali_getTransactions_blockExplorerUrl);
+                message.vali_getTransactions_blockExplorerUrl
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1345,7 +1429,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].input,
-                message.vali_getTransactions_input);
+                message.vali_getTransactions_input
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1355,7 +1440,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].nonce,
-                message.vali_getTransactions_nonce);
+                message.vali_getTransactions_nonce
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1365,7 +1451,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].initCode,
-                message.vali_getTransactions_initCode);
+                message.vali_getTransactions_initCode
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1375,7 +1462,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].callData,
-                message.vali_getTransactions_callData);
+                message.vali_getTransactions_callData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1385,7 +1473,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].verificationGasLimit,
-                message.vali_getTransactions_verificationGasLimit);
+                message.vali_getTransactions_verificationGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1395,7 +1484,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].preVerificationGas,
-                message.vali_getTransactions_preVerificationGas);
+                message.vali_getTransactions_preVerificationGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1405,7 +1495,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxFeePerGas,
-                message.vali_getTransactions_maxFeePerGas);
+                message.vali_getTransactions_maxFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1415,7 +1506,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxPriorityFeePerGas,
-                message.vali_getTransactions_maxPriorityFeePerGas);
+                message.vali_getTransactions_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1425,7 +1517,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].maxPriorityFeePerGas,
-                message.vali_getTransactions_maxPriorityFeePerGas);
+                message.vali_getTransactions_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1435,7 +1528,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].from,
-                message.vali_getTransactions_erc20Transfers_from);
+                message.vali_getTransactions_erc20Transfers_from
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1445,7 +1539,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].to,
-                message.vali_getTransactions_erc20Transfers_to);
+                message.vali_getTransactions_erc20Transfers_to
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1455,7 +1550,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].value,
-                message.vali_getTransactions_erc20Transfers_value);
+                message.vali_getTransactions_erc20Transfers_value
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1465,7 +1561,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].asset,
-                message.vali_getTransactions_erc20Transfers_asset);
+                message.vali_getTransactions_erc20Transfers_asset
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1475,7 +1572,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].address,
-                message.vali_getTransactions_erc20Transfers_address);
+                message.vali_getTransactions_erc20Transfers_address
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1485,7 +1583,8 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNumber(
                 transactions.transactions[0].erc20Transfers[0].decimal,
-                message.vali_getTransactions_erc20Transfers_decimal);
+                message.vali_getTransactions_erc20Transfers_decimal
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -1495,15 +1594,16 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             try {
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].data,
-                message.vali_getTransactions_erc20Transfers_data);
+                message.vali_getTransactions_erc20Transfers_data
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.vali_getTransactions_1)
-            console.log(message.vali_getTransactions_1)
+            addContext(test, message.vali_getTransactions_1);
+            console.log(message.vali_getTransactions_1);
           }
         } catch (e) {
           console.error(e);
@@ -1521,9 +1621,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // Fetching a single transaction
         let transaction;
         try {
@@ -1533,7 +1630,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           });
 
           if (transaction === null || Object.keys(transaction).length === 0) {
-            addContext(test, message.vali_getTransactions_2)
+            addContext(test, message.vali_getTransactions_2);
             console.log(message.vali_getTransactions_2);
           } else {
             addContext(test, message.fail_getTransactions_6);
@@ -1555,9 +1652,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // Fetching a single transaction
         try {
           await sepoliaDataService.getTransaction({
@@ -1565,11 +1659,11 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             chainId: Number(data.sepolia_chainid),
           });
 
-          addContext(test, message.fail_getTransactions_7)
+          addContext(test, message.fail_getTransactions_7);
           assert.fail(message.fail_getTransactions_7);
         } catch (e) {
           if (e.errors[0].constraints.isHex === constant.hash_32) {
-            addContext(test, message.vali_getTransactions_3)
+            addContext(test, message.vali_getTransactions_3);
             console.log(message.vali_getTransactions_3);
           } else {
             console.error(e);
@@ -1588,9 +1682,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           let transactions = await sepoliaDataService.getTransactions({
             chainId: Number(data.invalid_sepolia_chainid),
@@ -1598,7 +1689,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           });
 
           if (transactions.transactions.length === 0) {
-            addContext(test, message.vali_getTransactions_4)
+            addContext(test, message.vali_getTransactions_4);
             console.log(message.vali_getTransactions_4);
           } else {
             addContext(test, message.fail_getTransactions_8);
@@ -1620,21 +1711,21 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           let a = await sepoliaDataService.getTransactions({
             chainId: Number(data.sepolia_chainid),
             account: data.invalidSender,
           });
 
-          addContext(test, message.fail_getTransactions_10)
+          addContext(test, message.fail_getTransactions_10);
           assert.fail(message.fail_getTransactions_10);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.vali_getTransactions_6)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.vali_getTransactions_6);
             console.log(message.vali_getTransactions_6);
           } else {
             console.error(e);
@@ -1653,21 +1744,21 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           await sepoliaDataService.getTransactions({
             chainId: Number(data.sepolia_chainid),
             account: data.incorrectSender,
           });
 
-          addContext(test, message.fail_getTransactions_11)
+          addContext(test, message.fail_getTransactions_11);
           assert.fail(message.fail_getTransactions_11);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.vali_getTransactions_7)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.vali_getTransactions_7);
             console.log(message.vali_getTransactions_7);
           } else {
             console.error(e);

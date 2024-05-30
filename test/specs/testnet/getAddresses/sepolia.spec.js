@@ -19,17 +19,14 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.sepolia_chainid),
-            factoryWallet: Factory.ZERO_DEV
-          },
+            factoryWallet: Factory.ZERO_DEV,
+          }
         );
 
         try {
@@ -79,17 +76,14 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.sepolia_chainid),
-            factoryWallet: Factory.SIMPLE_ACCOUNT
-          },
+            factoryWallet: Factory.SIMPLE_ACCOUNT,
+          }
         );
 
         try {
@@ -119,7 +113,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             sepoliaSimpleAccountAddress,
             data.simpleaccount_address,
-            message.vali_simple_account,
+            message.vali_simple_account
           );
         } catch (e) {
           console.error(e);
@@ -139,16 +133,13 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         sepoliaTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.sepolia_chainid)
-          },
+            chainId: Number(data.sepolia_chainid),
+          }
         );
 
         try {
@@ -178,7 +169,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             sepoliaAccountAddress,
             data.sender,
-            message.vali_account_address,
+            message.vali_account_address
           );
         } catch (e) {
           console.error(e);
@@ -198,8 +189,10 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.sepolia_chainid),
-            projectKey: process.env.PROJECT_KEY, index: 1
-          });
+            projectKey: process.env.PROJECT_KEY,
+            index: 1,
+          }
+        );
 
         try {
           assert.strictEqual(
@@ -228,7 +221,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             sepoliaAccountAddress1,
             data.sender1,
-            message.vali_account_address,
+            message.vali_account_address
           );
         } catch (e) {
           console.error(e);

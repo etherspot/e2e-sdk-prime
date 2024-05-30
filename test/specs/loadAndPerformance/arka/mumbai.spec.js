@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk} from '@etherspot/prime-sdk';
+import { PrimeSdk } from '@etherspot/prime-sdk';
 import { ethers } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
@@ -247,14 +247,14 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
         {
           chainId: Number(data.mumbai_chainid_testnet),
           projectKey: process.env.PROJECT_KEY_TESTNET,
-        },
+        }
       );
 
       try {
         assert.strictEqual(
           mumbaiTestNetSdk.state.EOAAddress,
           data.eoaAddress,
-          'The EOA Address is not calculated correctly.',
+          'The EOA Address is not calculated correctly.'
         );
       } catch (e) {
         console.error(e);
@@ -276,7 +276,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
-        'The Etherspot Wallet Address is not displayed successfully.',
+        'The Etherspot Wallet Address is not displayed successfully.'
       );
     }
 
@@ -326,7 +326,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
-        'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.',
+        'The estimate transactions added to the batch and get the fee data for the UserOp is not performed.'
       );
     }
 
@@ -338,7 +338,7 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
       const eString = e.toString();
       addContext(test, eString);
       assert.fail(
-        'The sign the UserOp and sending to the bundler action is not performed.',
+        'The sign the UserOp and sending to the bundler action is not performed.'
       );
     }
 
