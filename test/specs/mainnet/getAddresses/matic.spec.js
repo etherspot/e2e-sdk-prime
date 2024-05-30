@@ -19,17 +19,18 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         maticMainNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            factoryWallet: Factory.ZERO_DEV, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
-          },
+            factoryWallet: Factory.ZERO_DEV,
+            bundlerProvider: new EtherspotBundler(
+              Number(data.matic_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
@@ -79,17 +80,18 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         maticMainNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            factoryWallet: Factory.SIMPLE_ACCOUNT, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
-          },
+            factoryWallet: Factory.SIMPLE_ACCOUNT,
+            bundlerProvider: new EtherspotBundler(
+              Number(data.matic_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
@@ -119,7 +121,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             maticSimpleAccountAddress,
             data.simpleaccount_address,
-            message.vali_simple_account,
+            message.vali_simple_account
           );
         } catch (e) {
           console.error(e);
@@ -139,17 +141,17 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         maticMainNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
-          },
+            bundlerProvider: new EtherspotBundler(
+              Number(data.matic_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
@@ -172,14 +174,13 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
 
       // get account address
       try {
-        maticAccountAddress =
-          await maticMainNetSdk.getCounterFactualAddress();
+        maticAccountAddress = await maticMainNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
             maticAccountAddress,
             data.sender,
-            message.vali_account_address,
+            message.vali_account_address
           );
         } catch (e) {
           console.error(e);
@@ -199,8 +200,14 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.matic_chainid),
-            projectKey: process.env.PROJECT_KEY, index: 1, bundlerProvider: new EtherspotBundler(Number(data.matic_chainid), process.env.BUNDLER_API_KEY)
-          });
+            projectKey: process.env.PROJECT_KEY,
+            index: 1,
+            bundlerProvider: new EtherspotBundler(
+              Number(data.matic_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
+        );
 
         try {
           assert.strictEqual(
@@ -229,7 +236,7 @@ describe('The PrimeSDK, when get the ZeroDev address and SimpleAccount address d
           assert.strictEqual(
             maticAccountAddress1,
             data.sender1,
-            message.vali_account_address,
+            message.vali_account_address
           );
         } catch (e) {
           console.error(e);

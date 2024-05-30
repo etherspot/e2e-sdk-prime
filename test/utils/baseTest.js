@@ -1,4 +1,4 @@
-import helper from "./helper.js";
+import helper from './helper.js';
 
 function customRetryAsync(fn, maxRetries) {
   return new Promise((resolve, reject) => {
@@ -12,9 +12,7 @@ function customRetryAsync(fn, maxRetries) {
       } catch (error) {
         if (retries < maxRetries) {
           console.log(
-            `Test failed (retry ${retries + 1}/${maxRetries}): ${
-              error.message
-            }`,
+            `Test failed (retry ${retries + 1}/${maxRetries}): ${error.message}`
           );
           await new Promise((resolve) => setTimeout(resolve, retryDelay));
           retries++;

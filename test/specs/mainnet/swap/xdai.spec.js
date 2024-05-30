@@ -21,17 +21,17 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
 
     await customRetryAsync(async function () {
-
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.xdai_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
-          },
+            bundlerProvider: new EtherspotBundler(
+              Number(data.xdai_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
@@ -61,7 +61,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
           assert.strictEqual(
             xdaiEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -76,9 +77,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
       // initializating Data service...
       try {
-        xdaiDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        xdaiDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -130,9 +129,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -143,7 +139,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
 
             try {
@@ -253,7 +249,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].receiveAmount,
-                  message.vali_exchangeOffers_receiveAmount,
+                  message.vali_exchangeOffers_receiveAmount
                 );
               } catch (e) {
                 console.error(e);
@@ -304,9 +300,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -317,13 +310,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
 
             try {
               assert.isNotEmpty(
                 exchangeSupportedAssets.items[0].address,
-                message.vali_exchangeOffers_address,
+                message.vali_exchangeOffers_address
               );
             } catch (e) {
               console.error(e);
@@ -334,7 +327,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNumber(
                 exchangeSupportedAssets.items[0].chainId,
-                message.vali_exchangeOffers_chainId,
+                message.vali_exchangeOffers_chainId
               );
             } catch (e) {
               console.error(e);
@@ -345,7 +338,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 exchangeSupportedAssets.items[0].name,
-                message.vali_exchangeOffers_name,
+                message.vali_exchangeOffers_name
               );
             } catch (e) {
               console.error(e);
@@ -416,7 +409,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               try {
                 assert.isNotEmpty(
                   offers[i].provider,
-                  message.vali_exchangeOffers_provider,
+                  message.vali_exchangeOffers_provider
                 );
               } catch (e) {
                 console.error(e);
@@ -477,9 +470,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         let quotes;
         try {
@@ -499,7 +489,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].provider,
-                message.vali_crossChainQuotes_provider,
+                message.vali_crossChainQuotes_provider
               );
             } catch (e) {
               console.error(e);
@@ -510,7 +500,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].transaction.data,
-                message.vali_crossChainQuotes_data,
+                message.vali_crossChainQuotes_data
               );
             } catch (e) {
               console.error(e);
@@ -562,7 +552,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.vali_crossChainQuotes_1)
+            addContext(test, message.vali_crossChainQuotes_1);
             console.log(message.vali_crossChainQuotes_1);
           }
         } catch (e) {
@@ -581,9 +571,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         let quotes;
         let stepTransaction;
@@ -610,7 +597,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].id,
-                message.vali_advanceRoutesLiFi_id,
+                message.vali_advanceRoutesLiFi_id
               );
             } catch (e) {
               console.error(e);
@@ -621,7 +608,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNumber(
                 quotes.items[0].fromChainId,
-                message.vali_advanceRoutesLiFi_fromChainId,
+                message.vali_advanceRoutesLiFi_fromChainId
               );
             } catch (e) {
               console.error(e);
@@ -654,7 +641,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 quotes.items[0].fromToken,
-                message.vali_advanceRoutesLiFi_fromToken,
+                message.vali_advanceRoutesLiFi_fromToken
               );
             } catch (e) {
               console.error(e);
@@ -753,7 +740,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 stepTransaction.items[0].data,
-                message.vali_stepTransaction_data,
+                message.vali_stepTransaction_data
               );
             } catch (e) {
               console.error(e);
@@ -764,7 +751,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             try {
               assert.isNotEmpty(
                 stepTransaction.items[0].value,
-                message.vali_stepTransaction_value,
+                message.vali_stepTransaction_value
               );
             } catch (e) {
               console.error(e);
@@ -902,9 +889,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -915,13 +899,13 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
 
             try {
               assert.isNotEmpty(
                 exchangeSupportedAssets.items[0].address,
-                message.vali_exchangeOffers_address,
+                message.vali_exchangeOffers_address
               );
             } catch (e) {
               console.error(e);
@@ -1008,12 +992,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_2)
-          assert.fail(message.fail_exchangeOffers_2)
+          addContext(test, message.fail_exchangeOffers_2);
+          assert.fail(message.fail_exchangeOffers_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_exchangeOffers_4)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_exchangeOffers_4);
             console.log(message.vali_exchangeOffers_4);
           } else {
             console.error(e);
@@ -1033,9 +1020,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1046,7 +1030,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1072,12 +1056,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_3)
-          assert.fail(message.fail_exchangeOffers_3)
+          addContext(test, message.fail_exchangeOffers_3);
+          assert.fail(message.fail_exchangeOffers_3);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_exchangeOffers_5)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_exchangeOffers_5);
             console.log(message.vali_exchangeOffers_5);
           } else {
             console.error(e);
@@ -1097,9 +1084,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1110,7 +1094,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1137,12 +1121,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_4)
-          assert.fail(message.fail_exchangeOffers_4)
+          addContext(test, message.fail_exchangeOffers_4);
+          assert.fail(message.fail_exchangeOffers_4);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_exchangeOffers_6)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_exchangeOffers_6);
             console.log(message.vali_exchangeOffers_6);
           } else {
             console.error(e);
@@ -1162,9 +1149,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1175,7 +1159,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1201,12 +1185,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_5)
-          assert.fail(message.fail_exchangeOffers_5)
+          addContext(test, message.fail_exchangeOffers_5);
+          assert.fail(message.fail_exchangeOffers_5);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_exchangeOffers_7)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_exchangeOffers_7);
             console.log(message.vali_exchangeOffers_7);
           } else {
             console.error(e);
@@ -1226,9 +1213,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1239,7 +1223,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1266,11 +1250,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_6)
-          assert.fail(message.fail_exchangeOffers_6)
+          addContext(test, message.fail_exchangeOffers_6);
+          assert.fail(message.fail_exchangeOffers_6);
         } catch (e) {
           if (e.reason === constant.invalid_bignumber_1) {
-            addContext(test, message.vali_exchangeOffers_8)
+            addContext(test, message.vali_exchangeOffers_8);
             console.log(message.vali_exchangeOffers_8);
           } else {
             console.error(e);
@@ -1290,9 +1274,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1303,7 +1284,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1330,11 +1311,11 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             fromAmount: BigNumber.from(fromAmount),
           });
 
-          addContext(test, message.fail_exchangeOffers_7)
-          assert.fail(message.fail_exchangeOffers_7)
+          addContext(test, message.fail_exchangeOffers_7);
+          assert.fail(message.fail_exchangeOffers_7);
         } catch (e) {
           if (e.reason === constant.invalid_bignumber_1) {
-            addContext(test, message.vali_exchangeOffers_9)
+            addContext(test, message.vali_exchangeOffers_9);
             console.log(message.vali_exchangeOffers_9);
           } else {
             console.error(e);
@@ -1354,9 +1335,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     let exchangeSupportedAssets;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         exchangeSupportedAssets =
           await xdaiDataService.getExchangeSupportedAssets({
             page: 1,
@@ -1367,7 +1345,7 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
         try {
           if (exchangeSupportedAssets.items.length > 0) {
-            addContext(test, message.vali_exchangeOffers_1)
+            addContext(test, message.vali_exchangeOffers_1);
             console.log(message.vali_exchangeOffers_1);
           } else {
             addContext(test, message.vali_exchangeOffers_2);
@@ -1393,12 +1371,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
             // without fromAmount
           });
 
-          addContext(test, message.fail_exchangeOffers_9)
-          assert.fail(message.fail_exchangeOffers_9)
+          addContext(test, message.fail_exchangeOffers_9);
+          assert.fail(message.fail_exchangeOffers_9);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.IsBigNumberish === constant.invalid_bignumber_2) {
-            addContext(test, message.vali_exchangeOffers_11)
+          if (
+            errorResponse[0].constraints.IsBigNumberish ===
+            constant.invalid_bignumber_2
+          ) {
+            addContext(test, message.vali_exchangeOffers_11);
             console.log(message.vali_exchangeOffers_11);
           } else {
             console.error(e);
@@ -1417,9 +1398,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1432,12 +1410,12 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_2)
+          addContext(test, message.fail_crossChainQuotes_2);
           assert.fail(message.fail_crossChainQuotes_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
           if (errorResponse[0].property === constant.invalid_chainid_1) {
-            addContext(test, message.vali_crossChainQuotes_2)
+            addContext(test, message.vali_crossChainQuotes_2);
             console.log(message.vali_crossChainQuotes_2);
           } else {
             console.error(e);
@@ -1456,9 +1434,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1471,12 +1446,12 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_3)
-          assert.fail(message.fail_crossChainQuotes_3)
+          addContext(test, message.fail_crossChainQuotes_3);
+          assert.fail(message.fail_crossChainQuotes_3);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
           if (errorResponse[0].property === constant.invalid_chainid_2) {
-            addContext(test, message.vali_crossChainQuotes_3)
+            addContext(test, message.vali_crossChainQuotes_3);
             console.log(message.vali_crossChainQuotes_3);
           } else {
             console.error(e);
@@ -1495,9 +1470,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1511,12 +1483,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_4)
-          assert.fail(message.fail_crossChainQuotes_4)
+          addContext(test, message.fail_crossChainQuotes_4);
+          assert.fail(message.fail_crossChainQuotes_4);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_crossChainQuotes_4)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_crossChainQuotes_4);
             console.log(message.vali_crossChainQuotes_4);
           } else {
             console.error(e);
@@ -1535,9 +1510,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1551,12 +1523,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_5)
-          assert.fail(message.fail_crossChainQuotes_5)
+          addContext(test, message.fail_crossChainQuotes_5);
+          assert.fail(message.fail_crossChainQuotes_5);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_crossChainQuotes_5)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_crossChainQuotes_5);
             console.log(message.vali_crossChainQuotes_5);
           } else {
             console.error(e);
@@ -1575,9 +1550,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1590,12 +1562,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_6)
-          assert.fail(message.fail_crossChainQuotes_6)
+          addContext(test, message.fail_crossChainQuotes_6);
+          assert.fail(message.fail_crossChainQuotes_6);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_crossChainQuotes_6)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_crossChainQuotes_6);
             console.log(message.vali_crossChainQuotes_6);
           } else {
             console.error(e);
@@ -1614,9 +1589,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1630,12 +1602,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_7)
-          assert.fail(message.fail_crossChainQuotes_7)
+          addContext(test, message.fail_crossChainQuotes_7);
+          assert.fail(message.fail_crossChainQuotes_7);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_crossChainQuotes_7)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_crossChainQuotes_7);
             console.log(message.vali_crossChainQuotes_7);
           } else {
             console.error(e);
@@ -1654,9 +1629,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1670,12 +1642,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_8)
-          assert.fail(message.fail_crossChainQuotes_8)
+          addContext(test, message.fail_crossChainQuotes_8);
+          assert.fail(message.fail_crossChainQuotes_8);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_crossChainQuotes_8)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_crossChainQuotes_8);
             console.log(message.vali_crossChainQuotes_8);
           } else {
             console.error(e);
@@ -1694,9 +1669,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1709,12 +1681,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_9)
-          assert.fail(message.fail_crossChainQuotes_9)
+          addContext(test, message.fail_crossChainQuotes_9);
+          assert.fail(message.fail_crossChainQuotes_9);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_crossChainQuotes_9)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_crossChainQuotes_9);
             console.log(message.vali_crossChainQuotes_9);
           } else {
             console.error(e);
@@ -1733,9 +1708,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1749,12 +1721,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_10)
+          addContext(test, message.fail_crossChainQuotes_10);
           assert.fail(message.fail_crossChainQuotes_10);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.vali_crossChainQuotes_10)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.vali_crossChainQuotes_10);
             assert.fail(message.vali_crossChainQuotes_10);
           } else {
             console.error(e);
@@ -1773,9 +1748,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1789,18 +1761,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_11)
+          addContext(test, message.fail_crossChainQuotes_11);
           assert.fail(message.fail_crossChainQuotes_11);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.vali_crossChainQuotes_11)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.vali_crossChainQuotes_11);
             assert.fail(message.vali_crossChainQuotes_11);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            addContext(test, message.fail_crossChainQuotes_12)
+            addContext(test, message.fail_crossChainQuotes_12);
             assert.fail(message.fail_crossChainQuotes_11);
           }
         }
@@ -1814,9 +1789,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1829,12 +1801,15 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getCrossChainQuotes(quoteRequestPayload);
 
-          addContext(test, message.fail_crossChainQuotes_12)
+          addContext(test, message.fail_crossChainQuotes_12);
           assert.fail(message.fail_crossChainQuotes_12);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.vali_crossChainQuotes_12)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.vali_crossChainQuotes_12);
             console.log(message.vali_crossChainQuotes_12);
           } else {
             console.error(e);
@@ -1853,9 +1828,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1868,12 +1840,12 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_2)
-          assert.fail(fail_advanceRoutesLiFi_2)
+          addContext(test, fail_advanceRoutesLiFi_2);
+          assert.fail(fail_advanceRoutesLiFi_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
           if (errorResponse[0].property === constant.invalid_chainid_1) {
-            addContext(test, message.vali_advanceRoutesLiFi_2)
+            addContext(test, message.vali_advanceRoutesLiFi_2);
             console.log(message.vali_advanceRoutesLiFi_2);
           } else {
             console.error(e);
@@ -1892,9 +1864,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1907,18 +1876,18 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_3)
-          assert.fail(fail_advanceRoutesLiFi_3)
+          addContext(test, fail_advanceRoutesLiFi_3);
+          assert.fail(fail_advanceRoutesLiFi_3);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
           if (errorResponse[0].property === constant.invalid_chainid_2) {
-            addContext(test, message.vali_advanceRoutesLifi_3)
+            addContext(test, message.vali_advanceRoutesLifi_3);
             console.log(message.vali_advanceRoutesLifi_3);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_3)
+            assert.fail(fail_advanceRoutesLiFi_3);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -1931,9 +1900,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1947,18 +1913,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_4)
-          assert.fail(fail_advanceRoutesLiFi_4)
+          addContext(test, fail_advanceRoutesLiFi_4);
+          assert.fail(fail_advanceRoutesLiFi_4);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_advanceRoutesLifi_4)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_4);
             console.log(message.vali_advanceRoutesLifi_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_4)
+            assert.fail(fail_advanceRoutesLiFi_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -1971,9 +1940,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -1987,18 +1953,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_5)
-          assert.fail(fail_advanceRoutesLiFi_5)
+          addContext(test, fail_advanceRoutesLiFi_5);
+          assert.fail(fail_advanceRoutesLiFi_5);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_advanceRoutesLifi_5)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_5);
             console.log(message.vali_advanceRoutesLifi_5);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_5)
+            assert.fail(fail_advanceRoutesLiFi_5);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2011,9 +1980,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2026,18 +1992,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_6)
-          assert.fail(fail_advanceRoutesLiFi_6)
+          addContext(test, fail_advanceRoutesLiFi_6);
+          assert.fail(fail_advanceRoutesLiFi_6);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_2) {
-            addContext(test, message.vali_advanceRoutesLifi_6)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_2
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_6);
             console.log(message.vali_advanceRoutesLifi_6);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_6)
+            assert.fail(fail_advanceRoutesLiFi_6);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2050,9 +2019,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2066,18 +2032,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_7)
-          assert.fail(fail_advanceRoutesLiFi_7)
+          addContext(test, fail_advanceRoutesLiFi_7);
+          assert.fail(fail_advanceRoutesLiFi_7);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_advanceRoutesLifi_7)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_7);
             console.log(message.vali_advanceRoutesLifi_7);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_7)
+            assert.fail(fail_advanceRoutesLiFi_7);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2090,9 +2059,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2106,18 +2072,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_8)
-          assert.fail(fail_advanceRoutesLiFi_8)
+          addContext(test, fail_advanceRoutesLiFi_8);
+          assert.fail(fail_advanceRoutesLiFi_8);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_advanceRoutesLifi_8)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_8);
             console.log(message.vali_advanceRoutesLifi_8);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_8)
+            assert.fail(fail_advanceRoutesLiFi_8);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2130,9 +2099,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2145,18 +2111,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_9)
-          assert.fail(fail_advanceRoutesLiFi_9)
+          addContext(test, fail_advanceRoutesLiFi_9);
+          assert.fail(fail_advanceRoutesLiFi_9);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_3) {
-            addContext(test, message.vali_advanceRoutesLifi_9)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_3
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_9);
             console.log(message.vali_advanceRoutesLifi_9);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_9)
+            assert.fail(fail_advanceRoutesLiFi_9);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2169,9 +2138,6 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let quoteRequestPayload;
         try {
           quoteRequestPayload = {
@@ -2184,18 +2150,21 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
 
           await xdaiDataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-          addContext(test, fail_advanceRoutesLiFi_10)
-          assert.fail(fail_advanceRoutesLiFi_10)
+          addContext(test, fail_advanceRoutesLiFi_10);
+          assert.fail(fail_advanceRoutesLiFi_10);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.IsBigNumberish === constant.invalid_bignumber_3) {
-            addContext(test, message.vali_advanceRoutesLifi_10)
+          if (
+            errorResponse[0].constraints.IsBigNumberish ===
+            constant.invalid_bignumber_3
+          ) {
+            addContext(test, message.vali_advanceRoutesLifi_10);
             console.log(message.vali_advanceRoutesLifi_10);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(fail_advanceRoutesLiFi_10)
+            assert.fail(fail_advanceRoutesLiFi_10);
           }
         }
       }, data.retry); // Retry this async test up to 5 times

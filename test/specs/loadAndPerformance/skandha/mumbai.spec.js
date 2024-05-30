@@ -42,7 +42,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the skandha_getGasPrice response.',
+            'The result value is empty in the skandha_getGasPrice response.'
           );
         } catch (e) {
           console.error(e);
@@ -94,7 +94,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the skandha_config response.',
+            'The result value is empty in the skandha_config response.'
           );
         } catch (e) {
           console.error(e);
@@ -146,7 +146,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the skandha_feeHistory response.',
+            'The result value is empty in the skandha_feeHistory response.'
           );
         } catch (e) {
           console.error(e);
@@ -198,7 +198,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the eth_chainId response.',
+            'The result value is empty in the eth_chainId response.'
           );
         } catch (e) {
           console.error(e);
@@ -250,7 +250,7 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue.result,
-            'The result value is empty in the eth_supportedEntryPoints response.',
+            'The result value is empty in the eth_supportedEntryPoints response.'
           );
         } catch (e) {
           console.error(e);
@@ -306,48 +306,48 @@ describe('Performance testing of Skandha Endpoints with Mumbai Network', functio
         try {
           assert.isNotEmpty(
             returnedValue[0].result,
-            'The first result value is empty in the Batch RPC calls response.',
+            'The first result value is empty in the Batch RPC calls response.'
           );
         } catch (e) {
           console.error(e);
           assert.fail(
-            'The first result value is not displayed correctly in the Batch RPC calls response.',
+            'The first result value is not displayed correctly in the Batch RPC calls response.'
           );
         }
 
         try {
           assert.isNotEmpty(
             returnedValue[1].result,
-            'The second result value is empty in the Batch RPC calls response.',
+            'The second result value is empty in the Batch RPC calls response.'
           );
         } catch (e) {
           console.error(e);
           assert.fail(
-            'The second result value is not displayed correctly in the Batch RPC calls response.',
+            'The second result value is not displayed correctly in the Batch RPC calls response.'
           );
         }
 
         try {
           assert.isNotEmpty(
             returnedValue[2].result,
-            'The third result value is empty in the Batch RPC calls response.',
+            'The third result value is empty in the Batch RPC calls response.'
           );
         } catch (e) {
           console.error(e);
           assert.fail(
-            'The third result value is not displayed correctly in the Batch RPC calls response.',
+            'The third result value is not displayed correctly in the Batch RPC calls response.'
           );
         }
 
         try {
           assert.isNotEmpty(
             returnedValue[3].result,
-            'The fourth result value is empty in the Batch RPC calls response.',
+            'The fourth result value is empty in the Batch RPC calls response.'
           );
         } catch (e) {
           console.error(e);
           assert.fail(
-            'The fourth result value is not displayed correctly in the Batch RPC calls response.',
+            'The fourth result value is not displayed correctly in the Batch RPC calls response.'
           );
         }
       }

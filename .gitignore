@@ -1,5 +1,5 @@
 node_modules
 etherspot-prime-sdk
 .eslintrc.json
-.prettierrc
+.prettierrc.json
 mochawesome-report

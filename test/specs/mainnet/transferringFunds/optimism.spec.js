@@ -23,7 +23,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -32,14 +31,19 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.optimism_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.optimism_chainid), process.env.BUNDLER_API_KEY)
-          });
+            bundlerProvider: new EtherspotBundler(
+              Number(data.optimism_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
+        );
 
         try {
           assert.strictEqual(
             optimismMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            message.vali_eoa_address);
+            message.vali_eoa_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -61,7 +65,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           assert.strictEqual(
             optimismEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -76,8 +81,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
       // initializating Data service...
       try {
-        optimismDataService = new DataUtils(
-          process.env.DATA_API_KEY);
+        optimismDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -128,7 +132,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -152,7 +155,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -162,7 +166,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -172,7 +177,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -191,9 +197,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           balance = await optimismMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -214,7 +218,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -222,9 +227,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -234,7 +237,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -244,7 +248,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -254,7 +259,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -264,7 +270,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -274,7 +281,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -284,7 +292,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -294,7 +303,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -304,7 +314,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -314,7 +325,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -333,9 +345,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           uoHash = await optimismMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -344,9 +354,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -363,19 +373,20 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
 
           try {
             assert.isTrue(
               provider._isProvider,
-              message.vali_erc20Transfer_provider);
+              message.vali_erc20Transfer_provider
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -394,7 +405,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -408,9 +420,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           decimals = await erc20Instance.functions.decimals();
 
           try {
-            assert.isNotEmpty(
-              decimals,
-              message.vali_erc20Contract_decimals);
+            assert.isNotEmpty(decimals, message.vali_erc20Contract_decimals);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -428,12 +438,17 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
 
           try {
             assert.isNotEmpty(
               transactionData,
-              message.vali_erc20Contract_transferFrom);
+              message.vali_erc20Contract_transferFrom
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -465,9 +480,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           });
 
           try {
-            assert.isNotEmpty(
-              userOpsBatch.to,
-              message.vali_addTransaction_to);
+            assert.isNotEmpty(userOpsBatch.to, message.vali_addTransaction_to);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -477,7 +490,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               userOpsBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -487,7 +501,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               userOpsBatch.value[0],
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -508,7 +523,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -516,9 +532,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -528,7 +542,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -538,7 +553,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -548,7 +564,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -558,7 +575,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -568,7 +586,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -578,7 +597,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -588,7 +608,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -598,7 +619,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -608,7 +630,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -627,9 +650,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           uoHash = await optimismMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -638,9 +659,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -657,7 +678,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // get erc721 Contract Interface
@@ -675,7 +695,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               erc721Data,
-              message.vali_erc721Transfer_contractInterface);
+              message.vali_erc721Transfer_contractInterface
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -709,7 +730,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               userOpsBatch.to[0],
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -719,7 +741,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               userOpsBatch.data[0],
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -729,7 +752,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               userOpsBatch.value[0],
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -750,7 +774,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -758,9 +783,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -770,7 +793,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -780,7 +804,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -790,7 +815,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -800,7 +826,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -810,7 +837,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -820,7 +848,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -830,7 +859,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -840,7 +870,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -850,7 +881,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -869,9 +901,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           uoHash = await optimismMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -880,9 +910,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -899,7 +929,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -923,7 +952,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -933,7 +963,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -943,7 +974,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -962,9 +994,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           balance = await optimismMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -986,7 +1016,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -994,9 +1025,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1006,7 +1035,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1016,7 +1046,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1026,7 +1057,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1036,7 +1068,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1046,7 +1079,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1056,7 +1090,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1066,7 +1101,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1076,7 +1112,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1086,7 +1123,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1105,9 +1143,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           uoHash = await optimismMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1116,9 +1152,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -1136,9 +1172,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     var test = this;
     if (runTest) {
-
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         const provider = new providers.JsonRpcProvider();
@@ -1164,7 +1198,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1174,7 +1209,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1184,7 +1220,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1203,9 +1240,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           balance = await optimismMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1226,11 +1261,13 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await optimismMainNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await optimismMainNetSdk.estimate({
+              key: concurrentUseropsCount,
+            });
             userops.push(op);
           }
 
-          console.log("Sending userops...");
+          console.log('Sending userops...');
           for (const op of userops) {
             const uoHash = await optimismMainNetSdk.send(op);
             uoHashes.push(uoHash);
@@ -1238,9 +1275,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -1252,30 +1289,34 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           console.log('Waiting for transactions...');
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
-          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            helper.wait(2000)
+          while (
+            userOpsReceipts.some((receipt) => receipt == null) &&
+            Date.now() < timeout
+          ) {
+            helper.wait(2000);
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await optimismMainNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] =
+                await optimismMainNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
-          if (userOpsReceipts.some(receipt => receipt != null)) {
+          if (userOpsReceipts.some((receipt) => receipt != null)) {
             for (const uoReceipt of userOpsReceipts) {
               if (!uoReceipt) continue;
-              addContext(test, message.vali_submitTransaction_1)
+              addContext(test, message.vali_submitTransaction_1);
               console.log(message.vali_submitTransaction_1);
             }
           } else {
-            addContext(test, message.vali_submitTransaction_2)
+            addContext(test, message.vali_submitTransaction_2);
             console.log(message.vali_submitTransaction_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(message.fail_getUserOpReceipt_1)
+          assert.fail(message.fail_getUserOpReceipt_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -1287,9 +1328,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1326,12 +1364,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_9)
+          addContext(test, message.fail_estimateTransaction_9);
           assert.fail(message.fail_estimateTransaction_9);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_estimateTransaction_8)
+            addContext(test, message.vali_estimateTransaction_8);
             console.log(message.vali_estimateTransaction_8);
           } else {
             console.error(e);
@@ -1350,9 +1388,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1389,12 +1424,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_10)
+          addContext(test, message.fail_estimateTransaction_10);
           assert.fail(message.fail_estimateTransaction_10);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_estimateTransaction_9)
+            addContext(test, message.vali_estimateTransaction_9);
             console.log(message.vali_estimateTransaction_9);
           } else {
             console.error(e);
@@ -1413,9 +1448,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1432,11 +1464,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             value: ethers.utils.parseUnits(data.invalidValue), // invalid value
           });
 
-          addContext(test, message.fail_estimateTransaction_11)
+          addContext(test, message.fail_estimateTransaction_11);
           assert.fail(message.fail_estimateTransaction_11);
         } catch (e) {
           if (e.reason === constant.invalid_value_1) {
-            addContext(test, message.vali_estimateTransaction_10)
+            addContext(test, message.vali_estimateTransaction_10);
             console.log(message.vali_estimateTransaction_10);
           } else {
             console.error(e);
@@ -1455,9 +1487,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1474,11 +1503,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             value: ethers.utils.parseUnits(data.smallValue), // very small value
           });
 
-          addContext(test, message.fail_estimateTransaction_12)
+          addContext(test, message.fail_estimateTransaction_12);
           assert.fail(message.fail_estimateTransaction_12);
         } catch (e) {
           if (e.reason === constant.invalid_value_2) {
-            addContext(test, message.vali_estimateTransaction_11)
+            addContext(test, message.vali_estimateTransaction_11);
             console.log(message.vali_estimateTransaction_11);
           } else {
             console.error(e);
@@ -1497,9 +1526,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1524,11 +1550,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_13)
+          addContext(test, message.fail_estimateTransaction_13);
           assert.fail(message.fail_estimateTransaction_13);
         } catch (e) {
           if (e.message === constant.invalid_parameter) {
-            addContext(test, message.vali_estimateTransaction_12)
+            addContext(test, message.vali_estimateTransaction_12);
             console.log(message.vali_estimateTransaction_12);
           } else {
             console.error(e);
@@ -1547,9 +1573,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1587,12 +1610,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate({ callGasLimit: 40000 });
 
-          addContext(test, message.fail_estimateTransaction_9)
+          addContext(test, message.fail_estimateTransaction_9);
           assert.fail(message.fail_estimateTransaction_9);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_estimateTransaction_8)
+            addContext(test, message.vali_estimateTransaction_8);
             console.log(message.vali_estimateTransaction_8);
           } else {
             console.error(e);
@@ -1611,9 +1634,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1651,12 +1671,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate({ callGasLimit: 40000 });
 
-          addContext(test, message.fail_estimateTransaction_10)
+          addContext(test, message.fail_estimateTransaction_10);
           assert.fail(message.fail_estimateTransaction_10);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_estimateTransaction_8)
+            addContext(test, message.vali_estimateTransaction_8);
             console.log(message.vali_estimateTransaction_8);
           } else {
             console.error(e);
@@ -1675,9 +1695,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await optimismMainNetSdk.clearUserOpsFromBatch();
@@ -1703,11 +1720,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate({ callGasLimit: 40000 });
 
-          addContext(test, message.fail_estimateTransaction_13)
+          addContext(test, message.fail_estimateTransaction_13);
           assert.fail(message.fail_estimateTransaction_13);
         } catch (e) {
           if (e.message === constant.empty_batch) {
-            addContext(test, message.vali_estimateTransaction_12)
+            addContext(test, message.vali_estimateTransaction_12);
             console.log(message.vali_estimateTransaction_12);
           } else {
             console.error(e);
@@ -1726,14 +1743,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.invalidProviderNetwork_optimism, // invalid provider
+            data.invalidProviderNetwork_optimism // invalid provider
           );
         } catch (e) {
           console.error(e);
@@ -1748,7 +1762,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1760,11 +1775,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await erc20Instance.functions.decimals();
 
-          addContext(test, message.fail_estimateTransaction_14)
+          addContext(test, message.fail_estimateTransaction_14);
           assert.fail(message.fail_estimateTransaction_14);
         } catch (e) {
           if (e.reason === constant.invalid_network_2) {
-            addContext(test, message.vali_estimateTransaction_13)
+            addContext(test, message.vali_estimateTransaction_13);
             console.log(message.vali_estimateTransaction_13);
           } else {
             console.error(e);
@@ -1783,9 +1798,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
@@ -1803,7 +1815,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1815,11 +1828,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await erc20Instance.functions.decimals();
 
-          addContext(test, message.fail_estimateTransaction_14)
+          addContext(test, message.fail_estimateTransaction_14);
           assert.fail(message.fail_estimateTransaction_14);
         } catch (e) {
           if (e.reason === constant.invalid_network_2) {
-            addContext(test, message.vali_estimateTransaction_13)
+            addContext(test, message.vali_estimateTransaction_13);
             console.log(message.vali_estimateTransaction_13);
           } else {
             console.error(e);
@@ -1838,14 +1851,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.otherProviderNetwork_optimism, // other provider
+            data.otherProviderNetwork_optimism // other provider
           );
         } catch (e) {
           console.error(e);
@@ -1860,7 +1870,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1872,12 +1883,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await erc20Instance.functions.decimals();
 
-          addContext(test, message.fail_estimateTransaction_15)
+          addContext(test, message.fail_estimateTransaction_15);
           assert.fail(message.fail_estimateTransaction_15);
         } catch (e) {
           let error = e.message;
           if (error.includes(constant.invalid_value_3)) {
-            addContext(test, message.vali_estimateTransaction_14)
+            addContext(test, message.vali_estimateTransaction_14);
             console.log(message.vali_estimateTransaction_14);
           } else {
             console.error(e);
@@ -1896,14 +1907,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1917,7 +1926,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.incorrectTokenAddress_optimismUSDC, // incorrect token address
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1929,11 +1939,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await erc20Instance.functions.decimals();
 
-          addContext(message.fail_erc20Transfer_1)
+          addContext(message.fail_erc20Transfer_1);
           assert.fail(message.fail_erc20Transfer_1);
         } catch (e) {
           if (e.reason === constant.invalid_address_6) {
-            addContext(test, message.vali_erc20Transfer_1)
+            addContext(test, message.vali_erc20Transfer_1);
             console.log(message.vali_erc20Transfer_1);
           } else {
             console.error(e);
@@ -1952,14 +1962,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1973,7 +1981,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.invalidTokenAddress_optimismUSDC, // invalid token address
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1985,11 +1994,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await erc20Instance.functions.decimals();
 
-          addContext(test, message.fail_erc20Transfer_2)
+          addContext(test, message.fail_erc20Transfer_2);
           assert.fail(message.fail_erc20Transfer_2);
         } catch (e) {
           if (e.reason === constant.invalid_address_4) {
-            addContext(test, message.vali_erc20Transfer_2)
+            addContext(test, message.vali_erc20Transfer_2);
             console.log(message.vali_erc20Transfer_2);
           } else {
             console.error(e);
@@ -2008,14 +2017,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2027,11 +2034,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           new ethers.Contract(null, ERC20_ABI, provider); // null token address
 
-          addContext(test, message.fail_erc20Transfer_3)
+          addContext(test, message.fail_erc20Transfer_3);
           assert.fail(message.fail_erc20Transfer_3);
         } catch (e) {
           if (e.reason === constant.contract_address_2) {
-            addContext(test, message.vali_erc20Transfer_3)
+            addContext(test, message.vali_erc20Transfer_3);
             console.log(message.vali_erc20Transfer_3);
           } else {
             console.error(e);
@@ -2050,14 +2057,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2071,7 +2076,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2097,11 +2103,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
-          addContext(test, message.fail_erc20Transfer_4)
+          addContext(test, message.fail_erc20Transfer_4);
           assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
           if (e.reason === constant.no_function) {
-            addContext(test, message.vali_erc20Transfer_4)
+            addContext(test, message.vali_erc20Transfer_4);
             console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
@@ -2120,14 +2126,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2141,7 +2145,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2167,11 +2172,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.invalidValue, decimals), // invalid value
           ]);
 
-          addContext(test, message.fail_erc20Transfer_5)
+          addContext(test, message.fail_erc20Transfer_5);
           assert.fail(message.fail_erc20Transfer_5);
         } catch (e) {
           if (e.reason === constant.invalid_value_1) {
-            addContext(test, message.vali_erc20Transfer_5)
+            addContext(test, message.vali_erc20Transfer_5);
             console.log(message.vali_erc20Transfer_5);
           } else {
             console.error(e);
@@ -2190,14 +2195,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2211,7 +2214,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2237,11 +2241,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.smallValue, decimals), // very small value
           ]);
 
-          addContext(test, message.fail_erc20Transfer_6)
+          addContext(test, message.fail_erc20Transfer_6);
           assert.fail(message.fail_erc20Transfer_6);
         } catch (e) {
           if (e.reason === constant.invalid_value_2) {
-            addContext(test, message.vali_erc20Transfer_6)
+            addContext(test, message.vali_erc20Transfer_6);
             console.log(message.vali_erc20Transfer_6);
           } else {
             console.error(e);
@@ -2260,14 +2264,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2281,7 +2283,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2305,11 +2308,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.recipient,
           ]);
 
-          addContext(test, message.fail_erc20Transfer_7)
+          addContext(test, message.fail_erc20Transfer_7);
           assert.fail(message.fail_erc20Transfer_7);
         } catch (e) {
           if (e.reason === constant.invalid_value_4) {
-            addContext(test, message.vali_erc20Transfer_7)
+            addContext(test, message.vali_erc20Transfer_7);
             console.log(message.vali_erc20Transfer_7);
           } else {
             console.error(e);
@@ -2328,14 +2331,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2349,7 +2350,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2375,12 +2377,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
-          addContext(test, message.fail_erc20Transfer_8)
+          addContext(test, message.fail_erc20Transfer_8);
           assert.fail(message.fail_erc20Transfer_8);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_erc20Transfer_8)
+            addContext(test, message.vali_erc20Transfer_8);
             console.log(message.vali_erc20Transfer_8);
           } else {
             console.error(e);
@@ -2399,14 +2401,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2420,7 +2420,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2446,12 +2447,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
-          addContext(test, message.fail_erc20Transfer_9)
+          addContext(test, message.fail_erc20Transfer_9);
           assert.fail(message.fail_erc20Transfer_9);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_erc20Transfer_9)
+            addContext(test, message.vali_erc20Transfer_9);
             console.log(message.vali_erc20Transfer_9);
           } else {
             console.error(e);
@@ -2470,14 +2471,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2491,7 +2490,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2516,11 +2516,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             ethers.utils.parseUnits(data.erc20_value, decimals),
           ]);
 
-          addContext(test, message.fail_erc20Transfer_10)
+          addContext(test, message.fail_erc20Transfer_10);
           assert.fail(message.fail_erc20Transfer_10);
         } catch (e) {
           if (e.reason === constant.invalid_value_4) {
-            addContext(test, message.vali_erc20Transfer_10)
+            addContext(test, message.vali_erc20Transfer_10);
             console.log(message.vali_erc20Transfer_10);
           } else {
             console.error(e);
@@ -2539,14 +2539,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2560,7 +2558,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2584,7 +2583,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2619,12 +2622,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_16)
+          addContext(test, message.fail_estimateTransaction_16);
           assert.fail(message.fail_estimateTransaction_16);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_estimateTransaction_15)
+            addContext(test, message.vali_estimateTransaction_15);
             console.log(message.vali_estimateTransaction_15);
           } else {
             console.error(e);
@@ -2643,14 +2646,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2664,7 +2665,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2688,7 +2690,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2723,12 +2729,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_17)
+          addContext(test, message.fail_estimateTransaction_17);
           assert.fail(message.fail_estimateTransaction_17);
         } catch (e) {
           let error = e.reason;
           if (error.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_estimateTransaction_16)
+            addContext(test, message.vali_estimateTransaction_16);
             console.log(message.vali_estimateTransaction_16);
           } else {
             console.error(e);
@@ -2747,14 +2753,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2768,7 +2772,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2792,7 +2797,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2827,11 +2836,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_18)
+          addContext(test, message.fail_estimateTransaction_18);
           assert.fail(message.fail_estimateTransaction_18);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_estimateTransaction_17)
+            addContext(test, message.vali_estimateTransaction_17);
             console.log(message.vali_estimateTransaction_17);
           } else {
             console.error(e);
@@ -2850,14 +2859,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2871,7 +2878,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2895,7 +2903,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]);
+            [
+              data.recipient,
+              ethers.utils.parseUnits(data.erc20_value, decimals),
+            ]
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2929,11 +2941,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_19)
+          addContext(test, message.fail_estimateTransaction_19);
           assert.fail(message.fail_estimateTransaction_19);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_estimateTransaction_18)
+            addContext(test, message.vali_estimateTransaction_18);
             console.log(message.vali_estimateTransaction_18);
           } else {
             console.error(e);
@@ -2952,14 +2964,12 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
           provider = new ethers.providers.JsonRpcProvider(
-            data.providerNetwork_optimism);
+            data.providerNetwork_optimism
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -2973,7 +2983,8 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           erc20Instance = new ethers.Contract(
             data.tokenAddress_optimismUSDC,
             ERC20_ABI,
-            provider);
+            provider
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3022,7 +3033,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           assert.fail(message.fail_estimateTransaction_13);
         } catch (e) {
           if (e.message === constant.invalid_parameter) {
-            addContext(test, message.vali_estimateTransaction_12)
+            addContext(test, message.vali_estimateTransaction_12);
             console.log(message.vali_estimateTransaction_12);
           } else {
             console.error(e);
@@ -3041,9 +3052,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3055,11 +3063,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_1)
+          addContext(test, message.fail_erc721Transfer_1);
           assert.fail(message.fail_erc721Transfer_1);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_erc721Transfer_1)
+            addContext(test, message.vali_erc721Transfer_1);
             console.log(message.vali_erc721Transfer_1);
           } else {
             console.error(e);
@@ -3078,9 +3086,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3092,11 +3097,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_2)
+          addContext(test, message.fail_erc721Transfer_2);
           assert.fail(message.fail_erc721Transfer_2);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_erc721Transfer_2)
+            addContext(test, message.vali_erc721Transfer_2);
             console.log(message.vali_erc721Transfer_2);
           } else {
             console.error(e);
@@ -3115,9 +3120,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3128,11 +3130,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_3)
+          addContext(test, message.fail_erc721Transfer_3);
           assert.fail(message.fail_erc721Transfer_3);
         } catch (e) {
           if (e.reason === constant.invalid_value_4) {
-            addContext(test, message.vali_erc721Transfer_3)
+            addContext(test, message.vali_erc721Transfer_3);
             console.log(message.vali_erc721Transfer_3);
           } else {
             console.error(e);
@@ -3151,9 +3153,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3165,11 +3164,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_4)
+          addContext(test, message.fail_erc721Transfer_4);
           assert.fail(message.fail_erc721Transfer_4);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_6)) {
-            addContext(test, message.vali_erc721Transfer_4)
+            addContext(test, message.vali_erc721Transfer_4);
             console.log(message.vali_erc721Transfer_4);
           } else {
             console.error(e);
@@ -3188,9 +3187,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3202,11 +3198,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_5)
+          addContext(test, message.fail_erc721Transfer_5);
           assert.fail(message.fail_erc721Transfer_5);
         } catch (e) {
           if (e.reason.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_erc721Transfer_5)
+            addContext(test, message.vali_erc721Transfer_5);
             console.log(message.vali_erc721Transfer_5);
           } else {
             console.error(e);
@@ -3225,9 +3221,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3238,11 +3231,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.tokenId,
           ]);
 
-          addContext(test, message.fail_erc721Transfer_6)
+          addContext(test, message.fail_erc721Transfer_6);
           assert.fail(message.fail_erc721Transfer_6);
         } catch (e) {
           if (e.reason === constant.invalid_value_4) {
-            addContext(test, message.vali_erc721Transfer_6)
+            addContext(test, message.vali_erc721Transfer_6);
             console.log(message.vali_erc721Transfer_6);
           } else {
             console.error(e);
@@ -3261,9 +3254,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3275,11 +3265,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.incorrectTokenId, // incorrect tokenid
           ]);
 
-          addContext(message.fail_erc721Transfer_7)
+          addContext(message.fail_erc721Transfer_7);
           assert.fail(message.fail_erc721Transfer_7);
         } catch (e) {
           if (e.reason === constant.invalid_bignumber_1) {
-            addContext(test, message.vali_erc721Transfer_7)
+            addContext(test, message.vali_erc721Transfer_7);
             console.log(message.vali_erc721Transfer_7);
           } else {
             console.error(e);
@@ -3298,9 +3288,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3311,11 +3298,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             data.recipient, // not added tokenid
           ]);
 
-          addContext(test, message.fail_erc721Transfer_8)
+          addContext(test, message.fail_erc721Transfer_8);
           assert.fail(message.fail_erc721Transfer_8);
         } catch (e) {
           if (e.reason === constant.invalid_value_4) {
-            addContext(test, message.vali_erc721Transfer_8)
+            addContext(test, message.vali_erc721Transfer_8);
             console.log(message.vali_erc721Transfer_8);
           } else {
             console.error(e);
@@ -3334,9 +3321,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get erc721 Contract Interface
         let erc721Interface;
         try {
@@ -3378,11 +3362,11 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         try {
           await optimismMainNetSdk.estimate();
 
-          addContext(test, message.fail_estimateTransaction_13)
+          addContext(test, message.fail_estimateTransaction_13);
           assert.fail(message.fail_estimateTransaction_13);
         } catch (e) {
           if (e.message === constant.invalid_parameter) {
-            addContext(test, message.vali_estimateTransaction_12)
+            addContext(test, message.vali_estimateTransaction_12);
             console.log(message.vali_estimateTransaction_12);
           } else {
             console.error(e);
@@ -3402,11 +3386,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     var test = this;
     if (runTest) {
-
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         const provider = new providers.JsonRpcProvider();
 
         // clear the transaction batch
@@ -3437,7 +3417,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         let balance;
         try {
           balance = await optimismMainNetSdk.getNativeBalance();
-
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3453,11 +3432,13 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await optimismMainNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await optimismMainNetSdk.estimate({
+              key: concurrentUseropsCount,
+            });
             userops.push(op);
           }
 
-          console.log("Sending userops...");
+          console.log('Sending userops...');
           for (const op of userops) {
             const uoHash = await optimismMainNetSdk.send(op);
             uoHashes.push(uoHash);
@@ -3465,9 +3446,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -3479,30 +3460,34 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           console.log('Waiting for transactions...');
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
-          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            helper.wait(2000)
+          while (
+            userOpsReceipts.some((receipt) => receipt == null) &&
+            Date.now() < timeout
+          ) {
+            helper.wait(2000);
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await optimismMainNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] =
+                await optimismMainNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
-          if (userOpsReceipts.some(receipt => receipt != null)) {
+          if (userOpsReceipts.some((receipt) => receipt != null)) {
             for (const uoReceipt of userOpsReceipts) {
               if (!uoReceipt) continue;
-              addContext(test, message.vali_submitTransaction_1)
+              addContext(test, message.vali_submitTransaction_1);
               console.log(message.vali_submitTransaction_1);
             }
           } else {
-            addContext(test, message.vali_submitTransaction_2)
+            addContext(test, message.vali_submitTransaction_2);
             console.log(message.vali_submitTransaction_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(message.fail_getUserOpReceipt_1)
+          assert.fail(message.fail_getUserOpReceipt_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -3515,11 +3500,7 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
     var test = this;
     if (runTest) {
-
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         const provider = new providers.JsonRpcProvider();
 
         // clear the transaction batch
@@ -3539,7 +3520,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
-
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3551,7 +3531,6 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         let balance;
         try {
           balance = await optimismMainNetSdk.getNativeBalance();
-
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3567,11 +3546,13 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
 
         try {
           while (--concurrentUseropsCount >= 0) {
-            const op = await optimismMainNetSdk.estimate({ key: concurrentUseropsCount });
+            const op = await optimismMainNetSdk.estimate({
+              key: concurrentUseropsCount,
+            });
             userops.push(op);
           }
 
-          console.log("Sending userops...");
+          console.log('Sending userops...');
           for (const op of userops) {
             const uoHash = await optimismMainNetSdk.send(op);
             uoHashes.push(uoHash);
@@ -3579,9 +3560,9 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -3593,30 +3574,34 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
           console.log('Waiting for transactions...');
           const userOpsReceipts = new Array(uoHashes.length).fill(null);
           const timeout = Date.now() + 60000; // 1 minute timeout
-          while ((userOpsReceipts.some(receipt => receipt == null)) && (Date.now() < timeout)) {
-            helper.wait(2000)
+          while (
+            userOpsReceipts.some((receipt) => receipt == null) &&
+            Date.now() < timeout
+          ) {
+            helper.wait(2000);
             for (let i = 0; i < uoHashes.length; ++i) {
               if (userOpsReceipts[i]) continue;
               const uoHash = uoHashes[i];
-              userOpsReceipts[i] = await optimismMainNetSdk.getUserOpReceipt(uoHash);
+              userOpsReceipts[i] =
+                await optimismMainNetSdk.getUserOpReceipt(uoHash);
             }
           }
 
-          if (userOpsReceipts.some(receipt => receipt != null)) {
+          if (userOpsReceipts.some((receipt) => receipt != null)) {
             for (const uoReceipt of userOpsReceipts) {
               if (!uoReceipt) continue;
-              addContext(test, message.vali_submitTransaction_1)
+              addContext(test, message.vali_submitTransaction_1);
               console.log(message.vali_submitTransaction_1);
             }
           } else {
-            addContext(test, message.vali_submitTransaction_2)
+            addContext(test, message.vali_submitTransaction_2);
             console.log(message.vali_submitTransaction_2);
           }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
-          assert.fail(message.fail_getUserOpReceipt_1)
+          assert.fail(message.fail_getUserOpReceipt_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
@@ -3627,26 +3612,22 @@ describe('The PrimeSDK, when transfer a token with optimism network on the MainN
   it('REGRESSION: Perform the concurrent userops with non deployed address on the optimism network', async function () {
     var test = this;
     if (runTest) {
-
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         const provider = new providers.JsonRpcProvider();
 
         try {
           if ((await provider.getCode(data.eoaAddress)).length <= 2) {
-            addContext(test, message.vali_deployAddress_1)
+            addContext(test, message.vali_deployAddress_1);
             console.log(message.vali_deployAddress_1);
             return;
           }
 
-          addContext(test, message.fail_deployAddress_1)
-          assert.fail(message.fail_deployAddress_1)
+          addContext(test, message.fail_deployAddress_1);
+          assert.fail(message.fail_deployAddress_1);
         } catch (e) {
           const errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_network_2)) {
-            addContext(test, message.vali_deployAddress_2)
+            addContext(test, message.vali_deployAddress_2);
             console.log(message.vali_deployAddress_2);
           } else {
             console.error(e);

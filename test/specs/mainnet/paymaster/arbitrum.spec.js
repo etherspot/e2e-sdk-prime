@@ -1,6 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import { PrimeSdk, DataUtils, EtherspotBundler, ArkaPaymaster } from '@etherspot/prime-sdk';
+import {
+  PrimeSdk,
+  DataUtils,
+  EtherspotBundler,
+  ArkaPaymaster,
+} from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -24,7 +29,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -33,15 +37,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-          },
+            bundlerProvider: new EtherspotBundler(
+              Number(data.arbitrum_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
           assert.strictEqual(
             arbitrumMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            message.vali_eoa_address);
+            message.vali_eoa_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -63,7 +71,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           assert.strictEqual(
             arbitrumEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -73,16 +82,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         console.error(e.message);
         const eString = e.toString();
         addContext(test, eString);
-        assert.fail(
-          message.fail_smart_address,
-        );
+        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
       try {
-        arbitrumDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        arbitrumDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -92,7 +97,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
 
       // initializating ArkaPaymaster...
       try {
-        arkaPaymaster = new ArkaPaymaster(Number(data.arbitrum_chainid), process.env.API_KEY, data.paymaster_arka);
+        arkaPaymaster = new ArkaPaymaster(
+          Number(data.arbitrum_chainid),
+          process.env.API_KEY,
+          data.paymaster_arka
+        );
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -143,7 +152,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
@@ -167,7 +175,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -177,7 +186,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -187,7 +197,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               transactionBatch.value,
-              message.vali_addTransaction_value);
+              message.vali_addTransaction_value
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -206,9 +217,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           balance = await arbitrumMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -226,16 +235,18 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         try {
           op = await arbitrumMainNetSdk.estimate({
             paymasterDetails: {
-              url: `https://arka.etherspot.io?apiKey=${process.env.API_KEY
-                }&chainId=${Number(data.arbitrum_chainid)}`,
+              url: `https://arka.etherspot.io?apiKey=${
+                process.env.API_KEY
+              }&chainId=${Number(data.arbitrum_chainid)}`,
               context: { mode: 'sponsor' },
-            }
+            },
           });
 
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -243,9 +254,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -255,7 +264,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -265,7 +275,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -275,7 +286,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -285,7 +297,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -295,7 +308,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -305,7 +319,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -315,7 +330,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -325,7 +341,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -335,7 +352,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -354,9 +372,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           uoHash = await arbitrumMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -365,9 +381,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -384,11 +400,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         let balance;
@@ -397,9 +412,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           balance = await arbitrumMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -438,7 +451,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -448,7 +461,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               paymasterAddress,
-              message.vali_pimlico_paymasterAddress_1);
+              message.vali_pimlico_paymasterAddress_1
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -467,11 +481,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
 
             contract = await arbitrumMainNetSdk.addUserOpsToBatch({
@@ -480,9 +494,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             });
 
             try {
-              assert.isNotEmpty(
-                contract.to,
-                message.vali_erc20Contract_to);
+              assert.isNotEmpty(contract.to, message.vali_erc20Contract_to);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -490,9 +502,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             }
 
             try {
-              assert.isNotEmpty(
-                contract.data,
-                message.vali_erc20Contract_data);
+              assert.isNotEmpty(contract.data, message.vali_erc20Contract_data);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -512,7 +522,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.sender,
-                message.vali_estimateTransaction_sender);
+                message.vali_estimateTransaction_sender
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -522,7 +533,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.nonce,
-                message.vali_estimateTransaction_nonce);
+                message.vali_estimateTransaction_nonce
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -532,7 +544,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.initCode,
-                message.vali_estimateTransaction_initCode);
+                message.vali_estimateTransaction_initCode
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -542,7 +555,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.callData,
-                message.vali_estimateTransaction_callData);
+                message.vali_estimateTransaction_callData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -552,7 +566,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.callGasLimit,
-                message.vali_estimateTransaction_callGasLimit);
+                message.vali_estimateTransaction_callGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -562,7 +577,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.verificationGasLimit,
-                message.vali_estimateTransaction_verificationGasLimit);
+                message.vali_estimateTransaction_verificationGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -572,7 +588,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.maxFeePerGas,
-                message.vali_estimateTransaction_maxFeePerGas);
+                message.vali_estimateTransaction_maxFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -582,7 +599,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.maxPriorityFeePerGas,
-                message.vali_estimateTransaction_maxPriorityFeePerGas);
+                message.vali_estimateTransaction_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -592,7 +610,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.paymasterAndData,
-                message.vali_estimateTransaction_paymasterAndData);
+                message.vali_estimateTransaction_paymasterAndData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -602,7 +621,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.preVerificationGas,
-                message.vali_estimateTransaction_preVerificationGas);
+                message.vali_estimateTransaction_preVerificationGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -612,7 +632,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 approveOp.signature,
-                message.vali_estimateTransaction_signature);
+                message.vali_estimateTransaction_signature
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -630,9 +651,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             uoHash1 = await arbitrumMainNetSdk.send(approveOp);
 
             try {
-              assert.isNotEmpty(
-                uoHash1,
-                message.vali_submitTransaction_uoHash);
+              assert.isNotEmpty(uoHash1, message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -641,9 +660,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -671,7 +690,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 transactionBatch.to,
-                message.vali_addTransaction_to);
+                message.vali_addTransaction_to
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -681,7 +701,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 transactionBatch.data,
-                message.vali_addTransaction_data);
+                message.vali_addTransaction_data
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -699,9 +720,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             balance = await arbitrumMainNetSdk.getNativeBalance();
 
             try {
-              assert.isNotEmpty(
-                balance,
-                message.vali_getBalance_balance);
+              assert.isNotEmpty(balance, message.vali_getBalance_balance);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -720,13 +739,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${arka_url}${queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
             try {
               assert.isNotEmpty(
                 op.sender,
-                message.vali_estimateTransaction_sender);
+                message.vali_estimateTransaction_sender
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -736,7 +756,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.nonce,
-                message.vali_estimateTransaction_nonce);
+                message.vali_estimateTransaction_nonce
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -746,7 +767,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.initCode,
-                message.vali_estimateTransaction_initCode);
+                message.vali_estimateTransaction_initCode
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -756,7 +778,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.callData,
-                message.vali_estimateTransaction_callData);
+                message.vali_estimateTransaction_callData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -766,7 +789,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.callGasLimit,
-                message.vali_estimateTransaction_callGasLimit);
+                message.vali_estimateTransaction_callGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -776,7 +800,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.verificationGasLimit,
-                message.vali_estimateTransaction_verificationGasLimit);
+                message.vali_estimateTransaction_verificationGasLimit
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -786,7 +811,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.maxFeePerGas,
-                message.vali_estimateTransaction_maxFeePerGas);
+                message.vali_estimateTransaction_maxFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -796,7 +822,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.maxPriorityFeePerGas,
-                message.vali_estimateTransaction_maxPriorityFeePerGas);
+                message.vali_estimateTransaction_maxPriorityFeePerGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -806,7 +833,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.paymasterAndData,
-                message.vali_estimateTransaction_paymasterAndData);
+                message.vali_estimateTransaction_paymasterAndData
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -816,7 +844,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.preVerificationGas,
-                message.vali_estimateTransaction_preVerificationGas);
+                message.vali_estimateTransaction_preVerificationGas
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -826,7 +855,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             try {
               assert.isNotEmpty(
                 op.signature,
-                message.vali_estimateTransaction_signature);
+                message.vali_estimateTransaction_signature
+              );
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -844,9 +874,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
             uoHash = await arbitrumMainNetSdk.send(op);
 
             try {
-              assert.isNotEmpty(
-                uoHash,
-                message.vali_submitTransaction_uoHash);
+              assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
             } catch (e) {
               console.error(e);
               const eString = e.toString();
@@ -855,9 +883,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -878,11 +906,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         let balance;
@@ -895,9 +922,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           balance = await arbitrumMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -930,7 +955,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               transactionBatch.to,
-              message.vali_addTransaction_to);
+              message.vali_addTransaction_to
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -940,7 +966,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               transactionBatch.data,
-              message.vali_addTransaction_data);
+              message.vali_addTransaction_data
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -958,9 +985,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           balance = await arbitrumMainNetSdk.getNativeBalance();
 
           try {
-            assert.isNotEmpty(
-              balance,
-              message.vali_getBalance_balance);
+            assert.isNotEmpty(balance, message.vali_getBalance_balance);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -989,13 +1014,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
           try {
             assert.isNotEmpty(
               op.sender,
-              message.vali_estimateTransaction_sender);
+              message.vali_estimateTransaction_sender
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1003,9 +1029,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           }
 
           try {
-            assert.isNotEmpty(
-              op.nonce,
-              message.vali_estimateTransaction_nonce);
+            assert.isNotEmpty(op.nonce, message.vali_estimateTransaction_nonce);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1015,7 +1039,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.initCode,
-              message.vali_estimateTransaction_initCode);
+              message.vali_estimateTransaction_initCode
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1025,7 +1050,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.callData,
-              message.vali_estimateTransaction_callData);
+              message.vali_estimateTransaction_callData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1035,7 +1061,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.callGasLimit,
-              message.vali_estimateTransaction_callGasLimit);
+              message.vali_estimateTransaction_callGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1045,7 +1072,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.verificationGasLimit,
-              message.vali_estimateTransaction_verificationGasLimit);
+              message.vali_estimateTransaction_verificationGasLimit
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1055,7 +1083,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.maxFeePerGas,
-              message.vali_estimateTransaction_maxFeePerGas);
+              message.vali_estimateTransaction_maxFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1065,7 +1094,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.maxPriorityFeePerGas,
-              message.vali_estimateTransaction_maxPriorityFeePerGas);
+              message.vali_estimateTransaction_maxPriorityFeePerGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1075,7 +1105,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.paymasterAndData,
-              message.vali_estimateTransaction_paymasterAndData);
+              message.vali_estimateTransaction_paymasterAndData
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1085,7 +1116,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.preVerificationGas,
-              message.vali_estimateTransaction_preVerificationGas);
+              message.vali_estimateTransaction_preVerificationGas
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1095,7 +1127,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               op.signature,
-              message.vali_estimateTransaction_signature);
+              message.vali_estimateTransaction_signature
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1113,9 +1146,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           uoHash = await arbitrumMainNetSdk.send(op);
 
           try {
-            assert.isNotEmpty(
-              uoHash,
-              message.vali_submitTransaction_uoHash);
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1124,9 +1155,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === "Error") {
-            console.warn(message.skip_transaction_error)
-            addContext(test, message.skip_transaction_error)
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
             test.skip();
           } else {
             addContext(test, eString);
@@ -1143,9 +1174,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // get the metadata
         try {
@@ -1154,7 +1183,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               metadata.sponsorAddress,
-              message.vali_metadata_sponsorAddress);
+              message.vali_metadata_sponsorAddress
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1164,7 +1194,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               metadata.sponsorWalletBalance,
-              message.vali_metadata_sponsorWalletBalance);
+              message.vali_metadata_sponsorWalletBalance
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1174,7 +1205,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               metadata.chainsSupported,
-              message.vali_metadata_chainsSupported);
+              message.vali_metadata_chainsSupported
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1184,7 +1216,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             assert.isNotEmpty(
               metadata.tokenPaymasters,
-              message.vali_metadata_tokenPaymasters);
+              message.vali_metadata_tokenPaymasters
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1206,18 +1239,18 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // validate the get token paymaster address
         try {
-          let getTokenPaymasterAddress = await arkaPaymaster.getTokenPaymasterAddress("USDC");
+          let getTokenPaymasterAddress =
+            await arkaPaymaster.getTokenPaymasterAddress('USDC');
 
           try {
             assert.isNotEmpty(
               getTokenPaymasterAddress,
-              message.vali_getTokenPaymasterAddress_tokenPaymasterAddress);
+              message.vali_getTokenPaymasterAddress_tokenPaymasterAddress
+            );
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -1239,13 +1272,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // validate the remove whitelist address
         try {
-          let removeWhitelist = await arkaPaymaster.removeWhitelist([data.sender]);
+          let removeWhitelist = await arkaPaymaster.removeWhitelist([
+            data.sender,
+          ]);
 
           if (removeWhitelist.includes(constant.remove_whitelist_2)) {
             addContext(test, message.vali_removeWhitelist_1);
@@ -1276,9 +1309,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // validate the add whitelist address
         try {
@@ -1313,9 +1344,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // validate the whilelist address
         try {
@@ -1344,20 +1373,18 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
-
 
         // validate the deposit
         try {
           let deposit = await arkaPaymaster.deposit(data.value);
 
           if (deposit.includes(constant.deposit_1)) {
-            addContext(test, message.vali_deposit_1)
-            console.log(message.vali_deposit_1)
+            addContext(test, message.vali_deposit_1);
+            console.log(message.vali_deposit_1);
           } else {
-            addContext(test, message.fail_deposit_1)
-            assert.fail(message.fail_deposit_1)
+            addContext(test, message.fail_deposit_1);
+            assert.fail(message.fail_deposit_1);
           }
         } catch (e) {
           console.error(e);
@@ -1375,9 +1402,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
@@ -1418,14 +1442,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               url: data.invalid_paymaster_arka, // invalid URL
               api_key: process.env.API_KEY,
               context: { mode: 'sponsor' },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_2)
+          addContext(test, message.fail_estimateTransaction_2);
           assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
           if (e.message === constant.not_found) {
-            addContext(test, message.vali_estimateTransaction_1)
+            addContext(test, message.vali_estimateTransaction_1);
             console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
@@ -1444,9 +1468,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
@@ -1487,14 +1508,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               url: data.paymaster_arka,
               api_key: process.env.INVALID_API_KEY,
               context: { mode: 'sponsor' },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_4)
+          addContext(test, message.fail_estimateTransaction_4);
           assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
           if (e.message === constant.invalid_apiKey) {
-            addContext(test, message.vali_estimateTransaction_3)
+            addContext(test, message.vali_estimateTransaction_3);
             console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
@@ -1513,9 +1534,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
@@ -1556,14 +1574,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               url: data.paymaster_arka,
               api_key: process.env.INCORRECT_API_KEY,
               context: { mode: 'sponsor' },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_5)
+          addContext(test, message.fail_estimateTransaction_5);
           assert.fail(message.fail_estimateTransaction_5);
         } catch (e) {
           if (e.message === constant.invalid_apiKey) {
-            addContext(test, message.vali_estimateTransaction_4)
+            addContext(test, message.vali_estimateTransaction_4);
             console.log(message.vali_estimateTransaction_4);
           } else {
             console.error(e);
@@ -1582,9 +1600,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await arbitrumMainNetSdk.clearUserOpsFromBatch();
@@ -1625,14 +1640,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               url: data.paymaster_arka,
               // without api_key
               context: { mode: 'sponsor' },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_6)
+          addContext(test, message.fail_estimateTransaction_6);
           assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
           if (e.message === constant.invalid_apiKey) {
-            addContext(test, message.vali_estimateTransaction_5)
+            addContext(test, message.vali_estimateTransaction_5);
             console.log(message.vali_estimateTransaction_5);
           } else {
             console.error(e);
@@ -1651,13 +1666,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
 
@@ -1673,7 +1685,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1687,7 +1699,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (paymasterAddress.includes(constant.not_found)) {
-          addContext(test, message.vali_pimlico_paymasterAddress_2)
+          addContext(test, message.vali_pimlico_paymasterAddress_2);
           console.log(message.vali_pimlico_paymasterAddress_2);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_2);
@@ -1703,13 +1715,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -1724,7 +1733,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1736,7 +1745,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_apiKey) {
-          addContext(test, message.vali_pimlico_paymasterAddress_3)
+          addContext(test, message.vali_pimlico_paymasterAddress_3);
           console.log(message.vali_pimlico_paymasterAddress_3);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_3);
@@ -1754,9 +1763,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     let queryString = `?chainId=${Number(data.arbitrum_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -1771,7 +1777,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1783,7 +1789,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_apiKey) {
-          addContext(test, message.vali_pimlico_paymasterAddress_4)
+          addContext(test, message.vali_pimlico_paymasterAddress_4);
           console.log(message.vali_pimlico_paymasterAddress_4);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_4);
@@ -1799,13 +1805,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_arbitrum_chainid,
+      data.invalid_arbitrum_chainid
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -1820,7 +1823,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1832,7 +1835,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_network_3) {
-          addContext(test, message.vali_pimlico_paymasterAddress_5)
+          addContext(test, message.vali_pimlico_paymasterAddress_5);
           console.log(message.vali_pimlico_paymasterAddress_5);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_5);
@@ -1850,9 +1853,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         try {
           returnedValue = await fetch(
@@ -1867,7 +1867,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1879,7 +1879,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_data) {
-          addContext(test, message.vali_pimlico_paymasterAddress_6)
+          addContext(test, message.vali_pimlico_paymasterAddress_6);
           console.log(message.vali_pimlico_paymasterAddress_6);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_6);
@@ -1895,13 +1895,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -1919,14 +1916,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                   { token: data.usdc_token },
                 ],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
         } catch (e) {
           const errorMessage = returnedValue.error;
           if (errorMessage.includes(constant.invalid_address_4)) {
-            addContext(test, message.vali_pimlico_paymasterAddress_7)
+            addContext(test, message.vali_pimlico_paymasterAddress_7);
             console.log(message.vali_pimlico_paymasterAddress_7);
           } else {
             addContext(test, message.fail_pimlico_paymasterAddress_7);
@@ -1943,13 +1940,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -1967,7 +1961,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                   { token: data.invalid_usdc_token }, // invalid token
                 ],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -1979,7 +1973,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_network_1) {
-          addContext(test, message.vali_pimlico_paymasterAddress_8)
+          addContext(test, message.vali_pimlico_paymasterAddress_8);
           console.log(message.vali_pimlico_paymasterAddress_8);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_8);
@@ -1995,13 +1989,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
 
         try {
@@ -2016,7 +2007,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [], // without parametets
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2028,7 +2019,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
 
         if (returnedValue.error === constant.invalid_data) {
-          addContext(test, message.vali_pimlico_paymasterAddress_9)
+          addContext(test, message.vali_pimlico_paymasterAddress_9);
           console.log(message.vali_pimlico_paymasterAddress_9);
         } else {
           addContext(test, message.fail_pimlico_paymasterAddress_9);
@@ -2044,13 +2035,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
 
@@ -2066,7 +2054,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2084,11 +2072,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.incorrectTokenAddress_arbitrumUSDC, // incorrect token address
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2097,7 +2085,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.contract_address_1)) {
-              addContext(test, message.vali_erc20Contract_1)
+              addContext(test, message.vali_erc20Contract_1);
               console.log(message.vali_erc20Contract_1);
             } else {
               console.error(e);
@@ -2120,13 +2108,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
 
@@ -2142,7 +2127,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2160,11 +2145,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.invalidTokenAddress_arbitrumUSDC, // invalid token address
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2173,7 +2158,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.contract_address_1)) {
-              addContext(test, message.vali_erc20Contract_2)
+              addContext(test, message.vali_erc20Contract_2);
               console.log(message.vali_erc20Contract_2);
             } else {
               console.error(e);
@@ -2196,13 +2181,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2219,7 +2201,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2237,11 +2219,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [data.invalid_paymasterAddress, ethers.constants.MaxUint256], // invalid paymaster address
+              [data.invalid_paymasterAddress, ethers.constants.MaxUint256] // invalid paymaster address
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2250,7 +2232,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_address_4)) {
-              addContext(test, message.vali_erc20Contract_3)
+              addContext(test, message.vali_erc20Contract_3);
               console.log(message.vali_erc20Contract_3);
             } else {
               console.error(e);
@@ -2273,13 +2255,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2296,7 +2275,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2314,11 +2293,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [data.incorrect_paymasterAddress, ethers.constants.MaxUint256], // incorrect paymaster address
+              [data.incorrect_paymasterAddress, ethers.constants.MaxUint256] // incorrect paymaster address
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2327,7 +2306,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_address_6)) {
-              addContext(test, message.vali_erc20Contract_4)
+              addContext(test, message.vali_erc20Contract_4);
               console.log(message.vali_erc20Contract_4);
             } else {
               console.error(e);
@@ -2350,13 +2329,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2375,7 +2351,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2393,11 +2369,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2426,9 +2402,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -2453,12 +2429,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               value: ethers.utils.parseEther(data.invalidValue),
             });
 
-            addContext(test, message.fail_addTransaction_2)
+            addContext(test, message.fail_addTransaction_2);
             assert.fail(message.fail_addTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_value_1)) {
-              addContext(test, vali_addTransaction_1)
+              addContext(test, vali_addTransaction_1);
               console.log(vali_addTransaction_1);
             } else {
               console.error(e);
@@ -2482,13 +2458,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2507,7 +2480,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2525,11 +2498,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2558,9 +2531,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -2597,15 +2570,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${invalid_arka_url}${queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
-            addContext(test, message.fail_estimateTransaction_2)
+            addContext(test, message.fail_estimateTransaction_2);
             assert.fail(message.fail_estimateTransaction_2);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.not_found)) {
-              addContext(test, message.vali_estimateTransaction_1)
+              addContext(test, message.vali_estimateTransaction_1);
               console.log(message.vali_estimateTransaction_1);
             } else {
               console.error(e);
@@ -2628,15 +2601,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
-    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
-      }&chainId=${Number(data.arbitrum_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${
+      process.env.INVALID_API_KEY
+    }&chainId=${Number(data.arbitrum_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2655,7 +2626,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2673,11 +2644,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2706,9 +2677,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -2745,15 +2716,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
-            addContext(test, message.fail_estimateTransaction_4)
+            addContext(test, message.fail_estimateTransaction_4);
             assert.fail(message.fail_estimateTransaction_4);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_apiKey)) {
-              addContext(test, message.vali_estimateTransaction_3)
+              addContext(test, message.vali_estimateTransaction_3);
               console.log(message.vali_estimateTransaction_3);
             } else {
               console.error(e);
@@ -2776,14 +2747,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     let invalid_queryString = `?chainId=${Number(data.arbitrum_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2802,7 +2770,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2820,11 +2788,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -2853,9 +2821,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -2892,15 +2860,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
-            addContext(test, message.fail_estimateTransaction_6)
+            addContext(test, message.fail_estimateTransaction_6);
             assert.fail(message.fail_estimateTransaction_6);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_apiKey)) {
-              addContext(test, message.vali_estimateTransaction_5)
+              addContext(test, message.vali_estimateTransaction_5);
               console.log(message.vali_estimateTransaction_5);
             } else {
               console.error(e);
@@ -2923,16 +2891,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_arbitrum_chainid,
+      data.invalid_arbitrum_chainid
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -2951,7 +2916,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -2969,11 +2934,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -3002,9 +2967,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -3041,15 +3006,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
-            addContext(test, message.fail_estimateTransaction_7)
+            addContext(test, message.fail_estimateTransaction_7);
             assert.fail(message.fail_estimateTransaction_7);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_network_3)) {
-              addContext(test, message.vali_estimateTransaction_6)
+              addContext(test, message.vali_estimateTransaction_6);
               console.log(message.vali_estimateTransaction_6);
             } else {
               console.error(e);
@@ -3072,14 +3037,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let returnedValue;
         let paymasterAddress;
         let erc20Contract;
@@ -3098,7 +3060,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               body: JSON.stringify({
                 params: [data.entryPointAddress, { token: data.usdc_token }],
               }),
-            },
+            }
           ).then((res) => {
             return res.json();
           });
@@ -3116,11 +3078,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           try {
             erc20Contract = new ethers.Contract(
               data.tokenAddress_arbitrumUSDC,
-              ERC20_ABI,
+              ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
-              [paymasterAddress, ethers.constants.MaxUint256],
+              [paymasterAddress, ethers.constants.MaxUint256]
             );
             await arbitrumMainNetSdk.addUserOpsToBatch({
               to: data.tokenAddress_arbitrumUSDC,
@@ -3149,9 +3111,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === "Error") {
-              console.warn(message.skip_transaction_error)
-              addContext(test, message.skip_transaction_error)
+            if (eString === 'Error') {
+              console.warn(message.skip_transaction_error);
+              addContext(test, message.skip_transaction_error);
               test.skip();
             } else {
               addContext(test, eString);
@@ -3188,15 +3150,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
                 context: { token: data.usdc_token, mode: 'erc20' },
-              }
+              },
             });
 
-            addContext(test, message.fail_estimateTransaction_8)
+            addContext(test, message.fail_estimateTransaction_8);
             assert.fail(message.fail_estimateTransaction_8);
           } catch (e) {
             let errorMessage = e.message;
             if (errorMessage.includes(constant.invalid_data)) {
-              addContext(test, message.vali_estimateTransaction_7)
+              addContext(test, message.vali_estimateTransaction_7);
               console.log(message.vali_estimateTransaction_7);
             } else {
               console.error(e);
@@ -3219,13 +3181,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get balance of the account address
         try {
           await arbitrumMainNetSdk.getNativeBalance();
@@ -3285,15 +3244,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_2)
+          addContext(test, message.fail_estimateTransaction_2);
           assert.fail(message.fail_estimateTransaction_2);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.not_found)) {
-            addContext(test, message.vali_estimateTransaction_1)
+            addContext(test, message.vali_estimateTransaction_1);
             console.log(message.vali_estimateTransaction_1);
           } else {
             console.error(e);
@@ -3311,13 +3270,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
   it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the arbitrum network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?apiKey=${process.env.INVALID_API_KEY
-      }&chainId=${Number(data.arbitrum_chainid)}`; // invalid API Key in queryString
+    let invalid_queryString = `?apiKey=${
+      process.env.INVALID_API_KEY
+    }&chainId=${Number(data.arbitrum_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get balance of the account address
         try {
           await arbitrumMainNetSdk.getNativeBalance();
@@ -3377,14 +3334,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_4)
+          addContext(test, message.fail_estimateTransaction_4);
           assert.fail(message.fail_estimateTransaction_4);
         } catch (e) {
           if (e.message === constant.invalid_apiKey) {
-            addContext(test, message.vali_estimateTransaction_3)
+            addContext(test, message.vali_estimateTransaction_3);
             console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
@@ -3405,9 +3362,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     let invalid_queryString = `?chainId=${Number(data.arbitrum_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get balance of the account address
         try {
           await arbitrumMainNetSdk.getNativeBalance();
@@ -3467,14 +3421,14 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_6)
+          addContext(test, message.fail_estimateTransaction_6);
           assert.fail(message.fail_estimateTransaction_6);
         } catch (e) {
           if (e.message === constant.invalid_apiKey) {
-            addContext(test, message.vali_estimateTransaction_3)
+            addContext(test, message.vali_estimateTransaction_3);
             console.log(message.vali_estimateTransaction_3);
           } else {
             console.error(e);
@@ -3493,13 +3447,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_arbitrum_chainid,
+      data.invalid_arbitrum_chainid
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get balance of the account address
         try {
           await arbitrumMainNetSdk.getNativeBalance();
@@ -3559,15 +3510,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_7)
+          addContext(test, message.fail_estimateTransaction_7);
           assert.fail(message.fail_estimateTransaction_7);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_network_3)) {
-            addContext(test, message.vali_estimateTransaction_6)
+            addContext(test, message.vali_estimateTransaction_6);
             console.log(message.vali_estimateTransaction_6);
           } else {
             console.error(e);
@@ -3588,9 +3539,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         // get balance of the account address
         try {
           await arbitrumMainNetSdk.getNativeBalance();
@@ -3650,15 +3598,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
                 validAfter: new Date().valueOf(),
                 validUntil: new Date().valueOf() + 6000000,
               },
-            }
+            },
           });
 
-          addContext(test, message.fail_estimateTransaction_8)
+          addContext(test, message.fail_estimateTransaction_8);
           assert.fail(message.fail_estimateTransaction_8);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_data)) {
-            addContext(test, message.vali_estimateTransaction_7)
+            addContext(test, message.vali_estimateTransaction_7);
             console.log(message.vali_estimateTransaction_7);
           } else {
             console.error(e);
@@ -3677,16 +3625,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the get token paymaster address
         try {
           await arkaPaymaster.getTokenPaymasterAddress(data.invalid_usdc_token);
 
-          addContext(test, message.fail_getTokenPaymasterAddress_2)
-          assert.fail(message.fail_getTokenPaymasterAddress_2)
+          addContext(test, message.fail_getTokenPaymasterAddress_2);
+          assert.fail(message.fail_getTokenPaymasterAddress_2);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_network_1)) {
@@ -3709,16 +3653,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the get token paymaster address
         try {
           await arkaPaymaster.getTokenPaymasterAddress();
 
-          addContext(test, message.fail_getTokenPaymasterAddress_3)
-          assert.fail(message.fail_getTokenPaymasterAddress_3)
+          addContext(test, message.fail_getTokenPaymasterAddress_3);
+          assert.fail(message.fail_getTokenPaymasterAddress_3);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_data)) {
@@ -3741,15 +3681,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           await arkaPaymaster.removeWhitelist([data.invalidSender]);
 
-          addContext(test, message.fail_removeWhitelist_3)
+          addContext(test, message.fail_removeWhitelist_3);
           assert.fail(message.fail_removeWhitelist_3);
         } catch (e) {
           let errorMessage = e.message;
@@ -3773,15 +3709,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           await arkaPaymaster.removeWhitelist([data.incorrectSender]);
 
-          addContext(test, message.fail_removeWhitelist_4)
+          addContext(test, message.fail_removeWhitelist_4);
           assert.fail(message.fail_removeWhitelist_4);
         } catch (e) {
           let errorMessage = e.message;
@@ -3805,16 +3737,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
           await arkaPaymaster.removeWhitelist([randomAddress.address]);
 
-          addContext(test, message.fail_removeWhitelist_5)
+          addContext(test, message.fail_removeWhitelist_5);
           assert.fail(message.fail_removeWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
@@ -3838,16 +3766,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
-          await arkaPaymaster.removeWhitelist([randomAddress.address, data.sender]);
+          await arkaPaymaster.removeWhitelist([
+            randomAddress.address,
+            data.sender,
+          ]);
 
-          addContext(test, message.fail_removeWhitelist_5)
+          addContext(test, message.fail_removeWhitelist_5);
           assert.fail(message.fail_removeWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
@@ -3871,20 +3798,22 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           const randomAddress1 = ethers.Wallet.createRandom();
           const randomAddress2 = ethers.Wallet.createRandom();
 
           // make whitelisted addresses
-          await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+          await arkaPaymaster.addWhitelist([
+            randomAddress1.address,
+            randomAddress2.address,
+          ]);
 
           // remove whitelist addresses
-          let removewhitelist = await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+          let removewhitelist = await arkaPaymaster.removeWhitelist([
+            randomAddress1.address,
+            randomAddress2.address,
+          ]);
 
           if (removewhitelist.includes(constant.remove_whitelist_2)) {
             addContext(test, message.vali_removeWhitelist_1);
@@ -3915,17 +3844,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the remove whitelist address
         try {
           const randomAddress1 = ethers.Wallet.createRandom();
           const randomAddress2 = ethers.Wallet.createRandom();
-          await arkaPaymaster.removeWhitelist([randomAddress1.address, randomAddress2.address]);
+          await arkaPaymaster.removeWhitelist([
+            randomAddress1.address,
+            randomAddress2.address,
+          ]);
 
-          addContext(test, message.fail_removeWhitelist_6)
+          addContext(test, message.fail_removeWhitelist_6);
           assert.fail(message.fail_removeWhitelist_6);
         } catch (e) {
           let errorMessage = e.message;
@@ -3949,15 +3877,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the add whitelist address
         try {
           await arkaPaymaster.addWhitelist([data.invalidSender]);
 
-          addContext(test, message.fail_addWhitelist_3)
+          addContext(test, message.fail_addWhitelist_3);
           assert.fail(message.fail_addWhitelist_3);
         } catch (e) {
           let errorMessage = e.message;
@@ -3981,15 +3905,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the add whitelist address
         try {
           await arkaPaymaster.addWhitelist([data.incorrectSender]);
 
-          addContext(test, message.fail_addWhitelist_4)
+          addContext(test, message.fail_addWhitelist_4);
           assert.fail(message.fail_addWhitelist_4);
         } catch (e) {
           let errorMessage = e.message;
@@ -4013,14 +3933,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the add whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
-          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress.address]);
+          let addwhitelist = await arkaPaymaster.addWhitelist([
+            randomAddress.address,
+          ]);
 
           if (addwhitelist.includes(constant.add_whitelist_3)) {
             addContext(test, message.vali_addWhitelist_5);
@@ -4051,14 +3969,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the add whitelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
-          await arkaPaymaster.addWhitelist([randomAddress.address, data.sender]);
+          await arkaPaymaster.addWhitelist([
+            randomAddress.address,
+            data.sender,
+          ]);
 
           if (addWhitelist.includes(constant.add_whitelist_3)) {
             addContext(test, message.vali_addWhitelist_1);
@@ -4089,17 +4006,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the add whitelist address
         try {
           const randomAddress1 = ethers.Wallet.createRandom();
           const randomAddress2 = ethers.Wallet.createRandom();
 
           // add whitelist addresses
-          let addwhitelist = await arkaPaymaster.addWhitelist([randomAddress1.address, randomAddress2.address]);
+          let addwhitelist = await arkaPaymaster.addWhitelist([
+            randomAddress1.address,
+            randomAddress2.address,
+          ]);
 
           if (addwhitelist.includes(constant.add_whitelist_3)) {
             addContext(test, message.vali_addWhitelist_1);
@@ -4130,16 +4046,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the whilelist address
         try {
           await arkaPaymaster.checkWhitelist(data.invalidSender);
 
-          addContext(test, message.fail_checkWhitelist_2)
-          assert.fail(message.fail_checkWhitelist_2)
+          addContext(test, message.fail_checkWhitelist_2);
+          assert.fail(message.fail_checkWhitelist_2);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_address_5)) {
@@ -4162,16 +4074,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the whilelist address
         try {
           await arkaPaymaster.checkWhitelist(data.invalidSender);
 
-          addContext(test, message.fail_checkWhitelist_3)
-          assert.fail(message.fail_checkWhitelist_3)
+          addContext(test, message.fail_checkWhitelist_3);
+          assert.fail(message.fail_checkWhitelist_3);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_address_5)) {
@@ -4194,14 +4102,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the whilelist address
         try {
           const randomAddress = ethers.Wallet.createRandom();
-          let checkwhitelist = await arkaPaymaster.checkWhitelist(randomAddress.address);
+          let checkwhitelist = await arkaPaymaster.checkWhitelist(
+            randomAddress.address
+          );
 
           if (checkwhitelist.includes(constant.check_whitelist_1)) {
             addContext(test, message.vali_addWhitelist_2);
@@ -4226,15 +4132,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the whilelist address
         try {
           await arkaPaymaster.checkWhitelist();
 
-          addContext(test, message.fail_checkWhitelist_5)
+          addContext(test, message.fail_checkWhitelist_5);
           assert.fail(message.fail_checkWhitelist_5);
         } catch (e) {
           let errorMessage = e.message;
@@ -4258,16 +4160,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
-
         // validate the deposit
         try {
-          await arkaPaymaster.deposit("one");
+          await arkaPaymaster.deposit('one');
 
-          addContext(test, message.fail_deposit_3)
-          assert.fail(message.fail_deposit_3)
+          addContext(test, message.fail_deposit_3);
+          assert.fail(message.fail_deposit_3);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.invalid_data)) {

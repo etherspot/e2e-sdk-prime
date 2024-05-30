@@ -11,7 +11,6 @@ import data from '../../data/testData.json' assert { type: 'json' };
 let arbitrumMainNetSdk;
 
 describe('The PrimeSDK, when transfer a token with arbitrum network on the MainNet', function () {
-
   it('SMOKE: Validate the time taken for the regular ERC20 token transaction on the arbitrum network', async function () {
     var test = this;
 
@@ -24,8 +23,12 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-          },
+            projectKey: process.env.PROJECT_KEY,
+            bundlerProvider: new EtherspotBundler(
+              Number(data.arbitrum_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
       } catch (e) {
         console.error(e);
@@ -38,7 +41,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
       let provider;
       try {
         provider = new ethers.providers.JsonRpcProvider(
-          data.providerNetwork_arbitrum,
+          data.providerNetwork_arbitrum
         );
       } catch (e) {
         console.error(e);
@@ -53,7 +56,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         erc20Instance = new ethers.Contract(
           data.tokenAddress_arbitrumUSDC,
           ERC20_ABI,
-          provider,
+          provider
         );
       } catch (e) {
         console.error(e);
@@ -71,7 +74,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
+          'The decimals from erc20 contract is not displayed correctly.'
         );
       }
 
@@ -80,14 +83,14 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
       try {
         transactionData = erc20Instance.interface.encodeFunctionData(
           'transfer',
-          [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)],
+          [data.recipient, ethers.utils.parseUnits(data.erc20_value, decimals)]
         );
       } catch (e) {
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(
-          'The decimals from erc20 contract is not displayed correctly.',
+          'The decimals from erc20 contract is not displayed correctly.'
         );
       }
 
@@ -123,7 +126,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(
-          'The estimate transactions added to the batch is not performed.',
+          'The estimate transactions added to the batch is not performed.'
         );
       }
 
@@ -140,8 +143,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
       const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
       const ttfb_s = (ttfb_ms / 1000).toFixed(2);
 
-      addContext(test, 'Time to First Byte (TTFB) for the regular ERC20 token transaction on the arbitrum network is ' + ttfb_s + ' seconds');
-      console.log('Time to First Byte (TTFB) for the regular ERC20 token transaction on the arbitrum network is ' + ttfb_s + ' seconds')
+      addContext(
+        test,
+        'Time to First Byte (TTFB) for the regular ERC20 token transaction on the arbitrum network is ' +
+          ttfb_s +
+          ' seconds'
+      );
+      console.log(
+        'Time to First Byte (TTFB) for the regular ERC20 token transaction on the arbitrum network is ' +
+          ttfb_s +
+          ' seconds'
+      );
     }, data.retry); // Retry this async test up to 5 times
   });
 
@@ -149,7 +161,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.arbitrum_chainid,
+      data.arbitrum_chainid
     )}`;
     await customRetryAsync(async function () {
       const startTime = performance.now();
@@ -160,8 +172,12 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.arbitrum_chainid),
-            projectKey: process.env.PROJECT_KEY, bundlerProvider: new EtherspotBundler(Number(data.arbitrum_chainid), process.env.BUNDLER_API_KEY)
-          },
+            projectKey: process.env.PROJECT_KEY,
+            bundlerProvider: new EtherspotBundler(
+              Number(data.arbitrum_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
       } catch (e) {
         console.error(e);
@@ -169,7 +185,6 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         addContext(test, eString);
         assert.fail('The SDK is not initialled successfully.');
       }
-
 
       // get balance of the account address
       let balance;
@@ -205,7 +220,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             body: JSON.stringify({
               params: [data.entryPointAddress, { token: 'USDC' }],
             }),
-          },
+          }
         ).then((res) => {
           return res.json();
         });
@@ -216,7 +231,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(
-          'The fetched value of the arka pimlico paymaster is not displayed.',
+          'The fetched value of the arka pimlico paymaster is not displayed.'
         );
       }
 
@@ -225,12 +240,12 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
         try {
           erc20Contract = new ethers.Contract(
             data.tokenAddress_arbitrumUSDC,
-            ERC20_ABI,
+            ERC20_ABI
           );
-          encodedData = erc20Contract.interface.encodeFunctionData(
-            'approve',
-            [paymasterAddress, ethers.constants.MaxUint256],
-          );
+          encodedData = erc20Contract.interface.encodeFunctionData('approve', [
+            paymasterAddress,
+            ethers.constants.MaxUint256,
+          ]);
 
           await arbitrumMainNetSdk.addUserOpsToBatch({
             to: data.tokenAddress_arbitrumUSDC,
@@ -241,7 +256,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The erc20Contract value of the arka pimlico paymaster is not displayed.',
+            'The erc20Contract value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -253,7 +268,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The approveOp value of the arka pimlico paymaster is not displayed.',
+            'The approveOp value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -265,7 +280,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The uoHash1 value of the arka pimlico paymaster is not displayed.',
+            'The uoHash1 value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -277,7 +292,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'Clear the transaction batch of the arka pimlico paymaster is not displayed.',
+            'Clear the transaction batch of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -292,7 +307,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
+            'The fetched value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -304,7 +319,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
+            'The fetched value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -314,14 +329,14 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
             paymasterDetails: {
               url: `${data.paymaster_arka}${queryString}`,
               context: { token: data.usdc_token, mode: 'erc20' },
-            }
+            },
           });
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
+            'The fetched value of the arka pimlico paymaster is not displayed.'
           );
         }
 
@@ -333,7 +348,7 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(
-            'The fetched value of the arka pimlico paymaster is not displayed.',
+            'The fetched value of the arka pimlico paymaster is not displayed.'
           );
         }
       } else {
@@ -344,8 +359,17 @@ describe('The PrimeSDK, when transfer a token with arbitrum network on the MainN
       const ttfb_ms = performance.now() - startTime; // Calculate TTFB in milliseconds
       const ttfb_s = (ttfb_ms / 1000).toFixed(2);
 
-      addContext(test, 'Time to First Byte (TTFB) for the gasless ERC20 token transaction on the arbitrum network is ' + ttfb_s + ' seconds');
-      console.log('Time to First Byte (TTFB) for the gasless ERC20 token transaction on the arbitrum network is ' + ttfb_s + ' seconds')
+      addContext(
+        test,
+        'Time to First Byte (TTFB) for the gasless ERC20 token transaction on the arbitrum network is ' +
+          ttfb_s +
+          ' seconds'
+      );
+      console.log(
+        'Time to First Byte (TTFB) for the gasless ERC20 token transaction on the arbitrum network is ' +
+          ttfb_s +
+          ' seconds'
+      );
     }, data.retry); // Retry this async test up to 5 times
   });
 });

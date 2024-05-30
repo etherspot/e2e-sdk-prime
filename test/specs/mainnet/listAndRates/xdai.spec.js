@@ -21,7 +21,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
 
     await customRetryAsync(async function () {
-
       helper.wait(data.mediumTimeout);
 
       // initializating sdk
@@ -30,15 +29,19 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           { privateKey: process.env.PRIVATE_KEY },
           {
             chainId: Number(data.xdai_chainid),
-            bundlerProvider: new EtherspotBundler(Number(data.xdai_chainid), process.env.BUNDLER_API_KEY)
-          },
+            bundlerProvider: new EtherspotBundler(
+              Number(data.xdai_chainid),
+              process.env.BUNDLER_API_KEY
+            ),
+          }
         );
 
         try {
           assert.strictEqual(
             xdaiMainNetSdk.state.EOAAddress,
             data.eoaAddress,
-            message.vali_eoa_address);
+            message.vali_eoa_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -60,7 +63,8 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           assert.strictEqual(
             xdaiEtherspotWalletAddress,
             data.sender,
-            message.vali_smart_address);
+            message.vali_smart_address
+          );
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -75,9 +79,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
       // initializating Data service...
       try {
-        xdaiDataService = new DataUtils(
-          process.env.DATA_API_KEY
-        );
+        xdaiDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -128,7 +130,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         let nfts;
@@ -139,13 +140,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
           });
 
           if (nfts.items.length > 0) {
-            addContext(test, message.pass_nft_list_1)
+            addContext(test, message.pass_nft_list_1);
             console.log(message.pass_nftList_1);
 
             try {
               assert.isNotEmpty(
                 nfts.items[0].contractName,
-                message.vali_nftList_contractName,
+                message.vali_nftList_contractName
               );
             } catch (e) {
               console.error(e);
@@ -156,7 +157,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].contractAddress,
-                message.vali_nftList_contractAddress,
+                message.vali_nftList_contractAddress
               );
             } catch (e) {
               console.error(e);
@@ -200,7 +201,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 nfts.items[0].items[0].name,
-                message.vali_nftList_items_name,
+                message.vali_nftList_items_name
               );
             } catch (e) {
               console.error(e);
@@ -211,7 +212,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 nfts.items[0].items[0].amount,
-                message.vali_nftList_items_amount,
+                message.vali_nftList_items_amount
               );
             } catch (e) {
               console.error(e);
@@ -219,7 +220,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.pass_nftList_2)
+            addContext(test, message.pass_nftList_2);
             console.log(message.pass_nftList_2);
           }
         } catch (e) {
@@ -238,13 +239,14 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         let tokenLists;
         let tokenListTokens;
         try {
-          tokenLists = await xdaiDataService.getTokenLists({ chainId: data.xdai_chainid });
+          tokenLists = await xdaiDataService.getTokenLists({
+            chainId: data.xdai_chainid,
+          });
 
           if (tokenLists.length > 0) {
             console.log(message.pass_tokenList_1);
@@ -253,7 +255,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenLists[0].name,
-                message.vali_tokenList_name,
+                message.vali_tokenList_name
               );
             } catch (e) {
               console.error(e);
@@ -264,7 +266,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenLists[0].endpoint,
-                message.vali_tokenList_endpoint,
+                message.vali_tokenList_endpoint
               );
             } catch (e) {
               console.error(e);
@@ -272,11 +274,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.pass_tokenList_2)
+            addContext(test, message.pass_tokenList_2);
             console.log(message.pass_tokenList_2);
           }
 
-          tokenListTokens = await xdaiDataService.getTokenListTokens({ chainId: data.xdai_chainid });
+          tokenListTokens = await xdaiDataService.getTokenListTokens({
+            chainId: data.xdai_chainid,
+          });
 
           if (tokenListTokens.length > 0) {
             console.log(message.pass_tokenList_3);
@@ -285,7 +289,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].address,
-                message.vali_tokenListTokens_address,
+                message.vali_tokenListTokens_address
               );
             } catch (e) {
               console.error(e);
@@ -296,7 +300,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].name,
-                message.vali_tokenListTokens_name,
+                message.vali_tokenListTokens_name
               );
             } catch (e) {
               console.error(e);
@@ -307,7 +311,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 tokenListTokens[0].symbol,
-                message.vali_tokenListTokens_symbol,
+                message.vali_tokenListTokens_symbol
               );
             } catch (e) {
               console.error(e);
@@ -318,7 +322,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].decimals,
-                message.vali_tokenListTokens_decimals,
+                message.vali_tokenListTokens_decimals
               );
             } catch (e) {
               console.error(e);
@@ -340,7 +344,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 tokenListTokens[0].chainId,
-                message.vali_tokenListTokens_chainId,
+                message.vali_tokenListTokens_chainId
               );
             } catch (e) {
               console.error(e);
@@ -348,12 +352,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               addContext(test, eString);
             }
           } else {
-            addContext(test, message.pass_tokenList_4)
+            addContext(test, message.pass_tokenList_4);
             console.log(message.pass_tokenList_4);
           }
 
           if (tokenLists.length > 0) {
-
             const { name } = tokenLists[0];
 
             tokenListTokens = await xdaiDataService.getTokenListTokens({
@@ -362,13 +365,13 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             });
 
             if (tokenListTokens.length > 0) {
-              addContext(test, message.pass_tokenList_5)
+              addContext(test, message.pass_tokenList_5);
               console.log(message.pass_tokenList_5);
-              
+
               try {
                 assert.isNotEmpty(
                   tokenListTokens[0].address,
-                  message.vali_selectedTokenListTokens_address,
+                  message.vali_selectedTokenListTokens_address
                 );
               } catch (e) {
                 console.error(e);
@@ -431,11 +434,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
                 addContext(test, eString);
               }
             } else {
-              addContext(test, message.pass_tokenList_6)
+              addContext(test, message.pass_tokenList_6);
               console.log(message.pass_tokenList_6);
             }
           } else {
-            addContext(test, message.pass_tokenList_2)
+            addContext(test, message.pass_tokenList_2);
             console.log(message.pass_tokenList_2);
           }
         } catch (e) {
@@ -454,7 +457,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
         helper.wait(data.mediumTimeout);
 
         let TOKEN_LIST;
@@ -474,7 +476,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNotEmpty(
                 rates.items[i].address,
-                message.vali_exchangeRates_address,
+                message.vali_exchangeRates_address
               );
             } catch (e) {
               console.error(e);
@@ -485,7 +487,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].eth,
-                message.vali_exchangeRates_eth,
+                message.vali_exchangeRates_eth
               );
             } catch (e) {
               console.error(e);
@@ -496,7 +498,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].eur,
-                message.vali_exchangeRates_eur,
+                message.vali_exchangeRates_eur
               );
             } catch (e) {
               console.error(e);
@@ -507,7 +509,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].gbp,
-                message.vali_exchangeRates_gbp,
+                message.vali_exchangeRates_gbp
               );
             } catch (e) {
               console.error(e);
@@ -518,7 +520,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             try {
               assert.isNumber(
                 rates.items[i].usd,
-                message.vali_exchangeRates_usd,
+                message.vali_exchangeRates_usd
               );
             } catch (e) {
               console.error(e);
@@ -542,21 +544,21 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           await xdaiDataService.getNftList({
             chainId: Number(data.xdai_chainid),
             account: data.invalidSender,
           });
 
-          addContext(test, message.fail_nftList_2)
+          addContext(test, message.fail_nftList_2);
           assert.fail(message.fail_nftList_2);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.pass_nftList_3)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.pass_nftList_3);
             console.log(message.pass_nftList_3);
           } else {
             console.error(e);
@@ -575,21 +577,21 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           await xdaiDataService.getNftList({
             chainId: Number(data.xdai_chainid),
             account: data.incorrectSender,
           });
 
-          addContext(test, message.fail_nftList_3)
+          addContext(test, message.fail_nftList_3);
           assert.fail(message.fail_nftList_3);
         } catch (e) {
           const errorResponse = JSON.parse(e.message);
-          if (errorResponse[0].constraints.isAddress === constant.invalid_address_1) {
-            addContext(test, message.pass_nftList_4)
+          if (
+            errorResponse[0].constraints.isAddress ===
+            constant.invalid_address_1
+          ) {
+            addContext(test, message.pass_nftList_4);
             console.log(message.pass_nftList_4);
           } else {
             console.error(e);
@@ -608,9 +610,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let TOKEN_LIST;
         let requestPayload;
         try {
@@ -642,9 +641,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let TOKEN_LIST;
         let requestPayload;
         try {
@@ -660,12 +656,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           await xdaiDataService.fetchExchangeRates(requestPayload);
 
-          addContext(test, message.fail_exchangeRates_3)
+          addContext(test, message.fail_exchangeRates_3);
           assert.fail(message.fail_exchangeRates_3);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.property_undefined)) {
-            addContext(test, message.pass_exchangeRates_1)
+            addContext(test, message.pass_exchangeRates_1);
             console.log(message.pass_exchangeRates_1);
           } else {
             console.error(e);
@@ -684,9 +680,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let TOKEN_LIST;
         let requestPayload;
 
@@ -703,12 +696,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           await xdaiDataService.fetchExchangeRates(requestPayload);
 
-          addContext(test, message.fail_exchangeRates_4)
+          addContext(test, message.fail_exchangeRates_4);
           assert.fail(message.fail_exchangeRates_4);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.property_undefined)) {
-            addContext(test, message.pass_exchangeRates_2)
+            addContext(test, message.pass_exchangeRates_2);
             console.log(message.pass_exchangeRates_2);
           } else {
             console.error(e);
@@ -727,9 +720,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         try {
           let TOKEN_LIST = [];
 
@@ -740,12 +730,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           await xdaiDataService.fetchExchangeRates(requestPayload);
 
-          addContext(test, message.fail_exchangeRates_5)
+          addContext(test, message.fail_exchangeRates_5);
           assert.fail(message.fail_exchangeRates_5);
         } catch (e) {
           let error = e.message;
           if (error.includes(constant.property_undefined)) {
-            addContext(test, message.pass_exchangeRates_3)
+            addContext(test, message.pass_exchangeRates_3);
             console.log(message.pass_exchangeRates_3);
           } else {
             console.error(e);
@@ -764,9 +754,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let TOKEN_LIST;
         let requestPayload;
 
@@ -782,7 +769,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.property_undefined)) {
-            addContext(test, message.pass_exchangeRates_4)
+            addContext(test, message.pass_exchangeRates_4);
             console.log(message.pass_exchangeRates_4);
           } else {
             console.error(e);
@@ -801,9 +788,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
-
-        helper.wait(data.mediumTimeout);
-
         let TOKEN_LIST;
         let requestPayload;
 
@@ -816,12 +800,12 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
           await xdaiDataService.fetchExchangeRates(requestPayload);
 
-          addContext(test, message.fail_exchangeRates_7)
+          addContext(test, message.fail_exchangeRates_7);
           assert.fail(message.fail_exchangeRates_7);
         } catch (e) {
           let errorMessage = e.message;
           if (errorMessage.includes(constant.property_undefined)) {
-            addContext(test, message.pass_exchangeRates_5)
+            addContext(test, message.pass_exchangeRates_5);
             console.log(message.pass_exchangeRates_5);
           } else {
             console.error(e);
