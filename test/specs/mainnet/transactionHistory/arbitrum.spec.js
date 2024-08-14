@@ -487,6 +487,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -727,6 +728,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1158,6 +1160,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1636,6 +1639,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1667,6 +1671,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1697,6 +1702,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1726,6 +1732,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1759,6 +1766,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1792,6 +1800,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.getTransaction_insufficientBalance);
+      test.skip();
     }
   });
 });

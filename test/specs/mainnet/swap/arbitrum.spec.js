@@ -291,7 +291,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -462,7 +463,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -563,7 +565,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -880,7 +883,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1011,7 +1015,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1075,7 +1080,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1140,7 +1146,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1204,7 +1211,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1265,7 +1273,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1326,7 +1335,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1390,7 +1400,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.exchangeOffers_insufficientBalance_arbitrum);
+      console.warn(message.exchangeOffers_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1426,7 +1437,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1462,7 +1474,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1502,7 +1515,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1542,7 +1556,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1581,7 +1596,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1621,7 +1637,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1661,7 +1678,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1700,7 +1718,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1740,7 +1759,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1781,7 +1801,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1820,7 +1841,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.crossChainQuotes_insufficientBalance_arbitrum);
+      console.warn(message.crossChainQuotes_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1856,7 +1878,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1892,7 +1915,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1932,7 +1956,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1972,7 +1997,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2011,7 +2037,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2051,7 +2078,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2091,7 +2119,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2130,7 +2159,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2169,7 +2199,8 @@ describe('The PrimeSDK, when get cross chain quotes and get advance routes LiFi 
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
-      console.warn(message.advanceRoutesLiFi_insufficientBalance_arbitrum);
+      console.warn(message.advanceRoutesLiFi_insufficientBalance);
+      test.skip();
     }
   });
 });

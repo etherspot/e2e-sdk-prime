@@ -200,6 +200,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -280,6 +281,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -340,6 +342,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -477,6 +480,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -507,6 +511,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -545,6 +550,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -582,6 +588,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -620,6 +627,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -658,6 +666,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -695,6 +704,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -733,6 +743,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -768,6 +779,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -803,6 +815,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -841,6 +854,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -879,6 +893,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -916,6 +931,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -952,6 +968,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -988,6 +1005,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1026,6 +1044,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1061,6 +1080,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1095,6 +1115,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1129,6 +1150,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1164,6 +1186,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1197,6 +1220,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1231,6 +1255,7 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.connext_insufficientBalance);
+      test.skip();
     }
   });
 });
