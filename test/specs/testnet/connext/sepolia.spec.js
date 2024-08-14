@@ -195,6 +195,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -276,6 +277,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -337,6 +339,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -469,6 +472,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -500,6 +504,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -539,6 +544,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -577,6 +583,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -616,6 +623,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -655,6 +663,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -693,6 +702,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -732,6 +742,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -768,6 +779,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -804,6 +816,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -843,6 +856,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -882,6 +896,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -920,6 +935,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -957,6 +973,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -994,6 +1011,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1033,6 +1051,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1069,6 +1088,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1104,6 +1124,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1139,6 +1160,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1175,6 +1197,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1209,6 +1232,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }
@@ -1244,6 +1268,7 @@ describe('The PrimeSDK, Validate the connext endpoints with sepolia network on t
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.connext_insufficientBalance);
       console.warn(message.connext_insufficientBalance);
       test.skip();
     }

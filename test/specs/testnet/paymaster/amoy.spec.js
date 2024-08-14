@@ -376,6 +376,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -888,6 +889,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1151,6 +1153,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -1217,6 +1220,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1251,6 +1255,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1289,6 +1294,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1325,6 +1331,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1355,6 +1362,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1385,6 +1393,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -1452,6 +1461,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -1519,6 +1529,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -1586,6 +1597,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -1653,6 +1665,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
@@ -1703,6 +1716,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1750,6 +1764,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1795,6 +1810,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1842,6 +1858,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1887,6 +1904,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1933,6 +1951,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -1983,6 +2002,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2030,6 +2050,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2104,6 +2125,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2178,6 +2200,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2253,6 +2276,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2328,6 +2352,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2451,6 +2476,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2590,6 +2616,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2731,6 +2758,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -2870,6 +2898,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3011,6 +3040,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3150,6 +3180,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3241,6 +3272,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3331,6 +3363,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3419,6 +3452,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3510,6 +3544,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3599,6 +3634,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
@@ -3628,6 +3664,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3657,6 +3694,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3686,6 +3724,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3715,6 +3754,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3745,6 +3785,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3778,6 +3819,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3825,6 +3867,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3859,6 +3902,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3888,6 +3932,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3917,6 +3962,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3954,6 +4000,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -3992,6 +4039,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4033,6 +4081,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4062,6 +4111,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4091,6 +4141,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4122,6 +4173,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4151,6 +4203,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
@@ -4180,6 +4233,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with a
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
