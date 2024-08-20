@@ -231,7 +231,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.nftList_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -449,7 +451,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.tokenList_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -536,7 +540,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -569,7 +575,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.nftList_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -602,7 +610,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.nftList_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -633,7 +643,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -672,7 +684,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -712,7 +726,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -746,7 +762,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -780,7 +798,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -816,7 +836,9 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.exchangeRates_insufficientBalance);
       console.warn(message.exchangeRates_insufficientBalance);
+      test.skip();
     }
   });
 });

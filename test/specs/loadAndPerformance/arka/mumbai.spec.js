@@ -11,7 +11,7 @@ let mumbaiTestNetSdk;
 
 /* eslint-disable prettier/prettier */
 describe('Performance testing of Arka Endpoints with Mumbai Network', function () {
-  it('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async function () {
+  it.only('SMOKE: Validate the Whitelist endpoint of Arka on Mumbai Network', async function () {
     var test = this;
     const randomAddress = ethers.Wallet.createRandom();
     const addresses = [randomAddress.address];
@@ -25,7 +25,11 @@ describe('Performance testing of Arka Endpoints with Mumbai Network', function (
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          params: [addresses, data.mumbai_chainid_testnet, process.env.API_KEY],
+          params: [
+            '0xE05FB316eB8C4ba7288D43c1bd87BE8a8d16761C',
+            '80002',
+            process.env.API_KEY,
+          ],
         }),
       });
       if (!response.ok) {

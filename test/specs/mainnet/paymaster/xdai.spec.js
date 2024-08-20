@@ -392,11 +392,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
+  it('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -404,7 +406,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
-        helper.wait(data.mediumTimeout);
+        // wait for the execution
+        helper.wait(data.longTimeout);
 
         let balance;
         // get balance of the account address
@@ -670,6 +673,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
             }
           }
 
+          // get transaction hash...
+          console.log('Waiting for transaction...');
+          let userOpsReceipt1 = null;
+          const timeout1 = Date.now() + 60000; // 1 minute timeout
+          while (userOpsReceipt1 == null && Date.now() < timeout1) {
+            helper.wait(data.mediumTimeout);
+            userOpsReceipt1 = await xdaiMainNetSdk.getUserOpReceipt(uoHash1);
+          }
+          console.log('Transaction Receipt: ', userOpsReceipt1);
+
+          // wait for the execution
+          helper.wait(data.longTimeout);
+
           // clear the transaction batch
           try {
             await xdaiMainNetSdk.clearUserOpsFromBatch();
@@ -898,11 +914,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the XDAI network', async function () {
+  xit('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the XDAI network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1166,11 +1184,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the metadata of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the metadata of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1231,11 +1251,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the get token paymaster address function of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1264,11 +1286,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the remove whitelist address function of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1301,11 +1325,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the add whitelist address function of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1336,11 +1362,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the check whitelist function of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the check whitelist function of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1365,11 +1393,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('SMOKE: Validate the deposit function of the arka paymaster on the xdai network', async function () {
+  xit('SMOKE: Validate the deposit function of the arka paymaster on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1394,7 +1424,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1460,7 +1492,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1526,7 +1560,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1592,7 +1628,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1658,11 +1696,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1707,11 +1747,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
@@ -1753,11 +1795,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
@@ -1797,11 +1841,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1843,11 +1889,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -1887,11 +1935,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1932,11 +1982,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1981,11 +2033,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2027,11 +2081,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2100,11 +2156,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2173,11 +2231,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2247,11 +2307,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2321,11 +2383,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2449,11 +2513,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
@@ -2593,11 +2659,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2739,11 +2807,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -2883,11 +2953,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3029,11 +3101,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
+  it('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3173,11 +3247,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the XDAI network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the XDAI network', async function () {
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3263,11 +3339,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the XDAI network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${
@@ -3352,11 +3430,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the XDAI network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?chainId=${Number(data.xdai_chainid)}`; // without API Key in queryString
@@ -3439,11 +3519,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the XDAI network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -3529,11 +3611,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the XDAI network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the XDAI network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
@@ -3617,11 +3701,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the xdai network', async function () {
+  xit('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3645,11 +3731,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the xdai network', async function () {
+  xit('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3673,11 +3761,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3701,11 +3791,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3729,11 +3821,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3758,11 +3852,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3790,11 +3886,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3836,11 +3934,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the xdai network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3869,11 +3969,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the xdai network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3897,11 +3999,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the xdai network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3925,11 +4029,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the xdai network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3961,11 +4067,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the xdai network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3998,11 +4106,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the xdai network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4038,11 +4148,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the xdai network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4066,11 +4178,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the xdai network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4094,11 +4208,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the xdai network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4124,11 +4240,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the xdai network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4152,11 +4270,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 
-  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the xdai network', async function () {
+  xit('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the xdai network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4180,7 +4300,9 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
+      test.skip();
     }
   });
 });

@@ -366,6 +366,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -671,6 +672,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -922,6 +924,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1164,6 +1167,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1321,6 +1325,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1381,6 +1386,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1441,6 +1447,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1480,6 +1487,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1519,6 +1527,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1566,6 +1575,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1627,6 +1637,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1688,6 +1699,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1736,6 +1748,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1791,6 +1804,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1844,6 +1858,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1900,6 +1915,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1955,6 +1971,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2010,6 +2027,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2050,6 +2068,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2119,6 +2138,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2188,6 +2208,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2257,6 +2278,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2324,6 +2346,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2394,6 +2417,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2464,6 +2488,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2532,6 +2557,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2639,6 +2665,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2746,6 +2773,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2852,6 +2880,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2957,6 +2986,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3045,6 +3075,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3079,6 +3110,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3113,6 +3145,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3146,6 +3179,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3180,6 +3214,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3214,6 +3249,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3247,6 +3283,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3281,6 +3318,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3314,6 +3352,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3378,6 +3417,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3492,6 +3532,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3606,6 +3647,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3639,6 +3681,7 @@ describe('The PrimeSDK, when transfer a token with matic network on the MainNet'
       }, data.retry); // Retry this async test up to 5 times
     } else {
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 });

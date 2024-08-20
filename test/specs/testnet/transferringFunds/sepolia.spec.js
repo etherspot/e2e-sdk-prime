@@ -355,7 +355,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -654,7 +656,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -899,7 +903,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1135,7 +1141,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1286,7 +1294,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1346,7 +1356,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1406,7 +1418,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1445,7 +1459,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1484,7 +1500,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1531,7 +1549,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1592,7 +1612,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1653,7 +1675,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1701,7 +1725,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1756,7 +1782,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1809,7 +1837,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1865,7 +1895,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1920,7 +1952,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -1975,7 +2009,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2015,7 +2051,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2084,7 +2122,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2153,7 +2193,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2222,7 +2264,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2289,7 +2333,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2359,7 +2405,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2429,7 +2477,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2497,7 +2547,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2604,7 +2656,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2711,7 +2765,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2817,7 +2873,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -2922,7 +2980,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3010,7 +3070,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc20Transaction_insufficientBalance);
       console.warn(message.erc20Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3044,7 +3106,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3078,7 +3142,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3111,7 +3177,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3145,7 +3213,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3179,7 +3249,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3212,7 +3284,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3246,7 +3320,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3279,7 +3355,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3343,7 +3421,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.erc721Transaction_insufficientBalance);
       console.warn(message.erc721Transaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3449,7 +3529,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3555,7 +3637,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 
@@ -3588,7 +3672,9 @@ describe('The PrimeSDK, when transfer a token with sepolia network on the TestNe
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
+      test.skip();
     }
   });
 });

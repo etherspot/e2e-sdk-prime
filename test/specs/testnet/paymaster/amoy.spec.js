@@ -1,11 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import {
-  PrimeSdk,
-  DataUtils,
-  EtherspotBundler,
-  ArkaPaymaster,
-} from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, ArkaPaymaster } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
@@ -16,15 +11,14 @@ import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
-let maticMainNetSdk;
-let maticEtherspotWalletAddress;
-let maticNativeAddress = null;
-let maticDataService;
+let amoyTestNetSdk;
+let amoyEtherspotWalletAddress;
+let amoyNativeAddress = null;
+let amoyDataService;
 let arkaPaymaster;
 let runTest;
 
-/* eslint-disable prettier/prettier */
-describe('The PrimeSDK, when transaction with arka and pimlico paymasters with matic network on the MainNet.', function () {
+describe('The PrimeSDK, when transaction with arka and pimlico paymasters with amoy network on the TestNet.', function () {
   before(async function () {
     var test = this;
 
@@ -33,20 +27,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // initializating sdk
       try {
-        maticMainNetSdk = new PrimeSdk(
+        amoyTestNetSdk = new PrimeSdk(
           { privateKey: process.env.PRIVATE_KEY },
           {
-            chainId: Number(data.matic_chainid),
-            bundlerProvider: new EtherspotBundler(
-              Number(data.matic_chainid),
-              process.env.BUNDLER_API_KEY
-            ),
+            chainId: Number(data.amoy_chainid),
           }
         );
 
         try {
           assert.strictEqual(
-            maticMainNetSdk.state.EOAAddress,
+            amoyTestNetSdk.state.EOAAddress,
             data.eoaAddress,
             message.vali_eoa_address
           );
@@ -64,12 +54,12 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // get EtherspotWallet address
       try {
-        maticEtherspotWalletAddress =
-          await maticMainNetSdk.getCounterFactualAddress();
+        amoyEtherspotWalletAddress =
+          await amoyTestNetSdk.getCounterFactualAddress();
 
         try {
           assert.strictEqual(
-            maticEtherspotWalletAddress,
+            amoyEtherspotWalletAddress,
             data.sender,
             message.vali_smart_address
           );
@@ -87,7 +77,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // initializating Data service...
       try {
-        maticDataService = new DataUtils(process.env.DATA_API_KEY);
+        amoyDataService = new DataUtils(process.env.DATA_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -98,7 +88,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
       // initializating ArkaPaymaster...
       try {
         arkaPaymaster = new ArkaPaymaster(
-          Number(data.matic_chainid),
+          Number(data.amoy_chainid),
           process.env.API_KEY,
           data.paymaster_arka
         );
@@ -111,29 +101,29 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
       // validate the balance of the wallet
       try {
-        let output = await maticDataService.getAccountBalances({
+        let output = await amoyDataService.getAccountBalances({
           account: data.sender,
-          chainId: Number(data.matic_chainid),
+          chainId: Number(data.amoy_chainid),
         });
         let native_balance;
-        let usdc_balance;
+        let link_balance;
         let native_final;
-        let usdc_final;
+        let link_final;
 
         for (let i = 0; i < output.items.length; i++) {
           let tokenAddress = output.items[i].token;
-          if (tokenAddress === maticNativeAddress) {
+          if (tokenAddress === amoyNativeAddress) {
             native_balance = output.items[i].balance;
             native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_maticUSDC) {
-            usdc_balance = output.items[i].balance;
-            usdc_final = utils.formatUnits(usdc_balance, 6);
+          } else if (tokenAddress === data.tokenAddress_amoyLink) {
+            link_balance = output.items[i].balance;
+            link_final = utils.formatUnits(link_balance, 6);
           }
         }
 
         if (
           native_final > data.minimum_native_balance &&
-          usdc_final > data.minimum_token_balance
+          link_final > data.minimum_token_balance
         ) {
           runTest = true;
         } else {
@@ -148,7 +138,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it('SMOKE: Perform the transfer native token on arka paymaster on the matic network', async function () {
+  it('SMOKE: Perform the transfer native token on arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -156,7 +146,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -167,7 +157,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+          transactionBatch = await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -214,7 +204,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // get balance of the account address
         let balance;
         try {
-          balance = await maticMainNetSdk.getNativeBalance();
+          balance = await amoyTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(balance, message.vali_getBalance_balance);
@@ -233,11 +223,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await maticMainNetSdk.estimate({
+          op = await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `https://arka.etherspot.io?apiKey=${
                 process.env.API_KEY
-              }&chainId=${Number(data.matic_chainid)}`,
+              }&chainId=${Number(data.amoy_chainid)}`,
               context: { mode: 'sponsor' },
             },
           });
@@ -369,7 +359,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await maticMainNetSdk.send(op);
+          uoHash = await amoyTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
@@ -381,27 +371,22 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === 'Error') {
-            console.warn(message.skip_transaction_error);
-            addContext(test, message.skip_transaction_error);
-            test.skip();
-          } else {
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
-          }
+          addContext(test, eString);
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('SMOKE: Perform the transfer token with arka pimlico paymaster on the matic network', async function () {
+  it('SMOKE: Perform the transfer token with arka pimlico paymaster on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -410,7 +395,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         let balance;
         // get balance of the account address
         try {
-          balance = await maticMainNetSdk.getNativeBalance();
+          balance = await amoyTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(balance, message.vali_getBalance_balance);
@@ -450,7 +435,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -481,16 +466,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           let contract;
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
+
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
 
-            contract = await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            contract = await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
 
@@ -518,7 +504,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get estimation of transaction
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
 
             try {
               assert.isNotEmpty(
@@ -649,7 +635,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            uoHash1 = await maticMainNetSdk.send(approveOp);
+            uoHash1 = await amoyTestNetSdk.send(approveOp);
 
             try {
               assert.isNotEmpty(uoHash1, message.vali_submitTransaction_uoHash);
@@ -661,19 +647,29 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
+
+          // get transaction hash...
+          try {
+            console.log('Waiting for transaction...');
+            let userOpsReceipt1 = null;
+            const timeout1 = Date.now() + 60000; // 1 minute timeout
+            while (userOpsReceipt1 == null && Date.now() < timeout1) {
+              helper.wait(data.mediumTimeout);
+              userOpsReceipt1 = await amoyTestNetSdk.getUserOpReceipt(uoHash1);
             }
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getTransactionHash_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -683,7 +679,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+            transactionBatch = await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -718,7 +714,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get balance of the account address
           try {
-            balance = await maticMainNetSdk.getNativeBalance();
+            balance = await amoyTestNetSdk.getNativeBalance();
 
             try {
               assert.isNotEmpty(balance, message.vali_getBalance_balance);
@@ -736,10 +732,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            op = await maticMainNetSdk.estimate({
+            op = await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -872,7 +868,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // sign the UserOp and sending to the bundler...
           try {
-            uoHash = await maticMainNetSdk.send(op);
+            uoHash = await amoyTestNetSdk.send(op);
 
             try {
               assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
@@ -884,14 +880,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
         } else {
           addContext(test, message.fail_paymasterAddress_1);
@@ -899,16 +889,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the matic network', async function () {
+  xit('SMOKE: Perform the transfer token with arka paymaster with validUntil and validAfter on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -921,7 +912,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          balance = await maticMainNetSdk.getNativeBalance();
+          balance = await amoyTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(balance, message.vali_getBalance_balance);
@@ -939,7 +930,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -949,7 +940,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          transactionBatch = await maticMainNetSdk.addUserOpsToBatch({
+          transactionBatch = await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -984,7 +975,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          balance = await maticMainNetSdk.getNativeBalance();
+          balance = await amoyTestNetSdk.getNativeBalance();
 
           try {
             assert.isNotEmpty(balance, message.vali_getBalance_balance);
@@ -1008,7 +999,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          op = await maticMainNetSdk.estimate({
+          op = await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${queryString}`,
               context: {
@@ -1145,7 +1136,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // sign the UserOp and sending to the bundler...
         try {
-          uoHash = await maticMainNetSdk.send(op);
+          uoHash = await amoyTestNetSdk.send(op);
 
           try {
             assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
@@ -1157,23 +1148,18 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         } catch (e) {
           console.error(e);
           const eString = e.toString();
-          if (eString === 'Error') {
-            console.warn(message.skip_transaction_error);
-            addContext(test, message.skip_transaction_error);
-            test.skip();
-          } else {
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
-          }
+          addContext(test, eString);
+          assert.fail(message.fail_submitTransaction_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the metadata of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the metadata of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1234,12 +1220,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the get token paymaster address function of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the get token paymaster address function of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1248,7 +1235,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         // validate the get token paymaster address
         try {
           let getTokenPaymasterAddress =
-            await arkaPaymaster.getTokenPaymasterAddress('USDC');
+            await arkaPaymaster.getTokenPaymasterAddress('LINK');
 
           try {
             assert.isNotEmpty(
@@ -1268,12 +1255,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the remove whitelist address function of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the remove whitelist address function of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1306,12 +1294,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the add whitelist address function of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the add whitelist address function of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1342,12 +1331,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the check whitelist function of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the check whitelist function of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1372,12 +1362,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('SMOKE: Validate the deposit function of the arka paymaster on the matic network', async function () {
+  xit('SMOKE: Validate the deposit function of the arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1402,18 +1393,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the matic network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid arka paymaster url on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1423,7 +1415,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1436,7 +1428,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1446,7 +1438,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: data.invalid_paymaster_arka, // invalid URL
               api_key: process.env.API_KEY,
@@ -1469,18 +1461,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the matic network', async function () {
+  it('REGRESSION: Perform the transfer native token with invalid API Key of arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1490,7 +1483,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1503,7 +1496,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1513,7 +1506,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               api_key: process.env.INVALID_API_KEY,
@@ -1536,18 +1529,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the matic network', async function () {
+  it('REGRESSION: Perform the transfer native token with incorrect API Key of arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1557,7 +1551,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1570,7 +1564,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1580,7 +1574,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               api_key: process.env.INCORRECT_API_KEY,
@@ -1603,18 +1597,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the matic network', async function () {
+  it('REGRESSION: Perform the transfer native token without API Key of arka paymaster on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1624,7 +1619,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -1637,7 +1632,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -1647,7 +1642,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: data.paymaster_arka,
               // without api_key
@@ -1670,16 +1665,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.nativeTransaction_insufficientBalance);
       console.warn(message.nativeTransaction_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the amoy network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1696,7 +1692,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -1720,16 +1716,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid API Key in queryString on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.INVALID_API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1745,7 +1742,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -1767,15 +1764,16 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without API Key in queryString on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let queryString = `?chainId=${Number(data.matic_chainid)}`; // without API Key in queryString
+    let queryString = `?chainId=${Number(data.amoy_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -1790,7 +1788,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -1812,16 +1810,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid ChainID in queryString on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_matic_chainid
+      data.invalid_amoy_chainid
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1837,7 +1836,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -1859,12 +1858,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without ChainID in queryString on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
@@ -1882,7 +1882,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -1904,16 +1904,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Entry Point Address while fetching the paymaster address on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1931,7 +1932,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
               body: JSON.stringify({
                 params: [
                   data.invalidEntryPointAddress, // invalid entry point address
-                  { token: data.usdc_token },
+                  { token: data.link_token },
                 ],
               }),
             }
@@ -1950,16 +1951,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token while fetching the paymaster address on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -1977,7 +1979,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
               body: JSON.stringify({
                 params: [
                   data.entryPointAddress,
-                  { token: data.invalid_usdc_token }, // invalid token
+                  { token: data.link_token }, // invalid token
                 ],
               }),
             }
@@ -2000,16 +2002,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without parameters while fetching the paymaster address on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2047,16 +2050,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect token address of the erc20 contract on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2073,7 +2077,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2092,15 +2096,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.incorrectTokenAddress_maticUSDC, // incorrect token address
+              data.incorrectTokenAddress_amoyLink, // incorrect token address
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2121,16 +2125,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid token address of the erc20 contract on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2147,7 +2152,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2166,15 +2171,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.invalidTokenAddress_maticUSDC, // invalid token address
+              data.invalidTokenAddress_amoyLink, // invalid token address
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2195,16 +2200,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster address of the erc20 contract on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2222,7 +2228,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2241,15 +2247,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [data.invalid_paymasterAddress, ethers.constants.MaxUint256] // invalid paymaster address
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2270,16 +2276,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with incorrect paymaster address of the erc20 contract on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2297,7 +2304,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2316,15 +2323,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [data.incorrect_paymasterAddress, ethers.constants.MaxUint256] // incorrect paymaster address
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2345,16 +2352,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid value of the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2374,7 +2382,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2393,15 +2401,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2413,7 +2421,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2423,23 +2431,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2449,7 +2451,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.invalidValue),
             });
@@ -2474,17 +2476,18 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL while estimate the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2504,7 +2507,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2523,15 +2526,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2543,7 +2546,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2553,23 +2556,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2579,7 +2576,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2592,10 +2589,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await maticMainNetSdk.estimate({
+            await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${invalid_arka_url}${queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -2619,20 +2616,21 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid Api Key while estimate the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(data.matic_chainid)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.amoy_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2651,7 +2649,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2670,15 +2668,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2690,7 +2688,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2700,23 +2698,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2726,7 +2718,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2739,10 +2731,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await maticMainNetSdk.estimate({
+            await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -2766,18 +2758,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without Api Key while estimate the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
-    let invalid_queryString = `?chainId=${Number(data.matic_chainid)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.amoy_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         let returnedValue;
@@ -2796,7 +2789,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2815,15 +2808,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2835,7 +2828,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2845,23 +2838,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2871,7 +2858,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -2884,10 +2871,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await maticMainNetSdk.estimate({
+            await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -2911,19 +2898,20 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid chainid while estimate the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_matic_chainid
+      data.invalid_amoy_chainid
     )}`; // invalid chainid in queryString
     if (runTest) {
       await customRetryAsync(async function () {
@@ -2943,7 +2931,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -2962,15 +2950,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -2982,7 +2970,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -2992,23 +2980,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3018,7 +3000,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -3031,10 +3013,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await maticMainNetSdk.estimate({
+            await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -3058,16 +3040,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka pimlico paymaster without chainid while estimate the transactions on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID
     if (runTest) {
@@ -3088,7 +3071,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                params: [data.entryPointAddress, { token: data.usdc_token }],
+                params: [data.entryPointAddress, { token: data.link_token }],
               }),
             }
           ).then((res) => {
@@ -3107,15 +3090,15 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           // get the erc20 Contract
           try {
             erc20Contract = new ethers.Contract(
-              data.tokenAddress_maticUSDC,
+              data.tokenAddress_amoyLink,
               ERC20_ABI
             );
             encodedData = erc20Contract.interface.encodeFunctionData(
               'approve',
               [paymasterAddress, ethers.constants.MaxUint256]
             );
-            await maticMainNetSdk.addUserOpsToBatch({
-              to: data.tokenAddress_maticUSDC,
+            await amoyTestNetSdk.addUserOpsToBatch({
+              to: data.tokenAddress_amoyLink,
               data: encodedData,
             });
           } catch (e) {
@@ -3127,7 +3110,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the UserOp Hash
           try {
-            approveOp = await maticMainNetSdk.estimate();
+            approveOp = await amoyTestNetSdk.estimate();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3137,23 +3120,17 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // get the uoHash1
           try {
-            await maticMainNetSdk.send(approveOp);
+            await amoyTestNetSdk.send(approveOp);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
           }
 
           // clear the transaction batch
           try {
-            await maticMainNetSdk.clearUserOpsFromBatch();
+            await amoyTestNetSdk.clearUserOpsFromBatch();
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -3163,7 +3140,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // add transactions to the batch
           try {
-            await maticMainNetSdk.addUserOpsToBatch({
+            await amoyTestNetSdk.addUserOpsToBatch({
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
@@ -3176,10 +3153,10 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
-            await maticMainNetSdk.estimate({
+            await amoyTestNetSdk.estimate({
               paymasterDetails: {
                 url: `${arka_url}${invalid_queryString}`,
-                context: { token: data.usdc_token, mode: 'erc20' },
+                context: { token: data.link_token, mode: 'erc20' },
               },
             });
 
@@ -3203,22 +3180,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid paymaster URL on the amoy network', async function () {
     var test = this;
     let invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.matic_chainid
+      data.amoy_chainid
     )}`;
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3228,7 +3206,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3238,7 +3216,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3251,7 +3229,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3267,7 +3245,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${invalid_arka_url}${queryString}`,
               context: {
@@ -3294,22 +3272,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid API Token on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${
       process.env.INVALID_API_KEY
-    }&chainId=${Number(data.matic_chainid)}`; // invalid API Key in queryString
+    }&chainId=${Number(data.amoy_chainid)}`; // invalid API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3319,7 +3298,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3329,7 +3308,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3342,7 +3321,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3358,7 +3337,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3384,20 +3363,21 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without API Token on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let invalid_queryString = `?chainId=${Number(data.matic_chainid)}`; // without API Key in queryString
+    let invalid_queryString = `?chainId=${Number(data.amoy_chainid)}`; // without API Key in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3407,7 +3387,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3417,7 +3397,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3430,7 +3410,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3446,7 +3426,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3472,22 +3452,23 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter with invalid ChainID on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
-      data.invalid_matic_chainid
+      data.invalid_amoy_chainid
     )}`; // invalid ChainID in queryString
     if (runTest) {
       await customRetryAsync(async function () {
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3497,7 +3478,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3507,7 +3488,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3520,7 +3501,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3536,7 +3517,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3563,12 +3544,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the matic network', async function () {
+  xit('REGRESSION: Perform the transfer token on arka paymaster with validUntil and validAfter without ChainID on the amoy network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
     let invalid_queryString = `?apiKey=${process.env.API_KEY}`; // without ChainID in queryString
@@ -3576,7 +3558,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
       await customRetryAsync(async function () {
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3586,7 +3568,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // clear the transaction batch
         try {
-          await maticMainNetSdk.clearUserOpsFromBatch();
+          await amoyTestNetSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3596,7 +3578,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // add transactions to the batch
         try {
-          await maticMainNetSdk.addUserOpsToBatch({
+          await amoyTestNetSdk.addUserOpsToBatch({
             to: data.recipient,
             value: ethers.utils.parseEther(data.value),
           });
@@ -3609,7 +3591,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // get balance of the account address
         try {
-          await maticMainNetSdk.getNativeBalance();
+          await amoyTestNetSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -3625,7 +3607,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
-          await maticMainNetSdk.estimate({
+          await amoyTestNetSdk.estimate({
             paymasterDetails: {
               url: `${arka_url}${invalid_queryString}`,
               context: {
@@ -3652,18 +3634,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.pimlocoPaymaster_insufficientBalance);
       console.warn(message.pimlocoPaymaster_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the matic network', async function () {
+  xit('REGRESSION: Validate the get token paymaster address function of the arka paymaster with incorrect token on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
         // validate the get token paymaster address
         try {
-          await arkaPaymaster.getTokenPaymasterAddress(data.invalid_usdc_token);
+          await arkaPaymaster.getTokenPaymasterAddress(data.link_token);
 
           addContext(test, message.fail_getTokenPaymasterAddress_2);
           assert.fail(message.fail_getTokenPaymasterAddress_2);
@@ -3681,12 +3664,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the matic network', async function () {
+  xit('REGRESSION: Validate the get token paymaster address function of the arka paymaster without token on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3710,12 +3694,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with invalid address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3739,12 +3724,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with incorrect address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3768,12 +3754,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3798,12 +3785,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with random and whitelisted addresses on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3831,12 +3819,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple whitelisted addresses on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3878,12 +3867,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the matic network', async function () {
+  xit('REGRESSION: Validate the remove whitelist address function of the arka paymaster with multiple random addresses on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3912,12 +3902,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the matic network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with invalid address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3941,12 +3932,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the matic network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with incorrect address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -3970,12 +3962,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the matic network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with random address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4007,12 +4000,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the matic network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with random and whitelisted addresses on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4045,12 +4039,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the matic network', async function () {
+  xit('REGRESSION: Validate the add whitelist address function of the arka paymaster with multiple whitelisted addresses on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4086,12 +4081,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the matic network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with invalid address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4115,12 +4111,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the matic network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with incorrect address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4144,12 +4141,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the matic network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster with random address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4175,12 +4173,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the matic network', async function () {
+  xit('REGRESSION: Validate the check whitelist function of the arka paymaster without address on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4204,12 +4203,13 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
   });
 
-  it('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the matic network', async function () {
+  xit('REGRESSION: Validate the deposit function of the arka paymaster with invalid amount on the amoy network', async function () {
     var test = this;
     if (runTest) {
       await customRetryAsync(async function () {
@@ -4233,6 +4233,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
+      addContext(test, message.arkaFunction_insufficientBalance);
       console.warn(message.arkaFunction_insufficientBalance);
       test.skip();
     }
