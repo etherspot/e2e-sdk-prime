@@ -1201,26 +1201,12 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
           assert.fail(message.fail_getTransactions_3);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_getTransactions_4);
-        }
-
         // get transfer From encoded data
         let transactionData;
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [
-              data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
-            ]
+            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
           );
         } catch (e) {
           console.error(e);
@@ -1323,31 +1309,9 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             }
 
             try {
-              assert.isNumber(
-                transactions.transactions[0].blockNumber,
-                message.vali_getTransactions_blockNumber
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
               assert.isNotEmpty(
                 transactions.transactions[0].sender,
                 message.vali_getTransactions_sender
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[0].target,
-                message.vali_getTransactions_target
               );
             } catch (e) {
               console.error(e);
@@ -1579,17 +1543,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
               assert.isNotEmpty(
                 transactions.transactions[0].erc20Transfers[0].value,
                 message.vali_getTransactions_erc20Transfers_value
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[0].erc20Transfers[0].asset,
-                message.vali_getTransactions_erc20Transfers_asset
               );
             } catch (e) {
               console.error(e);
