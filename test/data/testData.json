@@ -123,6 +123,7 @@
   "invalid_amoy_chainid": 80009,
   "minimum_token_balance": 0.001,
   "minimum_native_balance": 0.001,
+  "erc20_usdc_decimal": 6,
   "exchange_offer_value": "10000000000",
   "exchange_offer_decimal_value": "0.1",
   "exchange_offer_big_value": "1000000000000000000000000000000000000000000000000000000000000000000000",

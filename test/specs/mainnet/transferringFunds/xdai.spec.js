@@ -421,7 +421,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
 
           try {
@@ -1779,7 +1785,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -1837,7 +1843,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -1897,7 +1903,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -1957,7 +1963,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -2017,7 +2023,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -2119,7 +2125,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -2179,7 +2185,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.invalidValue, 6), // invalid value
+            ethers.utils.parseUnits(data.invalidValue, data.erc20_usdc_decimal), // invalid value
           ]);
 
           addContext(test, message.fail_erc20Transfer_5);
@@ -2239,7 +2245,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.smallValue, 6), // very small value
+            ethers.utils.parseUnits(data.smallValue, data.erc20_usdc_decimal), // very small value
           ]);
 
           addContext(test, message.fail_erc20Transfer_6);
@@ -2358,7 +2364,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.incorrectRecipient, // incorrect recipient address
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_8);
@@ -2419,7 +2425,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.invalidRecipient, // invalid recipient address
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_9);
@@ -2479,7 +2485,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_10);
@@ -2540,7 +2546,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
         } catch (e) {
           console.error(e);
@@ -2635,7 +2647,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
         } catch (e) {
           console.error(e);
@@ -2730,7 +2748,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
         } catch (e) {
           console.error(e);
@@ -2824,7 +2848,13 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
         } catch (e) {
           console.error(e);
@@ -2916,7 +2946,7 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, 6),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
         } catch (e) {
           console.error(e);

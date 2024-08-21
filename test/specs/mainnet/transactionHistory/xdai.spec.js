@@ -1206,7 +1206,13 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
-            [data.recipient, ethers.utils.parseUnits(data.erc20_value, 6)]
+            [
+              data.recipient,
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
+            ]
           );
         } catch (e) {
           console.error(e);
