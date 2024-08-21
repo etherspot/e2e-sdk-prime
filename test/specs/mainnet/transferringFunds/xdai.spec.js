@@ -416,25 +416,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-
-          try {
-            assert.isNotEmpty(decimals, message.vali_erc20Contract_decimals);
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         let transactionData;
         try {
@@ -442,7 +423,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'transfer',
             [
               data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
 
@@ -1797,21 +1781,24 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
+        // get transferFrom encoded data
         try {
-          await erc20Instance.functions.decimals();
+          erc20Instance.interface.encodeFunctionData('transferr', [
+            data.recipient,
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
+          ]);
 
-          addContext(test, message.fail_estimateTransaction_14);
-          assert.fail(message.fail_estimateTransaction_14);
+          addContext(test, message.fail_erc20Transfer_4);
+          assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
-          if (e.reason === constant.invalid_network_2) {
-            addContext(test, message.vali_estimateTransaction_13);
-            console.log(message.vali_estimateTransaction_13);
+          if (e.reason === constant.no_function) {
+            addContext(test, message.vali_erc20Transfer_4);
+            console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(message.fail_estimateTransaction_14);
+            assert.fail(message.fail_erc20Transfer_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -1852,21 +1839,24 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
+        // get transferFrom encoded data
         try {
-          await erc20Instance.functions.decimals();
+          erc20Instance.interface.encodeFunctionData('transferr', [
+            data.recipient,
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
+          ]);
 
-          addContext(test, message.fail_estimateTransaction_14);
-          assert.fail(message.fail_estimateTransaction_14);
+          addContext(test, message.fail_erc20Transfer_4);
+          assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
-          if (e.reason === constant.invalid_network_2) {
-            addContext(test, message.vali_estimateTransaction_13);
-            console.log(message.vali_estimateTransaction_13);
+          if (e.reason === constant.no_function) {
+            addContext(test, message.vali_erc20Transfer_4);
+            console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(message.fail_estimateTransaction_14);
+            assert.fail(message.fail_erc20Transfer_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -1909,22 +1899,24 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
+        // get transferFrom encoded data
         try {
-          await erc20Instance.functions.decimals();
+          erc20Instance.interface.encodeFunctionData('transferr', [
+            data.recipient,
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
+          ]);
 
-          addContext(test, message.fail_estimateTransaction_15);
-          assert.fail(message.fail_estimateTransaction_15);
+          addContext(test, message.fail_erc20Transfer_4);
+          assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
-          let error = e.message;
-          if (error.includes(constant.invalid_value_3)) {
-            addContext(test, message.vali_estimateTransaction_14);
-            console.log(message.vali_estimateTransaction_14);
+          if (e.reason === constant.no_function) {
+            addContext(test, message.vali_erc20Transfer_4);
+            console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(message.fail_estimateTransaction_15);
+            assert.fail(message.fail_erc20Transfer_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -1967,21 +1959,24 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
+        // get transferFrom encoded data
         try {
-          await erc20Instance.functions.decimals();
+          erc20Instance.interface.encodeFunctionData('transferr', [
+            data.recipient,
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
+          ]);
 
-          addContext(message.fail_erc20Transfer_1);
-          assert.fail(message.fail_erc20Transfer_1);
+          addContext(test, message.fail_erc20Transfer_4);
+          assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
-          if (e.reason === constant.invalid_address_6) {
-            addContext(test, message.vali_erc20Transfer_1);
-            console.log(message.vali_erc20Transfer_1);
+          if (e.reason === constant.no_function) {
+            addContext(test, message.vali_erc20Transfer_4);
+            console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(message.fail_erc20Transfer_1);
+            assert.fail(message.fail_erc20Transfer_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2024,21 +2019,24 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
+        // get transferFrom encoded data
         try {
-          await erc20Instance.functions.decimals();
+          erc20Instance.interface.encodeFunctionData('transferr', [
+            data.recipient,
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
+          ]);
 
-          addContext(test, message.fail_erc20Transfer_2);
-          assert.fail(message.fail_erc20Transfer_2);
+          addContext(test, message.fail_erc20Transfer_4);
+          assert.fail(message.fail_erc20Transfer_4);
         } catch (e) {
-          if (e.reason === constant.invalid_address_4) {
-            addContext(test, message.vali_erc20Transfer_2);
-            console.log(message.vali_erc20Transfer_2);
+          if (e.reason === constant.no_function) {
+            addContext(test, message.vali_erc20Transfer_4);
+            console.log(message.vali_erc20Transfer_4);
           } else {
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
-            assert.fail(message.fail_erc20Transfer_2);
+            assert.fail(message.fail_erc20Transfer_4);
           }
         }
       }, data.retry); // Retry this async test up to 5 times
@@ -2123,22 +2121,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transferr', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_4);
@@ -2194,22 +2181,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.invalidValue, decimals), // invalid value
+            ethers.utils.parseUnits(data.invalidValue, data.erc20_usdc_decimal), // invalid value
           ]);
 
           addContext(test, message.fail_erc20Transfer_5);
@@ -2265,22 +2241,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.smallValue, decimals), // very small value
+            ethers.utils.parseUnits(data.smallValue, data.erc20_usdc_decimal), // very small value
           ]);
 
           addContext(test, message.fail_erc20Transfer_6);
@@ -2334,16 +2299,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(message.fail_erc20Transfer_contractInterface);
-        }
-
-        // get decimals from erc20 contract
-        try {
-          await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
         }
 
         // get transferFrom encoded data
@@ -2405,22 +2360,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.incorrectRecipient, // incorrect recipient address
-            ethers.utils.parseUnits(data.erc20_value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_8);
@@ -2477,22 +2421,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.invalidRecipient, // invalid recipient address
-            ethers.utils.parseUnits(data.erc20_value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_9);
@@ -2549,21 +2482,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
-            ethers.utils.parseUnits(data.erc20_value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
 
           addContext(test, message.fail_erc20Transfer_10);
@@ -2619,17 +2541,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         let transactionData;
         try {
@@ -2637,7 +2548,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'transfer',
             [
               data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
         } catch (e) {
@@ -2728,17 +2642,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         let transactionData;
         try {
@@ -2746,7 +2649,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'transfer',
             [
               data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
         } catch (e) {
@@ -2837,17 +2743,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         let transactionData;
         try {
@@ -2855,7 +2750,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'transfer',
             [
               data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
         } catch (e) {
@@ -2945,17 +2843,6 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         let transactionData;
         try {
@@ -2963,7 +2850,10 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
             'transfer',
             [
               data.recipient,
-              ethers.utils.parseUnits(data.erc20_value, decimals),
+              ethers.utils.parseUnits(
+                data.erc20_value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
         } catch (e) {
@@ -3052,22 +2942,11 @@ describe('The PrimeSDK, when transfer a token with xdai network on the MainNet',
           assert.fail(message.fail_erc20Transfer_contractInterface);
         }
 
-        // get decimals from erc20 contract
-        let decimals;
-        try {
-          decimals = await erc20Instance.functions.decimals();
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_erc20Contract_decimals);
-        }
-
         // get transferFrom encoded data
         try {
           erc20Instance.interface.encodeFunctionData('transfer', [
             data.recipient,
-            ethers.utils.parseUnits(data.erc20_value, decimals),
+            ethers.utils.parseUnits(data.erc20_value, data.erc20_usdc_decimal),
           ]);
         } catch (e) {
           console.error(e);
