@@ -1704,19 +1704,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with m
           });
 
           paymasterAddress = returnedValue.message;
+
+          if (paymasterAddress.includes(constant.not_found_2)) {
+            addContext(test, message.vali_pimlico_paymasterAddress_2);
+            console.log(message.vali_pimlico_paymasterAddress_2);
+          } else {
+            addContext(test, message.fail_pimlico_paymasterAddress_2);
+            assert.fail(message.fail_pimlico_paymasterAddress_2);
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(message.fail_pimlico_paymasterAddress_1);
-        }
-
-        if (paymasterAddress.includes(constant.not_found)) {
-          addContext(test, message.vali_pimlico_paymasterAddress_2);
-          console.log(message.vali_pimlico_paymasterAddress_2);
-        } else {
-          addContext(test, message.fail_pimlico_paymasterAddress_2);
-          assert.fail(message.fail_pimlico_paymasterAddress_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {

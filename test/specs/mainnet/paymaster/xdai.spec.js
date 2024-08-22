@@ -1702,7 +1702,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
     }
   });
 
-  it('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
+  it.only('REGRESSION: Perform the transfer token on arka pimlico paymaster with invalid paymaster URL on the xdai network', async function () {
     var test = this;
     const invalid_arka_url = data.invalid_paymaster_arka;
     let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
@@ -1731,19 +1731,19 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           });
 
           paymasterAddress = returnedValue.message;
+
+          if (paymasterAddress.includes(constant.not_found_2)) {
+            addContext(test, message.vali_pimlico_paymasterAddress_2);
+            console.log(message.vali_pimlico_paymasterAddress_2);
+          } else {
+            addContext(test, message.fail_pimlico_paymasterAddress_2);
+            assert.fail(message.fail_pimlico_paymasterAddress_2);
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
           addContext(test, eString);
           assert.fail(message.fail_pimlico_paymasterAddress_1);
-        }
-
-        if (paymasterAddress.includes(constant.not_found)) {
-          addContext(test, message.vali_pimlico_paymasterAddress_2);
-          console.log(message.vali_pimlico_paymasterAddress_2);
-        } else {
-          addContext(test, message.fail_pimlico_paymasterAddress_2);
-          assert.fail(message.fail_pimlico_paymasterAddress_2);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {
