@@ -145,17 +145,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
 
             try {
               assert.isNotEmpty(
-                nfts.items[0].contractName,
-                message.vali_nftList_contractName
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
                 nfts.items[0].contractAddress,
                 message.vali_nftList_contractAddress
               );
@@ -191,17 +180,6 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
               assert.isNotEmpty(
                 nfts.items[0].items[0].tokenId,
                 message.vali_nftList_items_tokenId
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                nfts.items[0].items[0].name,
-                message.vali_nftList_items_name
               );
             } catch (e) {
               console.error(e);

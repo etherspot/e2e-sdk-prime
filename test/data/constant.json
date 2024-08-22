@@ -49,6 +49,7 @@
   "empty_batch": "cannot sign empty transaction batch",
   "no_function": "no matching function",
   "not_found": "Not Found",
+  "not_found_2": "not found",
   "exceed_slippage": "invalid json response body",
   "transactionHash_32hex": "transactionHash must be hex with 32 size",
 
