@@ -7,6 +7,10 @@
   "scripts": {
     "test": "mocha --timeout 600000 --spec test/specs/testnet/version/version.spec.js --spec test/specs/testnet/connext/sepolia.spec.js --reporter mochawesome --require mochawesome/register --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/*/xdai.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
+    "test-mainnet-precondition": "mocha --timeout 600000 --spec test/specs/mainnet/precondition/*_newWallet.spec.js --reporter mochawesome --reporter-options reportDir=reports/json,reportFilename=report2,overwrite=true,charts=true,code=false,showHooks=always",
+    "test-mainnet-postcondition": "mocha --timeout 600000 --spec test/specs/mainnet/postcondition/*_newWallet.spec.js --reporter mochawesome --reporter-options reportDir=reports/json,reportFilename=report3,overwrite=true,charts=true,code=false,showHooks=always",
+    "test-mainnet-newWallet": "mocha --timeout 600000 --spec test/specs/mainnet/*/xdai_newWallet.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
+    "test-mainnet-combined": "npm run test-mainnet; npm run test-mainnet-precondition; npm run test-mainnet-newWallet; npm run test-mainnet-postcondition",
     "test-mainnet-transfertoken-arbitrum": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/transferringFunds/arbitrum.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-transfertoken-matic": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/transferringFunds/matic.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-transfertoken-optimism": "mocha --timeout 600000 --spec test/specs/mainnet/version/version.spec.js --spec test/specs/mainnet/transferringFunds/optimism.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
@@ -78,6 +82,7 @@
     "@babel/plugin-syntax-import-assertions": "^7.22.5",
     "@etherspot/contracts": "^2.0.1",
     "@etherspot/prime-sdk": "file:./etherspot-prime-sdk",
+    "etherspot": "file:./etherspot-sdk",
     "@reactivex/rxjs": "^6.6.7",
     "axios": "^1.4.0",
     "chai": "^4.3.7",

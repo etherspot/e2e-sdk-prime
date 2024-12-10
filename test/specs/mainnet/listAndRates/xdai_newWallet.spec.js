@@ -6,18 +6,19 @@ import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
+import testUtils from '../../../utils/testUtils.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
-let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
 let xdaiDataService;
 let runTest;
 
-describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with xdai network on the MainNet (with old wallet)', function () {
+describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with xdai network on the MainNet (with new wallet)', function () {
   before(async function () {
+    const privateKey = testUtils.getPrivateKey();
     var test = this;
 
     await customRetryAsync(async function () {
@@ -26,7 +27,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
-          { privateKey: process.env.PRIVATE_KEY },
+          { privateKey: privateKey },
           {
             chainId: Number(data.xdai_chainid),
             bundlerProvider: new EtherspotBundler(
@@ -35,46 +36,11 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
             ),
           }
         );
-
-        try {
-          assert.strictEqual(
-            xdaiMainNetSdk.state.EOAAddress,
-            data.eoaAddress,
-            message.vali_eoa_address
-          );
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-        }
       } catch (e) {
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(message.fail_sdk_initialize);
-      }
-
-      // get EtherspotWallet address
-      try {
-        xdaiEtherspotWalletAddress =
-          await xdaiMainNetSdk.getCounterFactualAddress();
-
-        try {
-          assert.strictEqual(
-            xdaiEtherspotWalletAddress,
-            data.sender,
-            message.vali_smart_address
-          );
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-        }
-      } catch (e) {
-        console.error(e.message);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
@@ -86,44 +52,46 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
         addContext(test, eString);
         assert.fail(message.fail_data_service);
       }
-
-      // validate the balance of the wallet
-      try {
-        let output = await xdaiDataService.getAccountBalances({
-          account: data.sender,
-          chainId: Number(data.xdai_chainid),
-        });
-        let native_balance;
-        let usdc_balance;
-        let native_final;
-        let usdc_final;
-
-        for (let i = 0; i < output.items.length; i++) {
-          let tokenAddress = output.items[i].token;
-          if (tokenAddress === xdaiNativeAddress) {
-            native_balance = output.items[i].balance;
-            native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
-            usdc_balance = output.items[i].balance;
-            usdc_final = utils.formatUnits(usdc_balance, 6);
-          }
-        }
-
-        if (
-          native_final > data.minimum_native_balance &&
-          usdc_final > data.minimum_token_balance
-        ) {
-          runTest = true;
-        } else {
-          runTest = false;
-        }
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_wallet_balance);
-      }
     }, data.retry); // Retry this async test up to 5 times
+  });
+
+  beforeEach(async function () {
+    // validate the balance of the wallet
+    try {
+      let output = await xdaiDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.xdai_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
+
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === xdaiNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
+      }
+
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail(message.fail_wallet_balance);
+    }
   });
 
   it('SMOKE: Validate the NFT List on the xdai network', async function () {

@@ -25,6 +25,7 @@
   "value": "0.0000001",
   "erc20_value": "0.000001",
   "swap_value": "1",
+  "newWallet_value": "0.11",
   "invalidValue": "abcd",
   "smallValue": "0.0000000000000000001",
   "exceededValue": "1000000000",

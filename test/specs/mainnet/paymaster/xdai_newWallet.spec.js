@@ -12,20 +12,21 @@ import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.j
 import addContext from 'mochawesome/addContext.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
+import testUtils from '../../../utils/testUtils.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 
 let xdaiMainNetSdk;
-let xdaiEtherspotWalletAddress;
 let xdaiNativeAddress = null;
 let xdaiDataService;
 let arkaPaymaster;
 let runTest;
 
 /* eslint-disable prettier/prettier */
-describe('The PrimeSDK, when transaction with arka and pimlico paymasters with xdai network on the MainNet (with old wallet)', function () {
+describe('The PrimeSDK, when transaction with arka and pimlico paymasters with xdai network on the MainNet (with new wallet)', function () {
   before(async function () {
+    const privateKey = testUtils.getPrivateKey();
     var test = this;
 
     await customRetryAsync(async function () {
@@ -34,7 +35,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
-          { privateKey: process.env.PRIVATE_KEY },
+          { privateKey: privateKey },
           {
             chainId: Number(data.xdai_chainid),
             bundlerProvider: new EtherspotBundler(
@@ -43,46 +44,11 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
             ),
           }
         );
-
-        try {
-          assert.strictEqual(
-            xdaiMainNetSdk.state.EOAAddress,
-            data.eoaAddress,
-            message.vali_eoa_address
-          );
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-        }
       } catch (e) {
         console.error(e);
         const eString = e.toString();
         addContext(test, eString);
         assert.fail(message.fail_sdk_initialize);
-      }
-
-      // get EtherspotWallet address
-      try {
-        xdaiEtherspotWalletAddress =
-          await xdaiMainNetSdk.getCounterFactualAddress();
-
-        try {
-          assert.strictEqual(
-            xdaiEtherspotWalletAddress,
-            data.sender,
-            message.vali_smart_address
-          );
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-        }
-      } catch (e) {
-        console.error(e.message);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_smart_address);
       }
 
       // initializating Data service...
@@ -94,58 +60,46 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
         addContext(test, eString);
         assert.fail(message.fail_data_service);
       }
-
-      // initializating ArkaPaymaster...
-      try {
-        arkaPaymaster = new ArkaPaymaster(
-          Number(data.xdai_chainid),
-          process.env.API_KEY,
-          data.paymaster_arka
-        );
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_arka_initialize);
-      }
-
-      // validate the balance of the wallet
-      try {
-        let output = await xdaiDataService.getAccountBalances({
-          account: data.sender,
-          chainId: Number(data.xdai_chainid),
-        });
-        let native_balance;
-        let usdc_balance;
-        let native_final;
-        let usdc_final;
-
-        for (let i = 0; i < output.items.length; i++) {
-          let tokenAddress = output.items[i].token;
-          if (tokenAddress === xdaiNativeAddress) {
-            native_balance = output.items[i].balance;
-            native_final = utils.formatUnits(native_balance, 18);
-          } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
-            usdc_balance = output.items[i].balance;
-            usdc_final = utils.formatUnits(usdc_balance, 6);
-          }
-        }
-
-        if (
-          native_final > data.minimum_native_balance &&
-          usdc_final > data.minimum_token_balance
-        ) {
-          runTest = true;
-        } else {
-          runTest = false;
-        }
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_wallet_balance);
-      }
     }, data.retry); // Retry this async test up to 5 times
+  });
+
+  beforeEach(async function () {
+    // validate the balance of the wallet
+    try {
+      let output = await xdaiDataService.getAccountBalances({
+        account: data.sender,
+        chainId: Number(data.xdai_chainid),
+      });
+      let native_balance;
+      let usdc_balance;
+      let native_final;
+      let usdc_final;
+
+      for (let i = 0; i < output.items.length; i++) {
+        let tokenAddress = output.items[i].token;
+        if (tokenAddress === xdaiNativeAddress) {
+          native_balance = output.items[i].balance;
+          native_final = utils.formatUnits(native_balance, 18);
+        } else if (tokenAddress === data.tokenAddress_xdaiUSDC) {
+          usdc_balance = output.items[i].balance;
+          usdc_final = utils.formatUnits(usdc_balance, 6);
+        }
+      }
+
+      if (
+        native_final > data.minimum_native_balance &&
+        usdc_final > data.minimum_token_balance
+      ) {
+        runTest = true;
+      } else {
+        runTest = false;
+      }
+    } catch (e) {
+      console.error(e);
+      const eString = e.toString();
+      addContext(test, eString);
+      assert.fail(message.fail_wallet_balance);
+    }
   });
 
   it('SMOKE: Perform the transfer native token on arka paymaster on the xdai network', async function () {
