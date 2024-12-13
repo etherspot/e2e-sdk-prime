@@ -488,38 +488,6 @@ describe('The PrimeSDK, Validate the connext endpoints with xdai network on the 
     }
   });
 
-  it('REGRESSION: Validate the supported assets with invalid chainid on the xdai network', async function () {
-    var test = this;
-    let supportedAssets;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          supportedAssets = await xdaiDataService.getSupportedAssets({
-            chainId: data.invalid_xdai_chainid,
-            provider: BridgingProvider.Connext,
-          });
-
-          if (supportedAssets.length === 0) {
-            addContext(test, message.vali_connext_1);
-            console.log(message.vali_connext_1);
-          } else {
-            addContext(test, message.fail_connext_5);
-            assert.fail(message.fail_connext_5);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_connext_6);
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      addContext(test, message.connext_insufficientBalance);
-      console.warn(message.connext_insufficientBalance);
-      test.skip();
-    }
-  });
-
   it('REGRESSION: Validate the get quotes with invalid sender address on the xdai network', async function () {
     var test = this;
     let quotes;

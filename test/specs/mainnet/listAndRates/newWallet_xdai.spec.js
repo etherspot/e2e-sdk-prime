@@ -10,15 +10,22 @@ import testUtils from '../../../utils/testUtils.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import path from 'path';
 
 let xdaiMainNetSdk;
 let xdaiNativeAddress = null;
 let xdaiDataService;
 let runTest;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates details with xdai network on the MainNet (with new wallet)', function () {
   before(async function () {
-    const privateKey = testUtils.getPrivateKey();
+    const filePath = path.join(__dirname, '../../../utils/testUtils.json');
+    const sharedState = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
     var test = this;
 
     await customRetryAsync(async function () {
@@ -27,7 +34,7 @@ describe('The PrimeSDK, when get the NFT List, Token List and Exchange Rates det
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
-          { privateKey: privateKey },
+          { privateKey: sharedState.newPrivateKey },
           {
             chainId: Number(data.xdai_chainid),
             bundlerProvider: new EtherspotBundler(

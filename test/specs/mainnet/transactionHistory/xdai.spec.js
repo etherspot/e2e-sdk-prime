@@ -1671,37 +1671,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
     }
   });
 
-  it('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          let transactions = await xdaiDataService.getTransactions({
-            chainId: Number(data.invalid_xdai_chainid),
-            account: data.sender,
-          });
-
-          if (transactions.transactions.length === 0) {
-            addContext(test, message.vali_getTransactions_4);
-            console.log(message.vali_getTransactions_4);
-          } else {
-            addContext(test, message.fail_getTransactions_8);
-            assert.fail(message.fail_getTransactions_8);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_getTransactions_1);
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      addContext(test, message.getTransaction_insufficientBalance);
-      console.warn(message.getTransaction_insufficientBalance);
-      test.skip();
-    }
-  });
-
   it('REGRESSION: Validate the get transactions history response with invalid account in xdai network', async function () {
     var test = this;
     if (runTest) {

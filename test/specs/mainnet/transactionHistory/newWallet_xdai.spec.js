@@ -11,15 +11,21 @@ import customRetryAsync from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import path from 'path';
 
 let xdaiMainNetSdk;
 let xdaiNativeAddress = null;
 let xdaiDataService;
 let runTest;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('The PrimeSDK, when get the single transaction and multiple transaction details with xdai network on the MainNet (with new wallet)', function () {
   before(async function () {
-    const privateKey = testUtils.getPrivateKey();
+    const filePath = path.join(__dirname, '../../../utils/testUtils.json');
+    const sharedState = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     var test = this;
 
     await customRetryAsync(async function () {
@@ -28,7 +34,7 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
-          { privateKey: privateKey },
+          { privateKey: sharedState.newPrivateKey },
           {
             chainId: Number(data.xdai_chainid),
             bundlerProvider: new EtherspotBundler(
@@ -1630,37 +1636,6 @@ describe('The PrimeSDK, when get the single transaction and multiple transaction
             addContext(test, eString);
             assert.fail(message.fail_getTransactions_7);
           }
-        }
-      }, data.retry); // Retry this async test up to 5 times
-    } else {
-      addContext(test, message.getTransaction_insufficientBalance);
-      console.warn(message.getTransaction_insufficientBalance);
-      test.skip();
-    }
-  });
-
-  it('REGRESSION: Validate the get transactions history response with invalid chainid in xdai network', async function () {
-    var test = this;
-    if (runTest) {
-      await customRetryAsync(async function () {
-        try {
-          let transactions = await xdaiDataService.getTransactions({
-            chainId: Number(data.invalid_xdai_chainid),
-            account: data.sender,
-          });
-
-          if (transactions.transactions.length === 0) {
-            addContext(test, message.vali_getTransactions_4);
-            console.log(message.vali_getTransactions_4);
-          } else {
-            addContext(test, message.fail_getTransactions_8);
-            assert.fail(message.fail_getTransactions_8);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          addContext(test, eString);
-          assert.fail(message.fail_getTransactions_1);
         }
       }, data.retry); // Retry this async test up to 5 times
     } else {

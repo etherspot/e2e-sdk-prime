@@ -1,31 +1,15 @@
-let privateKey = null;
-let modularAccountAddress = null;
-let testnetModularSdk = null;
+class SharedState {
+  constructor() {
+    this.data = {};
+  }
 
-function setPrivateKey(privatekey) {
-  privateKey = privatekey;
-}
-function getPrivateKey() {
-  return privateKey;
-}
-function setModularAccountAddress(address) {
-  modularAccountAddress = address;
-}
-function getModularAccountAddress() {
-  return modularAccountAddress;
-}
-function setTestnetModularSdk(sdk) {
-  testnetModularSdk = sdk;
-}
-function getTestnetModularSdk() {
-  return testnetModularSdk;
+  setValue(key, value) {
+    this.data[key] = value;
+  }
+
+  getValue(key) {
+    return this.data[key];
+  }
 }
 
-export default {
-  setModularAccountAddress,
-  getModularAccountAddress,
-  setTestnetModularSdk,
-  getTestnetModularSdk,
-  setPrivateKey,
-  getPrivateKey,
-};
+export default new SharedState();

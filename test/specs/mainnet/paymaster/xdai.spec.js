@@ -236,7 +236,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           op = await xdaiMainNetSdk.estimate({
             paymasterDetails: {
               url: `https://arka.etherspot.io?apiKey=${
-                process.env.API_KEY
+                process.env.API_KEY_ARKA
               }&chainId=${Number(data.xdai_chainid)}`,
               context: { mode: 'sponsor' },
             },
@@ -401,7 +401,7 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
   it('SMOKE: Perform the transfer token with arka pimlico paymaster on the xdai network', async function () {
     var test = this;
     let arka_url = data.paymaster_arka;
-    let queryString = `?apiKey=${process.env.API_KEY}&chainId=${Number(
+    let queryString = `?apiKey=${process.env.API_KEY_ARKA}&chainId=${Number(
       data.xdai_chainid
     )}`;
     if (runTest) {
@@ -458,6 +458,8 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
           ).then((res) => {
             return res.json();
           });
+
+          console.log('returnedValue:::::::::::', returnedValue);
 
           paymasterAddress = returnedValue.message;
 
@@ -681,7 +683,6 @@ describe('The PrimeSDK, when transaction with arka and pimlico paymasters with x
             helper.wait(data.mediumTimeout);
             userOpsReceipt1 = await xdaiMainNetSdk.getUserOpReceipt(uoHash1);
           }
-          console.log('Transaction Receipt: ', userOpsReceipt1);
 
           // wait for the execution
           helper.wait(data.longTimeout);
