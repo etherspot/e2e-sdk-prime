@@ -7,7 +7,6 @@ import { ethers } from 'ethers';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
-import testUtils from '../../../utils/testUtils.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
 import { dirname } from 'path';
@@ -31,7 +30,9 @@ describe('Perform the postcondition for new wallet fund', function () {
       // initializating sdk
       try {
         xdaiMainNetSdk = new PrimeSdk(
-          { privateKey: sharedState.newPrivateKey },
+          {
+            privateKey: sharedState.newPrivateKey,
+          },
           {
             chainId: Number(data.xdai_chainid),
             bundlerProvider: new EtherspotBundler(
@@ -49,88 +50,7 @@ describe('Perform the postcondition for new wallet fund', function () {
     }, data.retry); // Retry this async test up to 3 times
   });
 
-  it('POSTCONDITION2: Perform the transfer native token from new wallet to old wallet on the xdai network', async function () {
-    var test = this;
-    await customRetryAsync(async function () {
-      helper.wait(data.longTimeout);
-
-      // clear the transaction batch
-      try {
-        await xdaiMainNetSdk.clearUserOpsFromBatch();
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_clearTransaction_1);
-      }
-
-      // get balance of the account address
-      let balance;
-      try {
-        balance = await xdaiMainNetSdk.getNativeBalance();
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_getBalance_1);
-      }
-
-      // add transactions to the batch
-      let transactionBatch;
-      try {
-        balance = balance - 0.0001;
-
-        transactionBatch = await xdaiMainNetSdk.addUserOpsToBatch({
-          to: data.sender,
-          value: ethers.utils.parseEther(balance),
-        });
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_addTransaction_1);
-      }
-
-      // estimate transactions added to the batch and get the fee data for the UserOp
-      let op;
-      try {
-        op = await xdaiMainNetSdk.estimate();
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        addContext(test, eString);
-        assert.fail(message.fail_estimateTransaction_1);
-      }
-
-      // sign the UserOp and sending to the bundler
-      let uoHash;
-      try {
-        uoHash = await xdaiMainNetSdk.send(op);
-      } catch (e) {
-        console.error(e);
-        const eString = e.toString();
-        if (eString === 'Error') {
-          console.warn(message.skip_transaction_error);
-          addContext(test, message.skip_transaction_error);
-          test.skip();
-        } else {
-          addContext(test, eString);
-          assert.fail(message.fail_submitTransaction_1);
-        }
-      }
-
-      // get transaction hash...
-      console.log('Waiting for transaction...');
-      let userOpsReceipt = null;
-      const timeout = Date.now() + 1200000; // 1 minute timeout
-      while (userOpsReceipt == null && Date.now() < timeout) {
-        helper.wait(data.mediumTimeout);
-        userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
-      }
-    }, data.retry); // Retry this async test up to 3 times
-  });
-
-  it('POSTCONDITION3: Perform the transfer ERC20 token from new wallet to old wallet on the xdai network', async function () {
+  it('POSTCONDITION2: Perform the transfer ERC20 token from new wallet to old wallet on the xdai network', async function () {
     var test = this;
 
     await customRetryAsync(async function () {
@@ -177,13 +97,14 @@ describe('Perform the postcondition for new wallet fund', function () {
 
       // get transferFrom encoded data
       let transactionData;
-      balance = balance - 0.0001;
+      balance = balance - 0.001;
+      const balanceStr = balance.toFixed(3);
       try {
         transactionData = erc20Instance.interface.encodeFunctionData(
           'transfer',
           [
             data.sender,
-            ethers.utils.parseUnits(balance, data.erc20_usdc_decimal),
+            ethers.utils.parseUnits(balanceStr, data.erc20_usdc_decimal),
           ]
         );
       } catch (e) {
@@ -261,5 +182,87 @@ describe('Perform the postcondition for new wallet fund', function () {
         assert.fail(message.fail_submitTransaction_1);
       }
     }, data.retry); // Retry this async test up to 5 times
+  });
+
+  it('POSTCONDITION3: Perform the transfer native token from new wallet to old wallet on the xdai network', async function () {
+    var test = this;
+    await customRetryAsync(async function () {
+      helper.wait(data.longTimeout);
+
+      // clear the transaction batch
+      try {
+        await xdaiMainNetSdk.clearUserOpsFromBatch();
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_clearTransaction_1);
+      }
+
+      // get balance of the account address
+      let balance;
+      try {
+        balance = await xdaiMainNetSdk.getNativeBalance();
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_getBalance_1);
+      }
+
+      // add transactions to the batch
+      let transactionBatch;
+      try {
+        balance = balance - 0.0001;
+        const balanceStr = balance.toFixed(3);
+
+        transactionBatch = await xdaiMainNetSdk.addUserOpsToBatch({
+          to: data.sender,
+          value: ethers.utils.parseEther(balanceStr),
+        });
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_addTransaction_1);
+      }
+
+      // estimate transactions added to the batch and get the fee data for the UserOp
+      let op;
+      try {
+        op = await xdaiMainNetSdk.estimate();
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_estimateTransaction_1);
+      }
+
+      // sign the UserOp and sending to the bundler
+      let uoHash;
+      try {
+        uoHash = await xdaiMainNetSdk.send(op);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        if (eString === 'Error') {
+          console.warn(message.skip_transaction_error);
+          addContext(test, message.skip_transaction_error);
+          test.skip();
+        } else {
+          addContext(test, eString);
+          assert.fail(message.fail_submitTransaction_1);
+        }
+      }
+
+      // get transaction hash...
+      console.log('Waiting for transaction...');
+      let userOpsReceipt = null;
+      const timeout = Date.now() + 1200000; // 1 minute timeout
+      while (userOpsReceipt == null && Date.now() < timeout) {
+        helper.wait(data.mediumTimeout);
+        userOpsReceipt = await xdaiMainNetSdk.getUserOpReceipt(uoHash);
+      }
+    }, data.retry); // Retry this async test up to 3 times
   });
 });
