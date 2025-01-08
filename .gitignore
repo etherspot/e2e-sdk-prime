@@ -3,3 +3,5 @@ etherspot-prime-sdk
 .eslintrc.json
 .prettierrc.json
 mochawesome-report
+etherspot-sdk
+test/utils/testUtils.json

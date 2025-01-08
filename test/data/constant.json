@@ -54,5 +54,6 @@
   "transactionHash_32hex": "transactionHash must be hex with 32 size",
 
   "invalid_apiKey": "Invalid Api Key",
-  "invalid_data": "Invalid data provided"
+  "invalid_data": "Invalid data provided",
+  "unsupported_chainid": "Unsupported chain id, visit https://etherspot.fyi for more information"
 }
