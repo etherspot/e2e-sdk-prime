@@ -30,7 +30,10 @@
   "add_whitelist_3": "Successfully whitelisted with transaction Hash",
   "check_whitelist_1": "Already added",
   "check_whitelist_2": "Not added yet",
+  "getAllWhitelist_1": "No whitelist were found on the given apiKey/policyId",
   "deposit_1": "Successfully deposited",
+  "deposit_2": "Successfully deposited with transaction Hash",
+  "deposit_3": "Balance is less than the amount to be deposited",
 
   "invalid_network_1": "Invalid network/token",
   "invalid_network_2": "could not detect network",
@@ -55,5 +58,25 @@
 
   "invalid_apiKey": "Invalid Api Key",
   "invalid_data": "Invalid data provided",
-  "unsupported_chainid": "Unsupported chain id, visit https://etherspot.fyi for more information"
+  "unsupported_chainid": "Unsupported chain id, visit https://etherspot.fyi for more information",
+
+  "sponsorshipPolicy_walletAddress_1": "Wallet address does not match for the Api Key",
+  "sponsorshipPolicy_walletAddress_2": "Invalid sponsorship policy data",
+  "sponsorshipPolicy_walletAddress_3": "Name and description are required fields",
+  "sponsorshipPolicy_walletAddress_4": "Supported entry point versions are required and must be valid. You entered: none. Valid values are: EPV_06, EPV_07",
+  "sponsorshipPolicy_walletAddress_5": "Supported entry point versions are required and must be valid. You entered: EPV_06, EP_07. Valid values are: EPV_06, EPV_07",
+  "sponsorshipPolicy_walletAddress_6": "Sponsorship policy not found",
+  "sponsorshipPolicy_walletAddress_7": "Invalid sponsorship policy id",
+  "sponsorshipPolicy_walletAddress_8": "Route PUT:/enable-policy not found",
+  "sponsorshipPolicy_walletAddress_9": "Not Found",
+  "sponsorshipPolicy_walletAddress_10": "Failed to update sponsorship policy",
+  "sponsorshipPolicy_walletAddress_11": "Unsupported EP version",
+  "sponsorshipPolicy_walletAddress_12": "Invalid URL",
+  "sponsorshipPolicy_walletAddress_13": "Api Key is required in header",
+  "sponsorshipPolicy_walletAddress_14": "Cannot disable a policy which is already disabled",
+  "sponsorshipPolicy_walletAddress_15": "Cannot enable a policy which is already enabled",
+
+  "successCode_1": 200,
+  "skandha_error_1": "Invalid Request",
+  "skandha_error_2": "Unexpected behaviour"
 }
