@@ -2,9 +2,9 @@
 const chainConfigs = {
   100: {
     name: 'gnosis',
-    invalidId: '110 ',
-    incorrectId: '111000',
-    toChainId: '137',
+    invalidId: 110,
+    incorrectId: 111000,
+    toChainId: 137,
     toTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
     toTokenName: 'USDC',
     incorrectToTokenAddress: '0x2791Bca1f2de4661ED88A30C99A719449Aa84174',
@@ -23,9 +23,9 @@ const chainConfigs = {
   },
   // 137: {
   //   name: 'polygon',
-  //   invalidId: '110 ',
-  //   incorrectId: '1730',
-  //   toChainId: '100',
+  //   invalidId: 110 ,
+  //   incorrectId: 1730,
+  //   toChainId: 100,
   //   toTokenAddress: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
   //   toTokenName: 'USDC',
   //   incorrectToTokenAddress: '0xDDAfbb505ad214D7b80b1f830fcCc19B60fb7A83',

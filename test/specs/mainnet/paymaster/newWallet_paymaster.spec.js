@@ -2611,8 +2611,8 @@ describe('Perform the transaction with arka and pimlico paymasters on the MainNe
             } catch (e) {
               let errorMessage = e.message;
               if (errorMessage.includes(constant.invalid_value_1)) {
-                addContext(test, vali_addTransaction_1);
-                console.log(vali_addTransaction_1);
+                addContext(test, message.vali_addTransaction_1);
+                console.log(message.vali_addTransaction_1);
               } else {
                 console.error(e);
                 const eString = e.toString();
