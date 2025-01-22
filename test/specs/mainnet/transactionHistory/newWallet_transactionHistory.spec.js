@@ -12,7 +12,7 @@ import {
   randomProviderNetwork,
   randomTokenAddress,
 } from '../../../utils/sharedData_mainnet.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };

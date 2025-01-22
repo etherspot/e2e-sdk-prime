@@ -12,7 +12,7 @@ import {
   randomProviderNetwork,
   randomTokenAddress,
 } from '../../../utils/sharedData_mainnet.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
@@ -77,7 +77,7 @@ describe('Perform the precondition for new wallet generation', function () {
           assert.fail(message.fail_sdk_initialize);
         }
 
-        // get modular account address
+        // get prime account address
         try {
           primeAccountAddress =
             await mainnetPrimeSdk.getCounterFactualAddress();

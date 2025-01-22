@@ -14,7 +14,7 @@ import {
   randomTokenAddress,
   randomTokenAddressUsdt,
 } from '../../../utils/sharedData_testnet.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };

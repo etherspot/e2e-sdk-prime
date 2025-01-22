@@ -11,7 +11,7 @@ import {
   randomProviderNetwork,
   randomTokenAddress,
 } from '../../../utils/sharedData_mainnet.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import message from '../../../data/messages.json' assert { type: 'json' };
@@ -26,7 +26,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Perform the postcondition for new wallet fund', function () {
   it(
-    'POSTCONDITION1: Initialize the modular sdk for new private key on the ' +
+    'POSTCONDITION1: Initialize the prime sdk for new private key on the ' +
       randomChainName +
       ' network',
     async function () {
