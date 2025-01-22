@@ -5,7 +5,7 @@ import { utils, constants, BigNumber, ethers } from 'ethers';
 import { BridgingProvider } from '@etherspot/prime-sdk/dist/sdk/data/index.js';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import {
   randomChainId,
   randomChainName,

@@ -14,7 +14,7 @@ import {
   randomToChainId,
   randomTokenAddress,
 } from '../../../utils/sharedData_mainnet.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
 import constant from '../../../data/constant.json' assert { type: 'json' };

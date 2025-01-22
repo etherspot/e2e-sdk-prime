@@ -4,7 +4,7 @@ import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { utils } from 'ethers';
 import { assert } from 'chai';
 import addContext from 'mochawesome/addContext.js';
-import customRetryAsync from '../../../utils/baseTest.js';
+import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import {
   randomChainId,
