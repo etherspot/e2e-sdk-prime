@@ -2018,8 +2018,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_2);
-            assert.fail(fail_advanceRoutesLiFi_2);
+            addContext(test, message.fail_advanceRoutesLiFi_2);
+            assert.fail(message.fail_advanceRoutesLiFi_2);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (errorResponse[0].property === constant.invalid_chainid_1) {
@@ -2061,8 +2061,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_3);
-            assert.fail(fail_advanceRoutesLiFi_3);
+            addContext(test, message.fail_advanceRoutesLiFi_3);
+            assert.fail(message.fail_advanceRoutesLiFi_3);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (errorResponse[0].property === constant.invalid_chainid_2) {
@@ -2105,8 +2105,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_4);
-            assert.fail(fail_advanceRoutesLiFi_4);
+            addContext(test, message.fail_advanceRoutesLiFi_4);
+            assert.fail(message.fail_advanceRoutesLiFi_4);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2152,8 +2152,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_5);
-            assert.fail(fail_advanceRoutesLiFi_5);
+            addContext(test, message.fail_advanceRoutesLiFi_5);
+            assert.fail(message.fail_advanceRoutesLiFi_5);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2198,8 +2198,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_6);
-            assert.fail(fail_advanceRoutesLiFi_6);
+            addContext(test, message.fail_advanceRoutesLiFi_6);
+            assert.fail(message.fail_advanceRoutesLiFi_6);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2245,8 +2245,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_7);
-            assert.fail(fail_advanceRoutesLiFi_7);
+            addContext(test, message.fail_advanceRoutesLiFi_7);
+            assert.fail(message.fail_advanceRoutesLiFi_7);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2292,8 +2292,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_8);
-            assert.fail(fail_advanceRoutesLiFi_8);
+            addContext(test, message.fail_advanceRoutesLiFi_8);
+            assert.fail(message.fail_advanceRoutesLiFi_8);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2338,8 +2338,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_9);
-            assert.fail(fail_advanceRoutesLiFi_9);
+            addContext(test, message.fail_advanceRoutesLiFi_9);
+            assert.fail(message.fail_advanceRoutesLiFi_9);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (
@@ -2384,8 +2384,8 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
             await dataService.getAdvanceRoutesLiFi(quoteRequestPayload);
 
-            addContext(test, fail_advanceRoutesLiFi_10);
-            assert.fail(fail_advanceRoutesLiFi_10);
+            addContext(test, message.fail_advanceRoutesLiFi_10);
+            assert.fail(message.fail_advanceRoutesLiFi_10);
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (

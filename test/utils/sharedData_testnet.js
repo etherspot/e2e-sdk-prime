@@ -2,9 +2,9 @@
 const chainConfigs = {
   11155111: {
     name: 'sepolia',
-    invalidId: '11155122',
-    incorrectId: '84555',
-    toChainId: '80002',
+    invalidId: 11155122,
+    incorrectId: 84555,
+    toChainId: 80002,
     toTokenAddress: '0x0Fd9e8d3aF1aaee056EB9e802c3A762a667b1904',
     toTokenName: 'USDC',
     incorrectToTokenAddress: '0x0Ad9e1d3aF1acee056EB9e502c3A765a667b1905',
