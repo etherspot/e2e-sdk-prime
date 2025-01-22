@@ -11,7 +11,7 @@ import {
   randomChainName,
   randomProviderNetwork,
   randomTokenAddress,
-} from '../../../utils/sharedData_mainnet.js';
+} from '../../../utils/sharedData_testnet.js';
 import customRetryAsync from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
 import data from '../../../data/testData.json' assert { type: 'json' };
@@ -21,8 +21,8 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';
 
-let mainnetPrimeSdk_old;
-let mainnetPrimeSdk;
+let testnetPrimeSdk_old;
+let testnetPrimeSdk;
 let primeAccountAddress;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -60,7 +60,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // initializating sdk
         try {
-          mainnetPrimeSdk = new PrimeSdk(
+          testnetPrimeSdk = new PrimeSdk(
             { privateKey: sharedState.newPrivateKey },
             {
               chainId: Number(randomChainId),
@@ -80,7 +80,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // get modular account address
         try {
           primeAccountAddress =
-            await mainnetPrimeSdk.getCounterFactualAddress();
+            await testnetPrimeSdk.getCounterFactualAddress();
 
           console.log('primeAccountAddress', primeAccountAddress);
         } catch (e) {
@@ -105,7 +105,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // initializating sdk
         try {
-          mainnetPrimeSdk_old = new PrimeSdk(
+          testnetPrimeSdk_old = new PrimeSdk(
             { privateKey: process.env.PRIVATE_KEY },
             {
               chainId: Number(randomChainId),
@@ -127,7 +127,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // clear the transaction batch
         try {
-          await mainnetPrimeSdk_old.clearUserOpsFromBatch();
+          await testnetPrimeSdk_old.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -139,7 +139,7 @@ describe('Perform the precondition for new wallet generation', function () {
         let transactionBatch;
 
         try {
-          transactionBatch = await mainnetPrimeSdk_old.addUserOpsToBatch({
+          transactionBatch = await testnetPrimeSdk_old.addUserOpsToBatch({
             to: primeAccountAddress,
             value: ethers.utils.parseEther(data.newWallet_value),
           });
@@ -153,7 +153,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mainnetPrimeSdk_old.estimate();
+          op = await testnetPrimeSdk_old.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -164,7 +164,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mainnetPrimeSdk_old.send(op);
+          uoHash = await testnetPrimeSdk_old.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -185,7 +185,7 @@ describe('Perform the precondition for new wallet generation', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await mainnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -257,7 +257,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // clear the transaction batch
         try {
-          await mainnetPrimeSdk.clearUserOpsFromBatch();
+          await testnetPrimeSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -268,7 +268,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await mainnetPrimeSdk.addUserOpsToBatch({
+          userOpsBatch = await testnetPrimeSdk.addUserOpsToBatch({
             to: randomTokenAddress,
             data: transactionData,
           });
@@ -282,7 +282,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mainnetPrimeSdk.estimate();
+          op = await testnetPrimeSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -293,7 +293,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mainnetPrimeSdk.send(op);
+          uoHash = await testnetPrimeSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -314,7 +314,7 @@ describe('Perform the precondition for new wallet generation', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await mainnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -339,7 +339,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // clear the transaction batch
         try {
-          await mainnetPrimeSdk.clearUserOpsFromBatch();
+          await testnetPrimeSdk.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -350,7 +350,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // get balance of the account address
         let balance;
         try {
-          balance = await mainnetPrimeSdk.getNativeBalance();
+          balance = await testnetPrimeSdk.getNativeBalance();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -361,7 +361,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // add transactions to the batch
         let transactionBatch;
         try {
-          transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
+          transactionBatch = await testnetPrimeSdk.addUserOpsToBatch({
             to: data.sender,
             value: ethers.utils.parseEther(balance),
           });
@@ -375,7 +375,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mainnetPrimeSdk.estimate();
+          op = await testnetPrimeSdk.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -386,7 +386,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mainnetPrimeSdk.send(op);
+          uoHash = await testnetPrimeSdk.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -407,7 +407,7 @@ describe('Perform the precondition for new wallet generation', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await mainnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
