@@ -21,7 +21,6 @@ import fs from 'fs';
 import path from 'path';
 
 let testnetPrimeSdk;
-let testnetPrimeSdk_old;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Perform the postcondition for new wallet fund', function () {
@@ -113,14 +112,15 @@ describe('Perform the postcondition for new wallet fund', function () {
 
         // get transferFrom encoded data
         let transactionData;
-        balance = balance - 0.001;
-        const balanceStr = balance.toFixed(3);
         try {
           transactionData = erc20Instance.interface.encodeFunctionData(
             'transfer',
             [
               data.sender,
-              ethers.utils.parseUnits(balanceStr, data.erc20_usdc_decimal),
+              ethers.utils.parseUnits(
+                data.fromNewToOldWallet_erc20value,
+                data.erc20_usdc_decimal
+              ),
             ]
           );
         } catch (e) {
@@ -189,7 +189,7 @@ describe('Perform the postcondition for new wallet fund', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await testnetPrimeSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
@@ -234,12 +234,9 @@ describe('Perform the postcondition for new wallet fund', function () {
         // add transactions to the batch
         let transactionBatch;
         try {
-          balance = balance - 0.0001;
-          const balanceStr = balance.toFixed(3);
-
           transactionBatch = await testnetPrimeSdk.addUserOpsToBatch({
             to: data.sender,
-            value: ethers.utils.parseEther(balanceStr),
+            value: ethers.utils.parseEther(data.fromNewToOldWallet_value),
           });
         } catch (e) {
           console.error(e);

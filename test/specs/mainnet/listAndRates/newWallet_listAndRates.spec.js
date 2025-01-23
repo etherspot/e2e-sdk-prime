@@ -126,7 +126,7 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Ma
             });
 
             if (nfts.items.length > 0) {
-              addContext(test, message.pass_nft_list_1);
+              addContext(test, message.pass_nftList_1);
               console.log(message.pass_nftList_1);
 
               try {

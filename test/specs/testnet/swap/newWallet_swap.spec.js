@@ -1997,7 +1997,7 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_2);
+              assert.fail(message.fail_advanceRoutesLiFi_2);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2034,13 +2034,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
           } catch (e) {
             const errorResponse = JSON.parse(e.message);
             if (errorResponse[0].property === constant.invalid_chainid_2) {
-              addContext(test, message.vali_advanceRoutesLifi_3);
-              console.log(message.vali_advanceRoutesLifi_3);
+              addContext(test, message.vali_advanceRoutesLiFi_3);
+              console.log(message.vali_advanceRoutesLiFi_3);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_3);
+              assert.fail(message.fail_advanceRoutesLiFi_3);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2081,13 +2081,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_2
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_4);
-              console.log(message.vali_advanceRoutesLifi_4);
+              addContext(test, message.vali_advanceRoutesLiFi_4);
+              console.log(message.vali_advanceRoutesLiFi_4);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_4);
+              assert.fail(message.fail_advanceRoutesLiFi_4);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2128,13 +2128,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_2
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_5);
-              console.log(message.vali_advanceRoutesLifi_5);
+              addContext(test, message.vali_advanceRoutesLiFi_5);
+              console.log(message.vali_advanceRoutesLiFi_5);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_5);
+              assert.fail(message.fail_advanceRoutesLiFi_5);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2174,13 +2174,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_2
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_6);
-              console.log(message.vali_advanceRoutesLifi_6);
+              addContext(test, message.vali_advanceRoutesLiFi_6);
+              console.log(message.vali_advanceRoutesLiFi_6);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_6);
+              assert.fail(message.fail_advanceRoutesLiFi_6);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2221,13 +2221,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_3
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_7);
-              console.log(message.vali_advanceRoutesLifi_7);
+              addContext(test, message.vali_advanceRoutesLiFi_7);
+              console.log(message.vali_advanceRoutesLiFi_7);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_7);
+              assert.fail(message.fail_advanceRoutesLiFi_7);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2268,13 +2268,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_3
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_8);
-              console.log(message.vali_advanceRoutesLifi_8);
+              addContext(test, message.vali_advanceRoutesLiFi_8);
+              console.log(message.vali_advanceRoutesLiFi_8);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_8);
+              assert.fail(message.fail_advanceRoutesLiFi_8);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2314,13 +2314,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.isAddress ===
               constant.invalid_address_3
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_9);
-              console.log(message.vali_advanceRoutesLifi_9);
+              addContext(test, message.vali_advanceRoutesLiFi_9);
+              console.log(message.vali_advanceRoutesLiFi_9);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_9);
+              assert.fail(message.fail_advanceRoutesLiFi_9);
             }
           }
         }, data.retry); // Retry this async test up to 5 times
@@ -2360,13 +2360,13 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
               errorResponse[0].constraints.IsBigNumberish ===
               constant.invalid_bignumber_3
             ) {
-              addContext(test, message.vali_advanceRoutesLifi_10);
-              console.log(message.vali_advanceRoutesLifi_10);
+              addContext(test, message.vali_advanceRoutesLiFi_10);
+              console.log(message.vali_advanceRoutesLiFi_10);
             } else {
               console.error(e);
               const eString = e.toString();
               addContext(test, eString);
-              assert.fail(fail_advanceRoutesLiFi_10);
+              assert.fail(message.fail_advanceRoutesLiFi_10);
             }
           }
         }, data.retry); // Retry this async test up to 5 times

@@ -205,6 +205,7 @@ describe('Perform the precondition for new wallet generation', function () {
       var test = this;
 
       await customRetryAsync(async function () {
+        // wait for the execution
         helper.wait(data.mediumTimeout);
 
         // get the respective provider details
@@ -257,7 +258,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // clear the transaction batch
         try {
-          await mainnetPrimeSdk.clearUserOpsFromBatch();
+          await mainnetPrimeSdk_old.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -268,7 +269,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await mainnetPrimeSdk.addUserOpsToBatch({
+          userOpsBatch = await mainnetPrimeSdk_old.addUserOpsToBatch({
             to: randomTokenAddress,
             data: transactionData,
           });
@@ -282,7 +283,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await mainnetPrimeSdk.estimate();
+          op = await mainnetPrimeSdk_old.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -293,7 +294,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await mainnetPrimeSdk.send(op);
+          uoHash = await mainnetPrimeSdk_old.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -407,7 +408,7 @@ describe('Perform the precondition for new wallet generation', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await mainnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);

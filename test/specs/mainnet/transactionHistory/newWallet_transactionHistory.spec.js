@@ -502,215 +502,221 @@ describe('Validate the single transaction and multiple transaction details on th
                 Math.random() * (transactions.transactions.length - 1)
               ) + 1;
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].chainId,
-                message.vali_getTransactions_chainId
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            if (transactions.transactions.length > 0) {
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].chainId,
+                  message.vali_getTransactions_chainId
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].sender,
-                message.vali_getTransactions_sender
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].sender,
+                  message.vali_getTransactions_sender
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].transactionHash,
-                message.vali_getTransactions_transactionHash
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].transactionHash,
+                  message.vali_getTransactions_transactionHash
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].userOpHash,
-                message.vali_getTransactions_userOpHash
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].userOpHash,
+                  message.vali_getTransactions_userOpHash
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].actualGasCost,
-                message.vali_getTransactions_actualGasCost
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].actualGasCost,
+                  message.vali_getTransactions_actualGasCost
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].actualGasUsed,
-                message.vali_getTransactions_actualGasUsed
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].actualGasUsed,
+                  message.vali_getTransactions_actualGasUsed
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].success,
-                message.vali_getTransactions_success
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].success,
+                  message.vali_getTransactions_success
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].timestamp,
-                message.vali_getTransactions_timestamp
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].timestamp,
+                  message.vali_getTransactions_timestamp
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].paymaster,
-                message.vali_getTransactions_paymaster
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].paymaster,
+                  message.vali_getTransactions_paymaster
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].value,
-                message.vali_getTransactions_value
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].value,
+                  message.vali_getTransactions_value
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].blockExplorerUrl,
-                message.vali_getTransactions_blockExplorerUrl
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].blockExplorerUrl,
+                  message.vali_getTransactions_blockExplorerUrl
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].input,
-                message.vali_getTransactions_input
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].input,
+                  message.vali_getTransactions_input
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNumber(
-                transactions.transactions[randomTransaction].nonce,
-                message.vali_getTransactions_nonce
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNumber(
+                  transactions.transactions[randomTransaction].nonce,
+                  message.vali_getTransactions_nonce
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].initCode,
-                message.vali_getTransactions_initCode
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].initCode,
+                  message.vali_getTransactions_initCode
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].callData,
-                message.vali_getTransactions_callData
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].callData,
+                  message.vali_getTransactions_callData
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction]
-                  .verificationGasLimit,
-                message.vali_getTransactions_verificationGasLimit
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction]
+                    .verificationGasLimit,
+                  message.vali_getTransactions_verificationGasLimit
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].preVerificationGas,
-                message.vali_getTransactions_preVerificationGas
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction]
+                    .preVerificationGas,
+                  message.vali_getTransactions_preVerificationGas
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction].maxFeePerGas,
-                message.vali_getTransactions_maxFeePerGas
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction].maxFeePerGas,
+                  message.vali_getTransactions_maxFeePerGas
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
 
-            try {
-              assert.isNotEmpty(
-                transactions.transactions[randomTransaction]
-                  .maxPriorityFeePerGas,
-                message.vali_getTransactions_maxPriorityFeePerGas
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
+              try {
+                assert.isNotEmpty(
+                  transactions.transactions[randomTransaction]
+                    .maxPriorityFeePerGas,
+                  message.vali_getTransactions_maxPriorityFeePerGas
+                );
+              } catch (e) {
+                console.error(e);
+                const eString = e.toString();
+                addContext(test, eString);
+              }
+            } else {
+              addContext(test, message.vali_getTransactions_1);
+              assert.fail(message.vali_getTransactions_1);
             }
           } catch (e) {
             console.error(e);
@@ -815,7 +821,7 @@ describe('Validate the single transaction and multiple transaction details on th
           }
 
           // wait for the 10 seconds
-          helper.wait(10000);
+          helper.wait(data.longTimeout);
 
           // Fetching historical transactions
           let transactions;
@@ -828,323 +834,328 @@ describe('Validate the single transaction and multiple transaction details on th
             });
 
             if (userOpsReceipt != null) {
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].chainId,
-                  message.vali_getTransactions_chainId
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+              if (transactions.transactions.length > 0) {
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].chainId,
+                    message.vali_getTransactions_chainId
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].blockNumber,
-                  message.vali_getTransactions_blockNumber
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].blockNumber,
+                    message.vali_getTransactions_blockNumber
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].sender,
-                  message.vali_getTransactions_sender
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].sender,
+                    message.vali_getTransactions_sender
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].target,
-                  message.vali_getTransactions_target
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].target,
+                    message.vali_getTransactions_target
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].transactionHash,
-                  message.vali_getTransactions_transactionHash
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].transactionHash,
+                    message.vali_getTransactions_transactionHash
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].userOpHash,
-                  message.vali_getTransactions_userOpHash
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].userOpHash,
+                    message.vali_getTransactions_userOpHash
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].actualGasCost,
-                  message.vali_getTransactions_actualGasCost
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].actualGasCost,
+                    message.vali_getTransactions_actualGasCost
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].actualGasUsed,
-                  message.vali_getTransactions_actualGasUsed
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].actualGasUsed,
+                    message.vali_getTransactions_actualGasUsed
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].success,
-                  message.vali_getTransactions_success
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].success,
+                    message.vali_getTransactions_success
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].timestamp,
-                  message.vali_getTransactions_timestamp
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].timestamp,
+                    message.vali_getTransactions_timestamp
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].paymaster,
-                  message.vali_getTransactions_paymaster
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].paymaster,
+                    message.vali_getTransactions_paymaster
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].value,
-                  message.vali_getTransactions_value
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].value,
+                    message.vali_getTransactions_value
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].blockExplorerUrl,
-                  message.vali_getTransactions_blockExplorerUrl
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].blockExplorerUrl,
+                    message.vali_getTransactions_blockExplorerUrl
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].input,
-                  message.vali_getTransactions_input
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].input,
+                    message.vali_getTransactions_input
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].nonce,
-                  message.vali_getTransactions_nonce
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].nonce,
+                    message.vali_getTransactions_nonce
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].initCode,
-                  message.vali_getTransactions_initCode
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].initCode,
+                    message.vali_getTransactions_initCode
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].callData,
-                  message.vali_getTransactions_callData
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].callData,
+                    message.vali_getTransactions_callData
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].verificationGasLimit,
-                  message.vali_getTransactions_verificationGasLimit
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].verificationGasLimit,
+                    message.vali_getTransactions_verificationGasLimit
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].preVerificationGas,
-                  'The preVerificationGas value is empty in the get transactions response.'
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].preVerificationGas,
+                    'The preVerificationGas value is empty in the get transactions response.'
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxFeePerGas,
-                  message.vali_getTransactions_maxFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxFeePerGas,
+                    message.vali_getTransactions_maxFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxPriorityFeePerGas,
-                  message.vali_getTransactions_maxPriorityFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxPriorityFeePerGas,
+                    message.vali_getTransactions_maxPriorityFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxPriorityFeePerGas,
-                  message.vali_getTransactions_maxPriorityFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxPriorityFeePerGas,
+                    message.vali_getTransactions_maxPriorityFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].from,
-                  message.vali_getTransactions_nativeTransfers_from
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].from,
+                    message.vali_getTransactions_nativeTransfers_from
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].to,
-                  message.vali_getTransactions_nativeTransfers_to
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].to,
+                    message.vali_getTransactions_nativeTransfers_to
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].value,
-                  message.vali_getTransactions_nativeTransfers_value
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].value,
+                    message.vali_getTransactions_nativeTransfers_value
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].asset,
-                  message.vali_getTransactions_nativeTransfers_asset
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].asset,
+                    message.vali_getTransactions_nativeTransfers_asset
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].address,
-                  message.vali_getTransactions_nativeTransfers_address
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].address,
+                    message.vali_getTransactions_nativeTransfers_address
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].nativeTransfers[0].decimal,
-                  message.vali_getTransactions_nativeTransfers_decimal
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].nativeTransfers[0].decimal,
+                    message.vali_getTransactions_nativeTransfers_decimal
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].nativeTransfers[0].data,
-                  message.vali_getTransactions_nativeTransfers_data
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].nativeTransfers[0].data,
+                    message.vali_getTransactions_nativeTransfers_data
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
+              } else {
+                addContext(test, message.vali_getTransactions_1);
+                assert.fail(message.vali_getTransactions_1);
               }
             } else {
               addContext(test, message.vali_getTransactions_1);
@@ -1292,7 +1303,7 @@ describe('Validate the single transaction and multiple transaction details on th
           }
 
           // wait for the 10 seconds
-          helper.wait(10000);
+          helper.wait(data.longTimeout);
 
           // Fetching historical transactions
           let transactions;
@@ -1305,290 +1316,295 @@ describe('Validate the single transaction and multiple transaction details on th
             });
 
             if (userOpsReceipt != null) {
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].chainId,
-                  message.vali_getTransactions_chainId
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+              if (transactions.transactions.length > 0) {
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].chainId,
+                    message.vali_getTransactions_chainId
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].sender,
-                  message.vali_getTransactions_sender
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].sender,
+                    message.vali_getTransactions_sender
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].transactionHash,
-                  message.vali_getTransactions_transactionHash
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].transactionHash,
+                    message.vali_getTransactions_transactionHash
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].userOpHash,
-                  message.vali_getTransactions_userOpHash
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].userOpHash,
+                    message.vali_getTransactions_userOpHash
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].actualGasCost,
-                  message.vali_getTransactions_actualGasCost
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].actualGasCost,
+                    message.vali_getTransactions_actualGasCost
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].actualGasUsed,
-                  message.vali_getTransactions_actualGasUsed
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].actualGasUsed,
+                    message.vali_getTransactions_actualGasUsed
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].success,
-                  message.vali_getTransactions_success
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].success,
+                    message.vali_getTransactions_success
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].timestamp,
-                  message.vali_getTransactions_timestamp
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].timestamp,
+                    message.vali_getTransactions_timestamp
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].paymaster,
-                  message.vali_getTransactions_paymaster
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].paymaster,
+                    message.vali_getTransactions_paymaster
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].value,
-                  message.vali_getTransactions_value
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].value,
+                    message.vali_getTransactions_value
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].blockExplorerUrl,
-                  message.vali_getTransactions_blockExplorerUrl
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].blockExplorerUrl,
+                    message.vali_getTransactions_blockExplorerUrl
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].input,
-                  message.vali_getTransactions_input
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].input,
+                    message.vali_getTransactions_input
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].nonce,
-                  message.vali_getTransactions_nonce
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].nonce,
+                    message.vali_getTransactions_nonce
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].initCode,
-                  message.vali_getTransactions_initCode
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].initCode,
+                    message.vali_getTransactions_initCode
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].callData,
-                  message.vali_getTransactions_callData
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].callData,
+                    message.vali_getTransactions_callData
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].verificationGasLimit,
-                  message.vali_getTransactions_verificationGasLimit
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].verificationGasLimit,
+                    message.vali_getTransactions_verificationGasLimit
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].preVerificationGas,
-                  message.vali_getTransactions_preVerificationGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].preVerificationGas,
+                    message.vali_getTransactions_preVerificationGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxFeePerGas,
-                  message.vali_getTransactions_maxFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxFeePerGas,
+                    message.vali_getTransactions_maxFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxPriorityFeePerGas,
-                  message.vali_getTransactions_maxPriorityFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxPriorityFeePerGas,
+                    message.vali_getTransactions_maxPriorityFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].maxPriorityFeePerGas,
-                  message.vali_getTransactions_maxPriorityFeePerGas
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].maxPriorityFeePerGas,
+                    message.vali_getTransactions_maxPriorityFeePerGas
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].erc20Transfers[0].from,
-                  message.vali_getTransactions_erc20Transfers_from
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].erc20Transfers[0].from,
+                    message.vali_getTransactions_erc20Transfers_from
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].erc20Transfers[0].to,
-                  message.vali_getTransactions_erc20Transfers_to
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].erc20Transfers[0].to,
+                    message.vali_getTransactions_erc20Transfers_to
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].erc20Transfers[0].value,
-                  message.vali_getTransactions_erc20Transfers_value
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].erc20Transfers[0].value,
+                    message.vali_getTransactions_erc20Transfers_value
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].erc20Transfers[0].address,
-                  message.vali_getTransactions_erc20Transfers_address
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].erc20Transfers[0].address,
+                    message.vali_getTransactions_erc20Transfers_address
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNumber(
-                  transactions.transactions[0].erc20Transfers[0].decimal,
-                  message.vali_getTransactions_erc20Transfers_decimal
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
-              }
+                try {
+                  assert.isNumber(
+                    transactions.transactions[0].erc20Transfers[0].decimal,
+                    message.vali_getTransactions_erc20Transfers_decimal
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
 
-              try {
-                assert.isNotEmpty(
-                  transactions.transactions[0].erc20Transfers[0].data,
-                  message.vali_getTransactions_erc20Transfers_data
-                );
-              } catch (e) {
-                console.error(e);
-                const eString = e.toString();
-                addContext(test, eString);
+                try {
+                  assert.isNotEmpty(
+                    transactions.transactions[0].erc20Transfers[0].data,
+                    message.vali_getTransactions_erc20Transfers_data
+                  );
+                } catch (e) {
+                  console.error(e);
+                  const eString = e.toString();
+                  addContext(test, eString);
+                }
+              } else {
+                addContext(test, message.vali_getTransactions_1);
+                assert.fail(message.vali_getTransactions_1);
               }
             } else {
               addContext(test, message.vali_getTransactions_1);
