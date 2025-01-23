@@ -257,7 +257,7 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // clear the transaction batch
         try {
-          await testnetPrimeSdk.clearUserOpsFromBatch();
+          await testnetPrimeSdk_old.clearUserOpsFromBatch();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -268,7 +268,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // add transactions to the batch
         let userOpsBatch;
         try {
-          userOpsBatch = await testnetPrimeSdk.addUserOpsToBatch({
+          userOpsBatch = await testnetPrimeSdk_old.addUserOpsToBatch({
             to: randomTokenAddress,
             data: transactionData,
           });
@@ -282,7 +282,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // estimate transactions added to the batch and get the fee data for the UserOp
         let op;
         try {
-          op = await testnetPrimeSdk.estimate();
+          op = await testnetPrimeSdk_old.estimate();
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -293,7 +293,7 @@ describe('Perform the precondition for new wallet generation', function () {
         // sign the UserOp and sending to the bundler
         let uoHash;
         try {
-          uoHash = await testnetPrimeSdk.send(op);
+          uoHash = await testnetPrimeSdk_old.send(op);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -407,7 +407,7 @@ describe('Perform the precondition for new wallet generation', function () {
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
             helper.wait(data.mediumTimeout);
-            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
+            userOpsReceipt = await testnetPrimeSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {
           console.error(e);
