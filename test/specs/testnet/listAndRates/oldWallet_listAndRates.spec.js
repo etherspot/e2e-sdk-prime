@@ -89,7 +89,7 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Te
 
       // initializating Data service...
       try {
-        dataService = new DataUtils(process.env.DATA_API_KEY);
+        dataService = new DataUtils(process.env.BUNDLER_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();

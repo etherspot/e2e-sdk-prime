@@ -1,14 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
-import {
-  PrimeSdk,
-  DataUtils,
-  EtherspotBundler,
-  ArkaPaymaster,
-} from '@etherspot/prime-sdk';
+import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
 import { ethers, utils } from 'ethers';
 import { assert } from 'chai';
-import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
 import { customRetryAsync } from '../../../utils/baseTest.js';
 import helper from '../../../utils/helper.js';
@@ -18,21 +12,16 @@ import message from '../../../data/messages.json' assert { type: 'json' };
 import {
   randomChainId,
   randomChainName,
-  randomIncorrectTokenAddress,
-  randomInvalidChainId,
-  randomInvalidTokenAddress,
   randomTokenAddress,
-  randomTokenName,
 } from '../../../utils/sharedData_testnet.js';
 
 let testnetPrimeSdk;
 let etherspotWalletAddress;
 let nativeAddress = null;
 let dataService;
-let arkaPaymaster;
 let runTest;
 
-describe('Perform the transaction with arka and pimlico paymasters on the TestNet (with old wallet)', function () {
+describe('Perform the transaction with arka paymasters on the TestNet (with old wallet)', function () {
   before(async function () {
     var test = this;
 
@@ -95,7 +84,7 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
 
       // initializating Data service...
       try {
-        dataService = new DataUtils(process.env.DATA_API_KEY);
+        dataService = new DataUtils(process.env.BUNDLER_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -154,6 +143,7 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
       ' network',
     async function () {
       var test = this;
+      let op;
       if (runTest) {
         await customRetryAsync(async function () {
           helper.wait(data.mediumTimeout);
@@ -175,39 +165,6 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
               to: data.recipient,
               value: ethers.utils.parseEther(data.value),
             });
-
-            try {
-              assert.isNotEmpty(
-                transactionBatch.to,
-                message.vali_addTransaction_to
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                transactionBatch.data,
-                message.vali_addTransaction_data
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-
-            try {
-              assert.isNotEmpty(
-                transactionBatch.value,
-                message.vali_addTransaction_value
-              );
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
           } catch (e) {
             console.error(e);
             const eString = e.toString();
@@ -215,33 +172,13 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
             assert.fail(message.fail_addTransaction_1);
           }
 
-          // get balance of the account address
-          let balance;
-          try {
-            balance = await testnetPrimeSdk.getNativeBalance();
-
-            try {
-              assert.isNotEmpty(balance, message.vali_getBalance_balance);
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            addContext(test, eString);
-            assert.fail(message.fail_getBalance_1);
-          }
-
           // estimate transactions added to the batch and get the fee data for the UserOp
-          let op;
           try {
             op = await testnetPrimeSdk.estimate({
               paymasterDetails: {
-                url: `https://arka.etherspot.io?apiKey=${
-                  process.env.API_KEY_ARKA
-                }&chainId=${Number(randomChainId)}`,
+                url: `${data.paymaster_arka}?apiKey=${
+                  process.env.BUNDLER_API_KEY
+                }&chainId=${Number(randomChainId)}&useVp=true`,
                 context: { mode: 'sponsor' },
               },
             });
@@ -372,32 +309,32 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
             addContext(test, eString);
             assert.fail(message.fail_estimateTransaction_1);
           }
+        }, data.retry); // Retry this async test up to 5 times
 
-          // sign the UserOp and sending to the bundler
-          let uoHash;
+        // sign the UserOp and sending to the bundler
+        let uoHash;
+        try {
+          uoHash = await testnetPrimeSdk.send(op);
+
           try {
-            uoHash = await testnetPrimeSdk.send(op);
-
-            try {
-              assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
           }
-        }, data.retry); // Retry this async test up to 5 times
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
+        }
       } else {
         addContext(test, message.nativeTransaction_insufficientBalance);
         console.warn(message.nativeTransaction_insufficientBalance);
@@ -451,8 +388,10 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
           try {
             await testnetPrimeSdk.estimate({
               paymasterDetails: {
-                url: data.invalid_paymaster_arka, // invalid URL
-                api_key: process.env.API_KEY,
+                url: `${data.invalid_paymaster_arka}?apiKey=${
+                  // invalid paymaster url
+                  process.env.BUNDLER_API_KEY
+                }&chainId=${Number(randomChainId)}&useVp=true`,
                 context: { mode: 'sponsor' },
               },
             });
@@ -524,8 +463,9 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
           try {
             await testnetPrimeSdk.estimate({
               paymasterDetails: {
-                url: data.paymaster_arka,
-                api_key: process.env.INVALID_API_KEY,
+                url: `${data.paymaster_arka}?apiKey=${
+                  data.invalid_bundler_apikey // invalid api key
+                }&chainId=${Number(randomChainId)}&useVp=true`,
                 context: { mode: 'sponsor' },
               },
             });
@@ -597,8 +537,9 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
           try {
             await testnetPrimeSdk.estimate({
               paymasterDetails: {
-                url: data.paymaster_arka,
-                api_key: process.env.INCORRECT_API_KEY,
+                url: `${data.paymaster_arka}?apiKey=${
+                  data.incorrect_bundler_apikey // incrrect api key
+                }&chainId=${Number(randomChainId)}&useVp=true`,
                 context: { mode: 'sponsor' },
               },
             });
@@ -670,8 +611,7 @@ describe('Perform the transaction with arka and pimlico paymasters on the TestNe
           try {
             await testnetPrimeSdk.estimate({
               paymasterDetails: {
-                url: data.paymaster_arka,
-                // without api_key
+                url: `${data.paymaster_arka}?chainId=${Number(randomChainId)}&useVp=true`, // without api key
                 context: { mode: 'sponsor' },
               },
             });

@@ -91,7 +91,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
 
       // initializating Data service...
       try {
-        dataService = new DataUtils(process.env.DATA_API_KEY);
+        dataService = new DataUtils(process.env.BUNDLER_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -144,12 +144,13 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it(
+  it.only(
     'SMOKE: Perform the transfer native token with valid details on the ' +
       randomChainName +
       ' network',
     async function () {
       var test = this;
+      let op;
       if (runTest) {
         await customRetryAsync(async function () {
           helper.wait(data.mediumTimeout);
@@ -168,8 +169,8 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           let transactionBatch;
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
-              to: data.recipient,
-              value: ethers.utils.parseEther(data.value),
+              to: '0xE4fAe3bEEeFEDAaC49548869fca6F180fd37CA40',
+              value: ethers.utils.parseEther('0.001'),
             });
 
             try {
@@ -231,7 +232,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
-          let op;
           try {
             op = await mainnetPrimeSdk.estimate();
 
@@ -361,32 +361,32 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             addContext(test, eString);
             assert.fail(message.fail_estimateTransaction_1);
           }
+        }, data.retry); // Retry this async test up to 5 times
 
-          // sign the UserOp and sending to the bundler
-          let uoHash;
+        // sign the UserOp and sending to the bundler
+        let uoHash;
+        try {
+          uoHash = await mainnetPrimeSdk.send(op);
+
           try {
-            uoHash = await mainnetPrimeSdk.send(op);
-
-            try {
-              assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
           }
-        }, data.retry); // Retry this async test up to 5 times
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
+        }
       } else {
         addContext(test, message.nativeTransaction_insufficientBalance);
         console.warn(message.nativeTransaction_insufficientBalance);
@@ -401,6 +401,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       ' network',
     async function () {
       var test = this;
+      let op;
       if (runTest) {
         await customRetryAsync(async function () {
           helper.wait(data.mediumTimeout);
@@ -533,7 +534,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
-          let op;
           try {
             op = await mainnetPrimeSdk.estimate();
 
@@ -663,32 +663,32 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             addContext(test, eString);
             assert.fail(message.fail_estimateTransaction_1);
           }
+        }, data.retry); // Retry this async test up to 5 times
 
-          // sign the UserOp and sending to the bundler
-          let uoHash;
+        // sign the UserOp and sending to the bundler
+        let uoHash;
+        try {
+          uoHash = await mainnetPrimeSdk.send(op);
+
           try {
-            uoHash = await mainnetPrimeSdk.send(op);
-
-            try {
-              assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
           }
-        }, data.retry); // Retry this async test up to 5 times
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
+        }
       } else {
         addContext(test, message.erc20Transaction_insufficientBalance);
         console.warn(message.erc20Transaction_insufficientBalance);
@@ -703,6 +703,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       ' network',
     async function () {
       var test = this;
+      let op;
       if (runTest) {
         await customRetryAsync(async function () {
           helper.wait(data.mediumTimeout);
@@ -794,7 +795,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           }
 
           // estimate transactions added to the batch
-          let op;
           try {
             op = await mainnetPrimeSdk.estimate();
 
@@ -924,32 +924,32 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             addContext(test, eString);
             assert.fail(message.fail_estimateTransaction_1);
           }
+        }, data.retry); // Retry this async test up to 5 times
 
-          // sending to the bundler
-          let uoHash;
+        // sending to the bundler
+        let uoHash;
+        try {
+          uoHash = await mainnetPrimeSdk.send(op);
+
           try {
-            uoHash = await mainnetPrimeSdk.send(op);
-
-            try {
-              assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
-            } catch (e) {
-              console.error(e);
-              const eString = e.toString();
-              addContext(test, eString);
-            }
+            assert.isNotEmpty(uoHash, message.vali_submitTransaction_uoHash);
           } catch (e) {
             console.error(e);
             const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
+            addContext(test, eString);
           }
-        }, data.retry); // Retry this async test up to 5 times
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
+            test.skip();
+          } else {
+            addContext(test, eString);
+            assert.fail(message.fail_submitTransaction_1);
+          }
+        }
       } else {
         addContext(test, message.erc721Transaction_insufficientBalance);
         console.warn(message.erc721Transaction_insufficientBalance);

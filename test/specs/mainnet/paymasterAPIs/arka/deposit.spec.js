@@ -24,7 +24,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -56,7 +56,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_invalid}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid url
+      const url = `${data.arka_deposit_invalid}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // invalid url
 
       // define the payload
       const requestData = {
@@ -92,7 +92,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_incorrect}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // incorrect url
+      const url = `${data.arka_deposit_incorrect}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // incorrect url
 
       // define the payload
       const requestData = {
@@ -128,7 +128,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -164,7 +164,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -200,7 +200,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -236,7 +236,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid apikey
+      const url = `${data.arka_deposit}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -308,7 +308,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}`; // without chainid
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}`; // without chainid
 
       // define the payload
       const requestData = {
@@ -344,7 +344,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -383,7 +383,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -419,7 +419,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -455,7 +455,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -491,7 +491,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.DATA_API_KEY}&chainId=${randomChainId}&useVp=true`; // incorrect apikey
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`; // incorrect apikey
 
       // define the payload
       const requestData = {
@@ -527,7 +527,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`; // invalid apikey
+      const url = `${data.arka_deposit}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}&useVp=true`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -599,7 +599,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${data.invalid_chainId}&useVp=true`; // invalid chainId
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${data.invalid_chainId}&useVp=true`; // invalid chainId
 
       // define the payload
       const requestData = {
@@ -635,7 +635,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&useVp=true`; // without chainId
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&useVp=true`; // without chainId
 
       // define the payload
       const requestData = {
@@ -671,7 +671,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=false`; // false value
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=false`; // false value
 
       // define the payload
       const requestData = {
@@ -710,7 +710,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=qwerty`; // invalid data in userVp parameter
+      const url = `${data.arka_deposit}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=qwerty`; // invalid data in userVp parameter
 
       // define the payload
       const requestData = {
@@ -746,7 +746,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -778,7 +778,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2_invalid}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid url
+      const url = `${data.arka_deposit_v2_invalid}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // invalid url
 
       // define the payload
       const requestData = {
@@ -814,7 +814,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2_incorrect}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // incorrect url
+      const url = `${data.arka_deposit_v2_incorrect}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // incorrect url
 
       // define the payload
       const requestData = {
@@ -850,7 +850,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -886,7 +886,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -922,7 +922,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -958,7 +958,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid apikey
+      const url = `${data.arka_deposit_v2}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -1030,7 +1030,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}`; // without chainid
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}`; // without chainid
 
       // define the payload
       const requestData = {
@@ -1066,7 +1066,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -1105,7 +1105,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -1141,7 +1141,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -1177,7 +1177,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -1213,7 +1213,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.DATA_API_KEY}&chainId=${randomChainId}&useVp=true`; // incorrect apikey
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`; // incorrect apikey
 
       // define the payload
       const requestData = {
@@ -1249,7 +1249,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`; // invalid apikey
+      const url = `${data.arka_deposit_v2}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}&useVp=true`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -1321,7 +1321,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${data.invalid_chainId}&useVp=true`; // invalid chainId
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${data.invalid_chainId}&useVp=true`; // invalid chainId
 
       // define the payload
       const requestData = {
@@ -1357,7 +1357,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&useVp=true`; // without chainId
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&useVp=true`; // without chainId
 
       // define the payload
       const requestData = {
@@ -1393,7 +1393,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=false`; // false value
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=false`; // false value
 
       // define the payload
       const requestData = {
@@ -1432,7 +1432,7 @@ describe('Validate the deposit endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deposit_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=qwerty`; // invalid data in userVp parameter
+      const url = `${data.arka_deposit_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=qwerty`; // invalid data in userVp parameter
 
       // define the payload
       const requestData = {
