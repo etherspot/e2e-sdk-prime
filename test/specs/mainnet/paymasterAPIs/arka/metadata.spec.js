@@ -32,7 +32,7 @@ describe('Validate the metadata endpoint of the Arka', function () {
           {
             params: {
               chainId: randomChainId,
-              apiKey: process.env.ARKA_API_KEY_PROD,
+              apiKey: process.env.BUNDLER_API_KEY,
             },
           },
           header
@@ -100,7 +100,7 @@ describe('Validate the metadata endpoint of the Arka', function () {
           {
             params: {
               chainId: randomChainId,
-              apiKey: process.env.ARKA_API_KEY_PROD,
+              apiKey: process.env.BUNDLER_API_KEY,
             },
           },
           header
@@ -139,7 +139,7 @@ describe('Validate the metadata endpoint of the Arka', function () {
           {
             params: {
               chainId: randomChainId,
-              apiKey: process.env.ARKA_API_KEY_PROD,
+              apiKey: process.env.BUNDLER_API_KEY,
             },
           },
           header
@@ -248,7 +248,7 @@ describe('Validate the metadata endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_metadata,
           {
-            params: { apiKey: process.env.ARKA_API_KEY_PROD }, // without chainid
+            params: { apiKey: process.env.BUNDLER_API_KEY }, // without chainid
           },
           header
         );

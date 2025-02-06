@@ -34,7 +34,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_whitelist,
           {
-            params: [addresses, randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: [addresses, randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -63,7 +63,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               addresses,
               { token: data.usdc_token },
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -97,7 +97,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               addresses,
               { token: data.usdc_token },
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -138,7 +138,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               addresses,
               { token: data.usdc_token },
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -177,7 +177,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               data.invalid_sponsorAddress, // invalid address
               { token: data.usdc_token },
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -216,7 +216,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               data.incorrect_sponsorAddress, // incorrect address
               { token: data.usdc_token },
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -254,7 +254,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
             params: [
               { token: data.usdc_token },
               randomChainId, // without address
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -371,7 +371,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
             params: [
               addresses,
               { token: data.usdc_token },
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ], // without chainid
           },
           header
@@ -412,7 +412,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               addresses,
               { token: data.invalid_usdc_token }, // invalid token
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header
@@ -453,7 +453,7 @@ describe('Validate the pimlico address endpoint of the Arka', function () {
               addresses,
               // without token
               randomChainId,
-              process.env.ARKA_API_KEY_PROD,
+              process.env.BUNDLER_API_KEY,
             ],
           },
           header

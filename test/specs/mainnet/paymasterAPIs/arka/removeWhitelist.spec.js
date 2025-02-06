@@ -26,9 +26,9 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url1 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
-      const url2 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
-      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url1 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
+      const url2 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
+      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -128,7 +128,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -170,7 +170,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist_invalid}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`; // invalid url
+      const url = `${data.arka_removeWhitelist_invalid}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`; // invalid url
 
       // define the payload
       const requestData = {
@@ -206,7 +206,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -242,7 +242,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -278,7 +278,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -314,7 +314,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`; // invalid apikey
+      const url = `${data.arka_removeWhitelist}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}&useVp=true`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -386,7 +386,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&useVp=true`; // without chainid
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&useVp=true`; // without chainid
 
       // define the payload
       const requestData = {
@@ -422,9 +422,9 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url1 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
-      const url2 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
-      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url1 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
+      const url2 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
+      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -524,7 +524,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -559,7 +559,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist_invalid}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid url
+      const url = `${data.arka_removeWhitelist_invalid}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // invalid url
 
       // define the payload
       const requestData = {
@@ -595,7 +595,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -631,7 +631,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -667,7 +667,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -706,7 +706,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid apikey
+      const url = `${data.arka_removeWhitelist}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -784,7 +784,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}`; // without chainid
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}`; // without chainid
 
       // define the payload
       const requestData = {
@@ -820,9 +820,9 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url1 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
-      const url2 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
-      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url1 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
+      const url2 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
+      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -922,7 +922,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
 
       // define the payload
       const requestData = {
@@ -957,7 +957,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist_v2_invalid}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid url
+      const url = `${data.arka_removeWhitelist_v2_invalid}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // invalid url
 
       // define the payload
       const requestData = {
@@ -993,7 +993,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -1029,7 +1029,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -1065,7 +1065,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -1104,7 +1104,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid apikey
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -1182,7 +1182,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       const addresses = [randomAddress.address];
 
       // define the url
-      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}`; // without chainid
+      const url = `${data.arka_removeWhitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}`; // without chainid
 
       // define the payload
       const requestData = {
@@ -1218,9 +1218,9 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url1 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
-      const url2 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
-      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url1 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
+      const url2 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
+      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -1320,7 +1320,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=false`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=false`;
 
       // define the payload
       const requestData = {
@@ -1362,9 +1362,9 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url1 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=true`;
-      const url2 = `${data.arka_whitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
-      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url1 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=true`;
+      const url2 = `${data.arka_whitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
+      const url3 = `${data.arka_whitelist_v2}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -1464,7 +1464,7 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}&useVp=qwerty`;
+      const url = `${data.arka_removeWhitelist}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}&useVp=qwerty`;
 
       // define the payload
       const requestData = {

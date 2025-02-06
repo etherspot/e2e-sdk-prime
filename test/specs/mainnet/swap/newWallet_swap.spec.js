@@ -64,7 +64,7 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
 
       // initializating Data service...
       try {
-        dataService = new DataUtils(process.env.DATA_API_KEY);
+        dataService = new DataUtils(process.env.BUNDLER_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();

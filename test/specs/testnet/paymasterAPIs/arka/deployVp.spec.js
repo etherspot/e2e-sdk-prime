@@ -25,7 +25,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -73,7 +73,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -109,7 +109,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -145,7 +145,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${randomChainId}`;
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`;
 
       // define the payload
       const requestData = {
@@ -181,7 +181,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.DATA_API_KEY}&chainId=${randomChainId}`; // incorrect apikey
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${randomChainId}`; // incorrect apikey
 
       // define the payload
       const requestData = {
@@ -217,7 +217,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.INVALID_ARKA_API_KEY_PROD}&chainId=${randomChainId}`; // invalid apikey
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${data.invalid_bundler_apikey}&chainId=${randomChainId}`; // invalid apikey
 
       // define the payload
       const requestData = {
@@ -289,7 +289,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}&chainId=${data.invalid_chainId}`; // invalid chainId
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}&chainId=${data.invalid_chainId}`; // invalid chainId
 
       // define the payload
       const requestData = {
@@ -325,7 +325,7 @@ describe('Validate the deploy-vp endpoint of the Arka', function () {
       ' Network',
     async function () {
       // define the url
-      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.ARKA_API_KEY_PROD}`; // without chainId
+      const url = `${data.arka_deployVerifyingPaymaster}?apiKey=${process.env.BUNDLER_API_KEY}`; // without chainId
 
       // define the payload
       const requestData = {

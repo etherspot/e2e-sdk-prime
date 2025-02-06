@@ -99,6 +99,7 @@ describe('Perform the precondition for new wallet generation', function () {
       ' network',
     async function () {
       var test = this;
+      let op;
       await customRetryAsync(async function () {
         // wait for the execution
         helper.wait(data.mediumTimeout);
@@ -151,7 +152,6 @@ describe('Perform the precondition for new wallet generation', function () {
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
-        let op;
         try {
           op = await testnetPrimeSdk_old.estimate();
         } catch (e) {
@@ -160,40 +160,40 @@ describe('Perform the precondition for new wallet generation', function () {
           addContext(test, eString);
           assert.fail(message.fail_estimateTransaction_1);
         }
+      }, data.retry); // Retry this async test up to 5 times
 
-        // sign the UserOp and sending to the bundler
-        let uoHash;
-        try {
-          uoHash = await testnetPrimeSdk_old.send(op);
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          if (eString === 'Error') {
-            console.warn(message.skip_transaction_error);
-            addContext(test, message.skip_transaction_error);
-            test.skip();
-          } else {
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
-          }
-        }
-
-        // get transaction hash...
-        try {
-          console.log('Waiting for transaction...');
-          let userOpsReceipt = null;
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            helper.wait(data.mediumTimeout);
-            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
+      // sign the UserOp and sending to the bundler
+      let uoHash;
+      try {
+        uoHash = await testnetPrimeSdk_old.send(op);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        if (eString === 'Error') {
+          console.warn(message.skip_transaction_error);
+          addContext(test, message.skip_transaction_error);
+          test.skip();
+        } else {
           addContext(test, eString);
           assert.fail(message.fail_submitTransaction_1);
         }
-      }, data.retry); // Retry this async test up to 3 times
+      }
+
+      // get transaction hash...
+      try {
+        console.log('Waiting for transaction...');
+        let userOpsReceipt = null;
+        const timeout = Date.now() + 60000; // 1 minute timeout
+        while (userOpsReceipt == null && Date.now() < timeout) {
+          helper.wait(data.mediumTimeout);
+          userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_submitTransaction_1);
+      }
     }
   );
 
@@ -203,7 +203,7 @@ describe('Perform the precondition for new wallet generation', function () {
       ' network',
     async function () {
       var test = this;
-
+      let op;
       await customRetryAsync(async function () {
         helper.wait(data.mediumTimeout);
 
@@ -280,7 +280,6 @@ describe('Perform the precondition for new wallet generation', function () {
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
-        let op;
         try {
           op = await testnetPrimeSdk_old.estimate();
         } catch (e) {
@@ -289,40 +288,40 @@ describe('Perform the precondition for new wallet generation', function () {
           addContext(test, eString);
           assert.fail(message.fail_estimateTransaction_1);
         }
+      }, data.retry); // Retry this async test up to 5 times
 
-        // sign the UserOp and sending to the bundler
-        let uoHash;
-        try {
-          uoHash = await testnetPrimeSdk_old.send(op);
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          if (eString === 'Error') {
-            console.warn(message.skip_transaction_error);
-            addContext(test, message.skip_transaction_error);
-            test.skip();
-          } else {
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
-          }
-        }
-
-        // get transaction hash...
-        try {
-          console.log('Waiting for transaction...');
-          let userOpsReceipt = null;
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            helper.wait(data.mediumTimeout);
-            userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
+      // sign the UserOp and sending to the bundler
+      let uoHash;
+      try {
+        uoHash = await testnetPrimeSdk_old.send(op);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        if (eString === 'Error') {
+          console.warn(message.skip_transaction_error);
+          addContext(test, message.skip_transaction_error);
+          test.skip();
+        } else {
           addContext(test, eString);
           assert.fail(message.fail_submitTransaction_1);
         }
-      }, data.retry); // Retry this async test up to 5 times
+      }
+
+      // get transaction hash...
+      try {
+        console.log('Waiting for transaction...');
+        let userOpsReceipt = null;
+        const timeout = Date.now() + 60000; // 1 minute timeout
+        while (userOpsReceipt == null && Date.now() < timeout) {
+          helper.wait(data.mediumTimeout);
+          userOpsReceipt = await testnetPrimeSdk_old.getUserOpReceipt(uoHash);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_submitTransaction_1);
+      }
     }
   );
 
@@ -332,7 +331,7 @@ describe('Perform the precondition for new wallet generation', function () {
       ' network',
     async function () {
       var test = this;
-
+      let op;
       await customRetryAsync(async function () {
         // wait for the execution
         helper.wait(data.mediumTimeout);
@@ -373,7 +372,6 @@ describe('Perform the precondition for new wallet generation', function () {
         }
 
         // estimate transactions added to the batch and get the fee data for the UserOp
-        let op;
         try {
           op = await testnetPrimeSdk.estimate();
         } catch (e) {
@@ -382,40 +380,40 @@ describe('Perform the precondition for new wallet generation', function () {
           addContext(test, eString);
           assert.fail(message.fail_estimateTransaction_1);
         }
+      }, data.retry); // Retry this async test up to 5 times
 
-        // sign the UserOp and sending to the bundler
-        let uoHash;
-        try {
-          uoHash = await testnetPrimeSdk.send(op);
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
-          if (eString === 'Error') {
-            console.warn(message.skip_transaction_error);
-            addContext(test, message.skip_transaction_error);
-            test.skip();
-          } else {
-            addContext(test, eString);
-            assert.fail(message.fail_submitTransaction_1);
-          }
-        }
-
-        // get transaction hash...
-        try {
-          console.log('Waiting for transaction...');
-          let userOpsReceipt = null;
-          const timeout = Date.now() + 60000; // 1 minute timeout
-          while (userOpsReceipt == null && Date.now() < timeout) {
-            helper.wait(data.mediumTimeout);
-            userOpsReceipt = await testnetPrimeSdk.getUserOpReceipt(uoHash);
-          }
-        } catch (e) {
-          console.error(e);
-          const eString = e.toString();
+      // sign the UserOp and sending to the bundler
+      let uoHash;
+      try {
+        uoHash = await testnetPrimeSdk.send(op);
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        if (eString === 'Error') {
+          console.warn(message.skip_transaction_error);
+          addContext(test, message.skip_transaction_error);
+          test.skip();
+        } else {
           addContext(test, eString);
           assert.fail(message.fail_submitTransaction_1);
         }
-      }, data.retry); // Retry this async test up to 5 times
+      }
+
+      // get transaction hash...
+      try {
+        console.log('Waiting for transaction...');
+        let userOpsReceipt = null;
+        const timeout = Date.now() + 60000; // 1 minute timeout
+        while (userOpsReceipt == null && Date.now() < timeout) {
+          helper.wait(data.mediumTimeout);
+          userOpsReceipt = await testnetPrimeSdk.getUserOpReceipt(uoHash);
+        }
+      } catch (e) {
+        console.error(e);
+        const eString = e.toString();
+        addContext(test, eString);
+        assert.fail(message.fail_submitTransaction_1);
+      }
     }
   );
 });

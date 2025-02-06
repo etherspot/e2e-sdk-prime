@@ -1152,6 +1152,7 @@
 
   "vali_whitelist_message": "The message parameter is not displayed in the whitelist response.",
   "vali_whitelist_messageText": "The text of the message parameter is not displayed correct in the whitelist response.",
+  "vali_whitelist_1": "The respective validation is displayed successfully when address already whitelisted.",
   "fail_whitelist_1": "The validation message is not displayed while performing whitelist.",
   "fail_whitelist1_1": "The validation message is not displayed while performing whitelist with userVp parameter as a true.",
   "fail_whitelist2_1": "The validation message is not displayed while performing whitelist with userVp parameter as a false.",

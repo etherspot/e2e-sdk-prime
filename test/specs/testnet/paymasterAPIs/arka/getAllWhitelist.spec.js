@@ -34,7 +34,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_whitelist_v2,
           {
-            params: [addresses, randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: [addresses, randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -59,7 +59,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_getAllWhitelist_v2,
           {
-            params: ['1', randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: ['1', randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -91,7 +91,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_getAllWhitelist_v2,
           {
-            params: ['1', randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: ['1', randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -127,7 +127,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_getAllWhitelist_invalid, // invalid url
           {
-            params: ['1', randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: ['1', randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -163,7 +163,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_getAllWhitelist_incorrect, // incorrect url
           {
-            params: ['1', randomChainId, process.env.ARKA_API_KEY_PROD],
+            params: ['1', randomChainId, process.env.BUNDLER_API_KEY],
           },
           header
         );
@@ -271,7 +271,7 @@ describe('Validate the get all whitelist endpoint of the Arka', function () {
         const response = await axios.post(
           data.arka_getAllWhitelist,
           {
-            params: ['1', process.env.ARKA_API_KEY_PROD], // without chainid
+            params: ['1', process.env.BUNDLER_API_KEY], // without chainid
           },
           header
         );

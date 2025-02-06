@@ -21,19 +21,19 @@ const randomDescription = generateRandomString(15);
 // define headers with valid details
 const headers = {
   'Content-Type': 'application/json',
-  apikey: process.env.API_KEY_ARKA,
+  apikey: process.env.BUNDLER_API_KEY,
 };
 
 // define headers with invalid details
 const invalid_headers = {
   'Content-Type': 'application/json',
-  apikey: process.env.INVALID_API_KEY_ARKA,
+  apikey: data.invalid_bundler_apikey,
 };
 
 // define headers with incorrect details
 const incorrect_headers = {
   'Content-Type': 'application/json',
-  apikey: process.env.INCORRECT_API_KEY_ARKA,
+  apikey: data.incorrect_bundler_apikey,
 };
 
 // define headers without apikey details

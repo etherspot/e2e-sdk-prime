@@ -61,7 +61,7 @@ describe('Validate the connext endpoints on the MainNet (with new wallet)', func
 
       // initializating Data service...
       try {
-        dataService = new DataUtils(process.env.DATA_API_KEY);
+        dataService = new DataUtils(process.env.BUNDLER_API_KEY);
       } catch (e) {
         console.error(e);
         const eString = e.toString();
@@ -356,6 +356,7 @@ describe('Validate the connext endpoints on the MainNet (with new wallet)', func
       ' network',
     async function () {
       var test = this;
+      let op;
       if (runTest) {
         await customRetryAsync(async function () {
           helper.wait(data.mediumTimeout);
@@ -394,7 +395,6 @@ describe('Validate the connext endpoints on the MainNet (with new wallet)', func
           }
 
           // estimate transactions added to the batch and get the fee data for the UserOp
-          let op;
           try {
             op = await mainnetPrimeSdk.estimate();
           } catch (e) {
@@ -403,40 +403,42 @@ describe('Validate the connext endpoints on the MainNet (with new wallet)', func
             addContext(test, eString);
             assert.fail(message.fail_estimateTransaction_1);
           }
+        }, data.retry); // Retry this async test up to 5 times
 
-          // sign the UserOp and sending to the bundler
-          let uoHash;
-          try {
-            uoHash = await mainnetPrimeSdk.send(op);
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
-            if (eString === 'Error') {
-              console.warn(message.skip_transaction_error);
-              addContext(test, message.skip_transaction_error);
-              test.skip();
-            } else {
-              addContext(test, eString);
-              assert.fail(message.fail_submitTransaction_1);
-            }
-          }
-
-          // get transaction hash
-          let userOpsReceipt = null;
-          try {
-            console.log('Waiting for transaction...');
-            const timeout = Date.now() + 60000; // 1 minute timeout
-            while (userOpsReceipt == null && Date.now() < timeout) {
-              await helper.wait(5000);
-              userOpsReceipt = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
-            }
-          } catch (e) {
-            console.error(e);
-            const eString = e.toString();
+        // sign the UserOp and sending to the bundler
+        let uoHash;
+        try {
+          uoHash = await mainnetPrimeSdk.send(op);
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          if (eString === 'Error') {
+            console.warn(message.skip_transaction_error);
+            addContext(test, message.skip_transaction_error);
+            test.skip();
+          } else {
             addContext(test, eString);
-            assert.fail(message.fail_getTransactionHash_1);
+            assert.fail(message.fail_submitTransaction_1);
           }
+        }
 
+        // get transaction hash
+        let userOpsReceipt = null;
+        try {
+          console.log('Waiting for transaction...');
+          const timeout = Date.now() + 60000; // 1 minute timeout
+          while (userOpsReceipt == null && Date.now() < timeout) {
+            await helper.wait(5000);
+            userOpsReceipt = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
+          }
+        } catch (e) {
+          console.error(e);
+          const eString = e.toString();
+          addContext(test, eString);
+          assert.fail(message.fail_getTransactionHash_1);
+        }
+
+        await customRetryAsync(async function () {
           // validate the transaction status
           let transactionStatus;
           try {
