@@ -1507,5 +1507,17 @@
   "fail_skandha_sendUserOperation_40": "The validation message is not displayed in the eth_sendUserOperation endpoint when not entered method name.",
   "vali_skandha_sendUserOperation_40": "The validation message is displayed in the eth_sendUserOperation endpoint when not entered method name.",
   "vali_skandha_sendUserOperation_id": "The id value is empty in the eth_sendUserOperation response.",
-  "vali_skandha_sendUserOperation_result": "The result value is empty in the eth_sendUserOperation response."
+  "vali_skandha_sendUserOperation_result": "The result value is empty in the eth_sendUserOperation response.",
+
+  "vali_trustwallet_signer_address": "The address value is empty in the signer response.",
+  "vali_trustwallet_smartAccountClient": "The smartAccountClient value is empty in the createSmartAccountClient response.",
+  "vali_trustwallet_sendUserOperation": "The userop value is empty in the sendUserOperation response.",
+  "fail_trustwallet_1": "An error occurred while getting the address details.",
+  "fail_trustwallet_2": "An error occurred while creating the required clients.",
+  "fail_trustwallet_3": "An error occurred in the trust account response.",
+  "fail_trustwallet_4": "An error occurred in the smart account client response.",
+  "fail_trustwallet_5": "An error occurred in the user operation response.",
+  "fail_trustwallet_6": "An error occurred in the user operation response.",
+  "fail_trustwallet_7": "The validation message is not displayed in the trust wallet transaction when entered invalid url.",
+  "vali_trustwallet_7": "The validation message is displayed in the trust wallet transaction when entered invalid url."
 }
