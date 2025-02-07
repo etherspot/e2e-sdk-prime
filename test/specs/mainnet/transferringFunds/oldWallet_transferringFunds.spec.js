@@ -144,7 +144,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
     }, data.retry); // Retry this async test up to 5 times
   });
 
-  it.only(
+  it(
     'SMOKE: Perform the transfer native token with valid details on the ' +
       randomChainName +
       ' network',
@@ -169,8 +169,8 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           let transactionBatch;
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
-              to: '0xE4fAe3bEEeFEDAaC49548869fca6F180fd37CA40',
-              value: ethers.utils.parseEther('0.001'),
+              to: data.recipient,
+              value: ethers.utils.parseEther(data.value),
             });
 
             try {

@@ -88,5 +88,7 @@
 
   "successCode_1": 200,
   "skandha_error_1": "Invalid Request",
-  "skandha_error_2": "Unexpected behaviour"
+  "skandha_error_2": "Unexpected behaviour",
+
+  "trustWallet_1": "HTTP request failed."
 }
