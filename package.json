@@ -18,7 +18,8 @@
     "test-testnet-newWallet": "npm run test-testnet-precondition; mocha --timeout 600000 --spec test/specs/testnet/*/newWallet_*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always; npm run test-testnet-postcondition",
     "test-testnet-combined": "node scripts/run-testnet-test-sequence.js",
     "test-testnet-paymasterapi": "mocha --timeout 600000 --spec test/specs/testnet/paymasterAPIs/*/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
-    "test-service-benchmark": "mocha --timeout 600000 --spec test/specs/hostedServiceBanchmark/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always"
+    "test-service-benchmark": "mocha --timeout 600000 --spec test/specs/hostedServiceBanchmark/*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
+    "test-trustWallet": "mocha --timeout 600000 --spec test/specs/trustWallet/trustWallet_transferringFunds.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always"
   },
   "author": "Jinesh Darji",
   "license": "ISC",
