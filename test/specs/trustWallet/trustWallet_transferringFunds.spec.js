@@ -9,7 +9,16 @@ import { assert } from 'chai';
 import constant from '../../data/constant.json' assert { type: 'json' };
 import message from '../../data/messages.json' assert { type: 'json' };
 import data from '../../data/testData.json' assert { type: 'json' };
-import { mainnet } from 'viem/chains';
+import {
+  avalanche,
+  arbitrum,
+  base,
+  mainnet,
+  polygon,
+  optimism,
+  bsc,
+  opBNB,
+} from 'viem/chains';
 
 const chainData = {
   Avalanche: 43114,
@@ -20,6 +29,17 @@ const chainData = {
   Optimism: 10,
   BSC: 56,
   opBNB: 204,
+};
+
+const chainConfigs = {
+  Avalanche: avalanche,
+  Arbitrum: arbitrum,
+  Base: base,
+  Ethereum: mainnet,
+  Polygon: polygon,
+  Optimism: optimism,
+  BSC: bsc,
+  opBNB: opBNB,
 };
 
 describe('Perform the transaction of the tokens on trust wallet with multi chains', function () {
@@ -57,7 +77,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -159,7 +179,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -212,7 +232,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -265,7 +285,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -318,7 +338,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -371,7 +391,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -516,7 +536,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -693,7 +713,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         let publicClient;
         try {
           publicClient = createPublicClient({
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
           addContext(test, message.vali_trustwallet_15);
           console.log(message.vali_trustwallet_15);
@@ -733,7 +753,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -786,7 +806,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -840,7 +860,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -917,7 +937,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -993,7 +1013,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1070,7 +1090,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1147,7 +1167,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1217,7 +1237,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1292,7 +1312,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1382,7 +1402,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1472,7 +1492,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1562,7 +1582,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1652,7 +1672,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
@@ -1742,7 +1762,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         try {
           publicClient = createPublicClient({
             transport: http(remoteBundlerUrl),
-            chain: mainnet,
+            chain: chainConfigs[chainName],
           });
         } catch (e) {
           console.error(e);
