@@ -50,9 +50,6 @@ describe('Validate the get userOperation receipt endpoint of the skandha', funct
         assert.fail(message.fail_sdk_initialize);
       }
 
-      //wait for the execution
-      helper.wait(data.mediumTimeout);
-
       // clear the transaction batch
       try {
         await testnetPrimeSdk.clearUserOpsFromBatch();
@@ -123,7 +120,7 @@ describe('Validate the get userOperation receipt endpoint of the skandha', funct
         console.log('Waiting for transaction...');
         const timeout = Date.now() + 60000; // 1 minute timeout
         while (userOpsReceipt == null && Date.now() < timeout) {
-          await helper.wait(5000);
+          await helper.wait(data.mediumTimeout);
           userOpsReceipt = await testnetPrimeSdk.getUserOpReceipt(uoHash);
         }
       } catch (e) {

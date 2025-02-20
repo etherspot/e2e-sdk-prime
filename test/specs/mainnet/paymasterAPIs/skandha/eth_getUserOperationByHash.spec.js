@@ -50,9 +50,6 @@ describe('Validate the get userOperation by hash endpoint of the skandha', funct
         assert.fail(message.fail_sdk_initialize);
       }
 
-      //wait for the execution
-      helper.wait(data.mediumTimeout);
-
       // clear the transaction batch
       try {
         await mainnetPrimeSdk.clearUserOpsFromBatch();

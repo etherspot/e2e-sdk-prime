@@ -90,5 +90,12 @@
   "skandha_error_1": "Invalid Request",
   "skandha_error_2": "Unexpected behaviour",
 
-  "trustWallet_1": "HTTP request failed."
+  "trustWallet_1": "HTTP request failed.",
+  "trustWallet_2": "Cannot convert undefined to a BigInt",
+  "trustWallet_3": "Invalid UserOp signature or paymaster signature",
+  "trustWallet_4": "Cannot read properties of undefined",
+  "trustWallet_5": "parameters.transport is not a function",
+  "trustWallet_6": "is invalid",
+  "trustWallet_7": "is not a valid decimal number",
+  "trustWallet_8": "Execution reverted"
 }

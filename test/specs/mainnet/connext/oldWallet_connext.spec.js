@@ -31,8 +31,6 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         mainnetPrimeSdk = new PrimeSdk(
@@ -188,8 +186,6 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
       let allSupportedAssets;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           try {
             allSupportedAssets = await dataService.getSupportedAssets({});
 
@@ -271,8 +267,6 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
       let supportedAssets;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           try {
             supportedAssets = await dataService.getSupportedAssets({
               chainId: randomChainId,
@@ -358,8 +352,6 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
       let quotes;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           try {
             quotes = await dataService.getQuotes({
               fromAddress: data.sender,
@@ -428,8 +420,6 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // clear the transaction batch
           try {
             await mainnetPrimeSdk.clearUserOpsFromBatch();
@@ -497,7 +487,7 @@ describe('Validate the connext endpoints on the MainNet (with old wallet)', func
           console.log('Waiting for transaction...');
           const timeout = Date.now() + 60000; // 1 minute timeout
           while (userOpsReceipt == null && Date.now() < timeout) {
-            await helper.wait(5000);
+            await helper.wait(data.mediumTimeout);
             userOpsReceipt = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
           }
         } catch (e) {

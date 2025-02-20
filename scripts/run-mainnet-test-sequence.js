@@ -9,21 +9,45 @@ function runCommand(command, stepName) {
   } catch (error) {
     console.error(`❌ ${stepName} failed with error:`);
     console.error(error.message);
-    process.exit(1); // This will make the CI pipeline fail
     return false;
   }
 }
 
-// Execute commands in sequence
-console.log('🚀 Starting test execution sequence...');
+async function runTestSequence() {
+  console.log('🚀 Starting test execution sequence...');
 
-// Run precondition tests
-runCommand('npm run test-mainnet-precondition', 'Precondition Tests');
+  let hasFailures = false;
+  const testSteps = [
+    {
+      command: 'npm run test-mainnet-precondition',
+      name: 'Precondition Tests',
+    },
+    { command: 'npm run test-mainnet', name: 'Main Tests' },
+    {
+      command: 'npm run test-mainnet-postcondition',
+      name: 'Postcondition Tests',
+    },
+  ];
 
-// Run main tests
-runCommand('npm run test-mainnet', 'Main Tests');
+  for (const step of testSteps) {
+    const success = runCommand(step.command, step.name);
+    if (!success) {
+      hasFailures = true;
+    }
+  }
 
-// Run postcondition tests
-runCommand('npm run test-mainnet-postcondition', 'Postcondition Tests');
+  if (hasFailures) {
+    console.log(
+      '⚠️ Some test suites failed. Check the logs above for details.'
+    );
+    process.exit(1); // Exit with error code only after all suites have run
+  } else {
+    console.log('✨ All test sequences completed successfully!');
+    process.exit(0);
+  }
+}
 
-console.log('✨ All test sequences completed successfully!');
+runTestSequence().catch((error) => {
+  console.error('💥 Unexpected error:', error);
+  process.exit(1);
+});

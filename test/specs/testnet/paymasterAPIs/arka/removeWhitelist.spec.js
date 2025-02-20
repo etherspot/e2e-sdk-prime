@@ -43,9 +43,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_addWhitelist_1);
         console.log(message.vali_addWhitelist_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -58,9 +55,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_00);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v1 and without userVp parameter
@@ -70,9 +64,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv1_1);
         console.log(message.vali_whitelistv1_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -85,9 +76,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v2 and without userVp parameter
@@ -97,9 +85,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv2_1);
         console.log(message.vali_whitelistv2_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -115,9 +100,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv2_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
     }
   );
@@ -439,9 +421,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_addWhitelist_1);
         console.log(message.vali_addWhitelist_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -454,9 +433,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_00);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v1 and without userVp parameter
@@ -466,9 +442,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv1_1);
         console.log(message.vali_whitelistv1_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -481,9 +454,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v2 and without userVp parameter
@@ -493,9 +463,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv2_1);
         console.log(message.vali_whitelistv2_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -511,9 +478,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv2_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
     }
   );
@@ -837,9 +801,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_addWhitelist_1);
         console.log(message.vali_addWhitelist_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -852,9 +813,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_00);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v1 and without userVp parameter
@@ -864,9 +822,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv1_1);
         console.log(message.vali_whitelistv1_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -879,9 +834,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v2 and without userVp parameter
@@ -891,9 +843,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv2_1);
         console.log(message.vali_whitelistv2_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -909,9 +858,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv2_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
     }
   );
@@ -1235,9 +1181,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_addWhitelist_1);
         console.log(message.vali_addWhitelist_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1250,9 +1193,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_00);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v1 and without userVp parameter
@@ -1262,9 +1202,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv1_1);
         console.log(message.vali_whitelistv1_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1277,9 +1214,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v2 and without userVp parameter
@@ -1289,9 +1223,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv2_1);
         console.log(message.vali_whitelistv2_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1307,9 +1238,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv2_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
     }
   );
@@ -1379,9 +1307,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_addWhitelist_1);
         console.log(message.vali_addWhitelist_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1394,9 +1319,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_00);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v1 and without userVp parameter
@@ -1406,9 +1328,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv1_1);
         console.log(message.vali_whitelistv1_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1421,9 +1340,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv1_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
 
       // validate the whitelist address endpoint with v2 and without userVp parameter
@@ -1433,9 +1349,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
         // perform assertions
         addContext(test, message.vali_whitelistv2_1);
         console.log(message.vali_whitelistv2_1);
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       } catch (e) {
         const error = e.response.data.error;
 
@@ -1451,9 +1364,6 @@ describe('Validate the remove whitelist endpoint of the Arka', function () {
           addContext(test, eString);
           assert.fail(message.fail_whitelistv2_0);
         }
-
-        // wait for the response
-        helper.wait(data.mediumTimeout);
       }
     }
   );

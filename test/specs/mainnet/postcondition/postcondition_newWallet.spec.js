@@ -34,9 +34,6 @@ describe('Perform the postcondition for new wallet fund', function () {
 
       var test = this;
       await customRetryAsync(async function () {
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
-
         // initializating sdk
         try {
           mainnetPrimeSdk = new PrimeSdk(
@@ -69,8 +66,6 @@ describe('Perform the postcondition for new wallet fund', function () {
       var test = this;
       let op;
       await customRetryAsync(async function () {
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
@@ -208,8 +203,6 @@ describe('Perform the postcondition for new wallet fund', function () {
       var test = this;
       let op;
       await customRetryAsync(async function () {
-        helper.wait(data.longTimeout);
-
         // clear the transaction batch
         try {
           await mainnetPrimeSdk.clearUserOpsFromBatch();

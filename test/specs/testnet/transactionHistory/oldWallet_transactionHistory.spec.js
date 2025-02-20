@@ -28,8 +28,6 @@ describe('Validate the single transaction and multiple transaction details on th
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         testnetPrimeSdk = new PrimeSdk(
@@ -148,8 +146,6 @@ describe('Validate the single transaction and multiple transaction details on th
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // clear the transaction batch
           try {
             await testnetPrimeSdk.clearUserOpsFromBatch();
@@ -519,8 +515,6 @@ describe('Validate the single transaction and multiple transaction details on th
       var test = this;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // Fetching historical transactions
           let transactions;
           let randomTransaction;
@@ -776,8 +770,6 @@ describe('Validate the single transaction and multiple transaction details on th
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // clear the transaction batch
           try {
             await testnetPrimeSdk.clearUserOpsFromBatch();
@@ -1221,8 +1213,6 @@ describe('Validate the single transaction and multiple transaction details on th
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // get the respective provider details
           let provider;
           try {

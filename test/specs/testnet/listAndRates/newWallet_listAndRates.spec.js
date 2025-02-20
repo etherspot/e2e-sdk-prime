@@ -38,8 +38,6 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Te
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         testnetPrimeSdk = new PrimeSdk(
@@ -116,8 +114,6 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Te
       var test = this;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           let nfts;
           try {
             nfts = await dataService.getNftList({
@@ -208,8 +204,6 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Te
       var test = this;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           let tokenLists;
           let tokenListTokens;
           try {
@@ -431,8 +425,6 @@ describe('Validate the NFT List, Token List and Exchange Rates details on the Te
       var test = this;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           let TOKEN_LIST;
           let rates;
           let requestPayload;

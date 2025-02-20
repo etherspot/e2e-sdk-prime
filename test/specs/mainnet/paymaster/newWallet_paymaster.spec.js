@@ -35,8 +35,6 @@ describe('Perform the transaction with arka paymasters on the MainNet (with new 
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         mainnetPrimeSdk = new PrimeSdk(
@@ -169,8 +167,6 @@ describe('Perform the transaction with arka paymasters on the MainNet (with new 
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // clear the transaction batch
           try {
             await mainnetPrimeSdk.clearUserOpsFromBatch();
