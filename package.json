@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha --timeout 600000 --spec test/specs/testnet/trustWallet/trustWallet_transferringFunds.spec.js --reporter mochawesome --require mochawesome/register --reporter-options charts=true,code=false,showHooks=always",
+    "test": "mocha --timeout 600000 --spec test/specs/mainnet/transferringFunds/oldWallet_transferringFunds.spec.js --reporter mochawesome --require mochawesome/register --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet": "mocha --timeout 600000 --spec test/specs/mainnet/*/oldWallet_*.spec.js --spec test/specs/mainnet/*/newWallet_*.spec.js --reporter mochawesome --reporter-options charts=true,code=false,showHooks=always",
     "test-mainnet-precondition": "mocha --timeout 600000 --spec test/specs/mainnet/precondition/precondition_newWallet.spec.js",
     "test-mainnet-postcondition": "mocha --timeout 600000 --spec test/specs/mainnet/postcondition/postcondition_newWallet.spec.js",

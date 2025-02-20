@@ -8,7 +8,6 @@ import addContext from 'mochawesome/addContext.js';
 import { assert } from 'chai';
 import constant from '../../data/constant.json' assert { type: 'json' };
 import message from '../../data/messages.json' assert { type: 'json' };
-import helper from '../../utils/helper.js';
 import data from '../../data/testData.json' assert { type: 'json' };
 import { mainnet } from 'viem/chains';
 
@@ -86,9 +85,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -454,9 +453,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -545,9 +544,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -635,9 +634,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -869,9 +868,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             // without account
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -945,9 +944,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
           smartAccountClient = createSmartAccountClient({
             account: trustAccount, // without chain
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1022,10 +1021,10 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
-                  method: 'skandha_getGas',
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
+                  method: 'skandha_getGas', // invalid method
                 });
               },
             },
@@ -1099,9 +1098,11 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({});
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
+                  // without method
+                });
               },
             },
           });
@@ -1124,7 +1125,7 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
         }
       });
 
-      it(`REGRESSION: Perform the transfer of the native token on trust wallet without middleware while creating the smart account client the ${chainName} network`, async function () {
+      it(`REGRESSION: Perform the transfer of the native token on trust wallet without userOperation while creating the smart account client the ${chainName} network`, async function () {
         var test = this;
 
         // get the address details
@@ -1243,9 +1244,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
           smartAccountClient = createSmartAccountClient({
             account: trustAccount,
             chain: publicClient, // without bundlerTransport
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1319,9 +1320,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1409,9 +1410,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1499,9 +1500,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1589,9 +1590,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1679,9 +1680,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },
@@ -1769,9 +1770,9 @@ describe('Perform the transaction of the tokens on trust wallet with multi chain
             account: trustAccount,
             chain: publicClient,
             bundlerTransport: http(remoteBundlerUrl),
-            middleware: {
-              gasPrice() {
-                return publicClient.request({
+            userOperation: {
+              estimateFeesPerGas: async () => {
+                return await publicClient.request({
                   method: 'skandha_getGasPrice',
                 });
               },

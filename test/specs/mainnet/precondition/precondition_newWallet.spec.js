@@ -55,9 +55,6 @@ describe('Perform the precondition for new wallet generation', function () {
         const filePath = path.join(__dirname, '../../../utils/testUtils.json');
         const sharedState = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
-
         // initializating sdk
         try {
           mainnetPrimeSdk = new PrimeSdk(
@@ -101,9 +98,6 @@ describe('Perform the precondition for new wallet generation', function () {
       var test = this;
       let op;
       await customRetryAsync(async function () {
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
-
         // initializating sdk
         try {
           mainnetPrimeSdk_old = new PrimeSdk(
@@ -122,9 +116,6 @@ describe('Perform the precondition for new wallet generation', function () {
           addContext(test, eString);
           assert.fail(message.fail_sdk_initialize);
         }
-
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
 
         // clear the transaction batch
         try {
@@ -206,9 +197,6 @@ describe('Perform the precondition for new wallet generation', function () {
       let op;
 
       await customRetryAsync(async function () {
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
-
         // get the respective provider details
         let provider;
         try {
@@ -335,9 +323,6 @@ describe('Perform the precondition for new wallet generation', function () {
       var test = this;
       let op;
       await customRetryAsync(async function () {
-        // wait for the execution
-        helper.wait(data.mediumTimeout);
-
         // clear the transaction batch
         try {
           await mainnetPrimeSdk.clearUserOpsFromBatch();

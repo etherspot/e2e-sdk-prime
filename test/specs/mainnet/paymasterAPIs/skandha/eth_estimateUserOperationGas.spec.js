@@ -60,9 +60,6 @@ describe('Validate the estimate user operation gas endpoint of the skandha', fun
         assert.fail(message.fail_sdk_initialize);
       }
 
-      //wait for the execution
-      helper.wait(data.mediumTimeout);
-
       // clear the transaction batch
       try {
         await mainnetPrimeSdk.clearUserOpsFromBatch();

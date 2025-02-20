@@ -60,9 +60,6 @@ describe('Validate the send user operation endpoint of the skandha', function ()
         assert.fail(message.fail_sdk_initialize);
       }
 
-      //wait for the execution
-      helper.wait(data.mediumTimeout);
-
       // clear the transaction batch
       try {
         await testnetPrimeSdk.clearUserOpsFromBatch();

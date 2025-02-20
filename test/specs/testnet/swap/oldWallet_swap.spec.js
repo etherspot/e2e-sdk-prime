@@ -34,8 +34,6 @@ describe('Perform the get cross chain quotes and get advance routes LiFi transac
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         testnetPrimeSdk = new PrimeSdk(

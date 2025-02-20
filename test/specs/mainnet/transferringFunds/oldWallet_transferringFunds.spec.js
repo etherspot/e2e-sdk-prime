@@ -33,8 +33,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
     var test = this;
 
     await customRetryAsync(async function () {
-      helper.wait(data.mediumTimeout);
-
       // initializating sdk
       try {
         mainnetPrimeSdk = new PrimeSdk(
@@ -153,8 +151,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // clear the transaction batch
           try {
             await mainnetPrimeSdk.clearUserOpsFromBatch();
@@ -404,8 +400,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // get the respective provider details
           let provider;
           try {
@@ -706,8 +700,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       let op;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           // get erc721 Contract Interface
           let erc721Interface;
           let erc721Data;
@@ -968,8 +960,6 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
       var test = this;
       if (runTest) {
         await customRetryAsync(async function () {
-          helper.wait(data.mediumTimeout);
-
           const provider = new providers.JsonRpcProvider();
 
           // clear the transaction batch
@@ -1088,7 +1078,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
               userOpsReceipts.some((receipt) => receipt == null) &&
               Date.now() < timeout
             ) {
-              helper.wait(2000);
+              helper.wait(data.mediumTimeout);
               for (let i = 0; i < uoHashes.length; ++i) {
                 if (userOpsReceipts[i]) continue;
                 const uoHash = uoHashes[i];
@@ -3248,7 +3238,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
               userOpsReceipts.some((receipt) => receipt == null) &&
               Date.now() < timeout
             ) {
-              helper.wait(2000);
+              helper.wait(data.mediumTimeout);
               for (let i = 0; i < uoHashes.length; ++i) {
                 if (userOpsReceipts[i]) continue;
                 const uoHash = uoHashes[i];
@@ -3369,7 +3359,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
               userOpsReceipts.some((receipt) => receipt == null) &&
               Date.now() < timeout
             ) {
-              helper.wait(2000);
+              helper.wait(data.mediumTimeout);
               for (let i = 0; i < uoHashes.length; ++i) {
                 if (userOpsReceipts[i]) continue;
                 const uoHash = uoHashes[i];
