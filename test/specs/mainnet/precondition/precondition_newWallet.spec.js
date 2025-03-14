@@ -144,6 +144,8 @@ describe('Perform the precondition for new wallet generation', function () {
 
         // estimate transactions added to the batch and get the fee data for the UserOp
         try {
+          let balance = await mainnetPrimeSdk_old.getNativeBalance();
+          console.log('balance', balance);
           op = await mainnetPrimeSdk_old.estimate();
         } catch (e) {
           console.error(e);

@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config(); // init dotenv
 import { PrimeSdk, DataUtils, EtherspotBundler } from '@etherspot/prime-sdk';
-import { ethers, utils, providers } from 'ethers';
+import { ethers, utils, providers, BigNumber } from 'ethers';
 import { assert } from 'chai';
 import { ERC20_ABI } from '@etherspot/prime-sdk/dist/sdk/helpers/abi/ERC20_ABI.js';
 import addContext from 'mochawesome/addContext.js';
@@ -166,7 +166,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.recipient,
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
 
             try {
@@ -212,7 +212,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           let balance;
           try {
             balance = await mainnetPrimeSdk.getNativeBalance();
-
+            console.log('Native Balance:', balance);
             try {
               assert.isNotEmpty(balance, message.vali_getBalance_balance);
             } catch (e) {
@@ -230,6 +230,13 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           // estimate transactions added to the batch and get the fee data for the UserOp
           try {
             op = await mainnetPrimeSdk.estimate();
+            // console.log('########UserOp:', op);
+            // let maxFee = utils.formatUnits(BigNumber.from(op.maxFeePerGas),9);
+            // console.log('######Max Fee:', maxFee);
+            // let calculation = BigNumber.from(op.callGasLimit).add(BigNumber.from(op.preVerificationGas)).add(BigNumber.from(op.verificationGasLimit).mul(BigNumber.from(op.maxFeePerGas)));
+            // console.log('##########Required Prefund#######', utils.parseEther(calculation));
+
+
 
             try {
               assert.isNotEmpty(
@@ -370,6 +377,35 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             console.error(e);
             const eString = e.toString();
             addContext(test, eString);
+          }
+
+          // Wait for transaction completion
+          try {
+            console.log('Waiting for transactions...');
+            const userOpsReceipts = new Array(1).fill(null);
+            const timeout = Date.now() + 60000; // 1 minute timeout
+            while (
+              userOpsReceipts.some((receipt) => receipt == null) &&
+              Date.now() < timeout
+            ) {
+              helper.wait(data.mediumTimeout);
+              if (!userOpsReceipts[0]) {
+                userOpsReceipts[0] = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
+              }
+            }
+
+            if (userOpsReceipts[0]) {
+              addContext(test, message.vali_submitTransaction_1);
+              console.log(message.vali_submitTransaction_1);
+            } else {
+              addContext(test, message.vali_submitTransaction_2);
+              console.log(message.vali_submitTransaction_2);
+            }
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getUserOpReceipt_1);
           }
         } catch (e) {
           console.error(e);
@@ -671,6 +707,35 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             const eString = e.toString();
             addContext(test, eString);
           }
+
+          // Wait for transaction completion
+          try {
+            console.log('Waiting for transactions...');
+            const userOpsReceipts = new Array(1).fill(null);
+            const timeout = Date.now() + 60000; // 1 minute timeout
+            while (
+              userOpsReceipts.some((receipt) => receipt == null) &&
+              Date.now() < timeout
+            ) {
+              helper.wait(data.mediumTimeout);
+              if (!userOpsReceipts[0]) {
+                userOpsReceipts[0] = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
+              }
+            }
+
+            if (userOpsReceipts[0]) {
+              addContext(test, message.vali_submitTransaction_1);
+              console.log(message.vali_submitTransaction_1);
+            } else {
+              addContext(test, message.vali_submitTransaction_2);
+              console.log(message.vali_submitTransaction_2);
+            }
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getUserOpReceipt_1);
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -930,6 +995,35 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
             const eString = e.toString();
             addContext(test, eString);
           }
+
+          // Wait for transaction completion
+          try {
+            console.log('Waiting for transactions...');
+            const userOpsReceipts = new Array(1).fill(null);
+            const timeout = Date.now() + 60000; // 1 minute timeout
+            while (
+              userOpsReceipts.some((receipt) => receipt == null) &&
+              Date.now() < timeout
+            ) {
+              helper.wait(data.mediumTimeout);
+              if (!userOpsReceipts[0]) {
+                userOpsReceipts[0] = await mainnetPrimeSdk.getUserOpReceipt(uoHash);
+              }
+            }
+
+            if (userOpsReceipts[0]) {
+              addContext(test, message.vali_submitTransaction_1);
+              console.log(message.vali_submitTransaction_1);
+            } else {
+              addContext(test, message.vali_submitTransaction_2);
+              console.log(message.vali_submitTransaction_2);
+            }
+          } catch (e) {
+            console.error(e);
+            const eString = e.toString();
+            addContext(test, eString);
+            assert.fail(message.fail_getUserOpReceipt_1);
+          }
         } catch (e) {
           console.error(e);
           const eString = e.toString();
@@ -977,7 +1071,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.recipient,
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
 
             try {
@@ -1133,7 +1227,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.incorrectRecipient, // incorrect to address
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
           } catch (e) {
             console.error(e);
@@ -1200,7 +1294,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.invalidRecipient, // invalid to address
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
           } catch (e) {
             console.error(e);
@@ -3178,7 +3272,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.recipient,
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
           } catch (e) {
             console.error(e);
@@ -3299,7 +3393,7 @@ describe('Perform the transaction of the tokens on the MainNet (with old wallet)
           try {
             transactionBatch = await mainnetPrimeSdk.addUserOpsToBatch({
               to: data.recipient,
-              value: ethers.utils.parseEther(data.value),
+              value: ethers.utils.parseEther(data.value).toString(),
             });
           } catch (e) {
             console.error(e);

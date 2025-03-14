@@ -98,6 +98,7 @@ describe('Perform the postcondition for new wallet fund', function () {
         let balance;
         try {
           balance = await mainnetPrimeSdk.getNativeBalance();
+          console.log('Native balance:', balance);
         } catch (e) {
           console.error(e);
           const eString = e.toString();
