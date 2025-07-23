@@ -29,7 +29,7 @@
     "@etherspot/contracts": "^2.0.1",
     "@etherspot/prime-sdk": "file:./etherspot-prime-sdk-1.9.2.tgz",
     "@reactivex/rxjs": "^6.6.7",
-    "axios": "^1.4.0",
+    "axios": "^1.11.0",
     "chai": "^4.3.7",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.0.3",
